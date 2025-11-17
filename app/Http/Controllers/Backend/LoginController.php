@@ -11,4 +11,10 @@ class LoginController extends Controller
     {
         return view('backend.login');
     }
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect()->route('login');
+    }
 }
