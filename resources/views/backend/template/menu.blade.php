@@ -5,10 +5,17 @@
             <span class="menu-title">Dashboard</span>
         </a>
     </li>
+
     <li class="nav-item">
         <a class="nav-link" href="/admin/barang" style="border:none;">
             <i class="icon-box menu-icon"></i>
             <span class="menu-title">Barang</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/jasa" style="border:none;">
+            <i class="icon-briefcase menu-icon"></i>
+            <span class="menu-title">Jasa</span>
         </a>
     </li>
 
@@ -38,15 +45,25 @@
         </a>
     </li>
     <li class="nav-item">
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/kapster" style="border:none;">
+            <i class="icon-box menu-icon"></i>
+            <span class="menu-title">Kapster</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
         <a class="nav-link" href="/admin/user" style="border:none;">
             <i class="icon-box menu-icon"></i>
             <span class="menu-title">User</span>
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/admin/barberman" style="border:none;">
-            <i class="icon-box menu-icon"></i>
-            <span class="menu-title">Barberman</span>
+        <a class="nav-link" href="{{ route('user.profile') }}" style="border:none;">
+            <i class="mdi mdi-account-circle menu-icon"></i>
+            <span class="menu-title">Profil Saya</span>
         </a>
     </li>
 

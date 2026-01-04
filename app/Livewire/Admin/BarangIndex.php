@@ -6,9 +6,11 @@ use App\Models\Barang;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
+use Livewire\WithFileUploads;
 
 class BarangIndex extends Component
 {
+    use WithFileUploads;
     public $showDeleteModal = false;
     public $deleteId = null;
 
@@ -25,7 +27,7 @@ class BarangIndex extends Component
     }
     use WithPagination, WithoutUrlPagination;
     public $paginationTheme = 'bootstrap';
-    public $nama_barang, $deskripsi, $harga_jual, $harga_beli, $stok;
+    public $nama_barang, $deskripsi, $harga_jual, $harga_beli, $stok, $foto, $foto_lama;
     public $barangIdEdit = null;
     public $editMode = false;
     public $showForm = false;
@@ -39,6 +41,7 @@ class BarangIndex extends Component
         $this->harga_jual = $barang->harga_jual;
         $this->harga_beli = $barang->harga_beli;
         $this->stok = $barang->stok;
+        $this->foto_lama = $barang->foto;
         $this->editMode = true;
         $this->showForm = true;
     }
@@ -46,6 +49,10 @@ class BarangIndex extends Component
     public function hapus($id)
     {
         $barang = Barang::findOrFail($id);
+        // Hapus file foto jika ada
+        if ($barang->foto && \Storage::disk('public')->exists($barang->foto)) {
+            \Storage::disk('public')->delete($barang->foto);
+        }
         $barang->delete();
         session()->flash('message', 'Barang berhasil dihapus!');
         $this->cancelDelete();
@@ -60,6 +67,8 @@ class BarangIndex extends Component
         $this->harga_jual = '';
         $this->harga_beli = '';
         $this->stok = '';
+        $this->foto = null;
+        $this->foto_lama = null;
         $this->barangIdEdit = null;
     }
 
@@ -71,12 +80,15 @@ class BarangIndex extends Component
     protected function resetForm()
     {
         $this->showForm = false;
-        $this->pegawaiId = null;
-        $this->nip = null;
-        $this->nama = null;
-        $this->jabatan = null;
-        $this->skpd = null;
-        $this->status = 'active';
+        $this->nama_barang = null;
+        $this->deskripsi = null;
+        $this->harga_jual = null;
+        $this->harga_beli = null;
+        $this->stok = null;
+        $this->foto = null;
+        $this->foto_lama = null;
+        $this->barangIdEdit = null;
+        $this->editMode = false;
     }
 
     public function showForm()
@@ -102,13 +114,24 @@ class BarangIndex extends Component
 
     public function simpan()
     {
-        $this->validate([
+        $rules = [
             'nama_barang' => 'required|string',
             'deskripsi' => 'nullable|string',
             'harga_jual' => 'required|numeric',
             'harga_beli' => 'required|numeric',
             'stok' => 'required|numeric',
-        ]);
+            'foto' => $this->barangIdEdit ? 'nullable|image|max:2048' : 'required|image|max:2048',
+        ];
+        $this->validate($rules);
+
+        $fotoPath = $this->foto_lama;
+        if ($this->foto) {
+            // Hapus foto lama jika ada dan file-nya ada di storage
+            if ($this->foto_lama && \Storage::disk('public')->exists($this->foto_lama)) {
+                \Storage::disk('public')->delete($this->foto_lama);
+            }
+            $fotoPath = $this->foto->store('barang', 'public');
+        }
 
         if (isset($this->barangIdEdit) && $this->barangIdEdit) {
             $barang = Barang::findOrFail($this->barangIdEdit);
@@ -118,6 +141,7 @@ class BarangIndex extends Component
                 'harga_jual' => $this->harga_jual,
                 'harga_beli' => $this->harga_beli,
                 'stok' => $this->stok,
+                'foto' => $fotoPath,
             ]);
             session()->flash('message', 'Barang berhasil diupdate!');
             $this->resetForm();
@@ -129,6 +153,7 @@ class BarangIndex extends Component
                 'harga_jual' => $this->harga_jual,
                 'harga_beli' => $this->harga_beli,
                 'stok' => $this->stok,
+                'foto' => $fotoPath,
             ]);
             session()->flash('message', 'Barang berhasil ditambahkan!');
             $this->resetForm();

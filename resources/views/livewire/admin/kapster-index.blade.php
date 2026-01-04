@@ -3,7 +3,7 @@
     <div class="content-wrapper">
         <div class="row">
             <div class="col-sm-12 mb-4 mb-xl-0">
-                <h4 class="font-weight-bold text-dark">Data Barang</h4>
+                <h4 class="font-weight-bold text-dark">Data Kapster</h4>
             </div>
         </div>
         <div class="row">
@@ -12,14 +12,12 @@
                     class="form-control">
             </div>
             <div class="col-md-8 d-flex justify-content-end">
-                <!-- Button trigger modal -->
                 <button class="btn btn-sm btn-primary" wire:click.prevent="showCreateForm" wire:loading.attr="disabled"
                     wire:target="showCreateForm">
                     <span wire:loading wire:target="showCreateForm" class="spinner-border spinner-border-sm me-1"
                         role="status" aria-hidden="true"></span>
                     Tambah
                 </button>
-
             </div>
         </div><br>
         <div class="row">
@@ -30,45 +28,42 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Nama Barang</th>
-                                        <th>Deskripsi</th>
-                                        <th>Harga Beli</th>
-                                        <th>Harga Jual</th>
-                                        <th>Stok</th>
                                         <th>Foto</th>
+                                        <th>Nama</th>
+                                        <th>NIK</th>
+                                        <th>No. WA</th>
+                                        <th>Alamat</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($dataBarang as $dtbarang)
+                                    @foreach ($dataKapster as $dtkapster)
                                         <tr>
-                                            
-                                            <td>{{ $dtbarang->nama }}</td>
-                                            <td>{{ $dtbarang->deskripsi }}</td>
-                                            <td>{{ number_format($dtbarang->harga_beli, 0, ',', '.') }}</td>
-                                            <td>{{ number_format($dtbarang->harga_jual, 0, ',', '.') }}</td>
-                                            <td>{{ $dtbarang->stok }}</td>
                                             <td>
-                                                @if($dtbarang->foto)
-                                                    <img src="{{ asset('storage/' . $dtbarang->foto) }}" width="60"
+                                                @if($dtkapster->foto)
+                                                    <img src="{{ asset('storage/' . $dtkapster->foto) }}" width="60"
                                                         class="img-thumbnail">
                                                 @else
                                                     <span class="text-muted">-</span>
                                                 @endif
                                             </td>
+                                            <td>{{ $dtkapster->nama }}</td>
+                                            <td>{{ $dtkapster->nik }}</td>
+                                            <td>{{ $dtkapster->no_wa }}</td>
+                                            <td>{{ $dtkapster->alamat }}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-info" wire:click="edit({{ $dtbarang->id }})"
-                                                    wire:loading.attr="disabled" wire:target="edit({{ $dtbarang->id }})">
-                                                    <span wire:loading wire:target="edit({{ $dtbarang->id }})"
+                                                <button class="btn btn-sm btn-info" wire:click="edit({{ $dtkapster->id }})"
+                                                    wire:loading.attr="disabled" wire:target="edit({{ $dtkapster->id }})">
+                                                    <span wire:loading wire:target="edit({{ $dtkapster->id }})"
                                                         class="spinner-border spinner-border-sm me-1" role="status"
                                                         aria-hidden="true"></span>
                                                     Edit
                                                 </button>
                                                 <button class="btn btn-sm btn-danger"
-                                                    wire:click="confirmDelete({{ $dtbarang->id }})"
+                                                    wire:click="confirmDelete({{ $dtkapster->id }})"
                                                     wire:loading.attr="disabled"
-                                                    wire:target="confirmDelete({{ $dtbarang->id }})">
-                                                    <span wire:loading wire:target="confirmDelete({{ $dtbarang->id }})"
+                                                    wire:target="confirmDelete({{ $dtkapster->id }})">
+                                                    <span wire:loading wire:target="confirmDelete({{ $dtkapster->id }})"
                                                         class="spinner-border spinner-border-sm me-1" role="status"
                                                         aria-hidden="true"></span>
                                                     Hapus
@@ -83,7 +78,7 @@
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <p>Apakah Anda yakin ingin menghapus
-                                                                        <b>{{ $dtbarang->nama }}</b>
+                                                                        <b>{{ $dtkapster->nama }}</b>
                                                                         ini?
                                                                     </p>
                                                                 </div>
@@ -115,7 +110,7 @@
         </div><br>
         <div class="row">
             <div class="col-md-12">
-                {{ $dataBarang->links() }}
+                {{ $dataKapster->links() }}
             </div>
         </div>
     </div>
@@ -126,73 +121,69 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{ $barangIdEdit ? 'Edit Barang' : 'Tambah Barang' }}</h5>
+                        <h5 class="modal-title">{{ $kapsterIdEdit ? 'Edit Kapster' : 'Tambah Kapster' }}</h5>
                     </div>
                     <div class="modal-body" style="overflow-y:auto; max-height:70vh;">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Nama Barang</label>
-                                    <input type="text" class="form-control" wire:model.defer="nama_barang">
-                                    @error('nama_barang') <span class="text-danger">{{ $message }}</span> @enderror
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label>Nama</label>
+                                        <input type="text" class="form-control" wire:model.defer="nama">
+                                        @error('nama') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label>NIK</label>
+                                        <input type="text" class="form-control" wire:model.defer="nik">
+                                        @error('nik') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Stok</label>
-                                    <input type="number" class="form-control" wire:model.defer="stok">
-                                    @error('stok') <span class="text-danger">{{ $message }}</span> @enderror
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
+                                        <label>No. WA</label>
+                                        <input type="text" class="form-control" wire:model.defer="no_wa">
+                                        @error('no_wa') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Harga Beli</label>
-                                    <input type="number" class="form-control" wire:model.defer="harga_beli">
-                                    @error('harga_beli') <span class="text-danger">{{ $message }}</span> @enderror
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mb-3">
+                                        <label>Alamat</label>
+                                        <textarea class="form-control" wire:model.defer="alamat"></textarea>
+                                        @error('alamat') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Harga Jual</label>
-                                    <input type="number" class="form-control" wire:model.defer="harga_jual">
-                                    @error('harga_jual') <span class="text-danger">{{ $message }}</span> @enderror
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mb-3">
+                                        <label>Foto</label>
+                                        <input type="file" class="form-control" wire:model="foto" accept="image/*">
+                                        @if ($foto)
+                                            <img src="{{ $foto->temporaryUrl() }}" class="img-thumbnail mt-2" width="100">
+                                        @elseif ($foto_lama)
+                                            <img src="{{ asset('storage/' . $foto_lama) }}" class="img-thumbnail mt-2"
+                                                width="100">
+                                        @endif
+                                        @error('foto') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Deskripsi</label>
-                            <input type="text" class="form-control" wire:model.defer="deskripsi">
-                        </div>
-                        <div class="form-group">
-                            <label>Foto</label>
-                            <input type="file" class="form-control" wire:model="foto" accept="image/*">
-                            @if ($foto)
-                                <img src="{{ $foto->temporaryUrl() }}" class="img-thumbnail mt-2" width="100">
-                            @elseif ($foto_lama)
-                                <img src="{{ asset('storage/' . $foto_lama) }}" class="img-thumbnail mt-2" width="100">
-                            @endif
-                            @error('foto') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" wire:click.prevent="batal">Batal</button>
-                        @if ($barangIdEdit)
-                            <button type="button" class="btn btn-primary" wire:click.prevent="simpan"
-                                wire:loading.attr="disabled" wire:target="simpan">
-                                <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"
-                                    role="status" aria-hidden="true"></span>
-                                Simpan
-                            </button>
-                        @else
-                            <button type="button" class="btn btn-primary" wire:click.prevent="simpan"
-                                wire:loading.attr="disabled" wire:target="simpan">
-                                <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"
-                                    role="status" aria-hidden="true"></span>
-                                Simpan
-                            </button>
-                        @endif
+                        <button type="button" class="btn btn-primary" wire:click.prevent="simpan"
+                            wire:loading.attr="disabled" wire:target="simpan">
+                            <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"
+                                role="status" aria-hidden="true"></span>
+                            Simpan
+                        </button>
                     </div>
                 </div>
             </div>

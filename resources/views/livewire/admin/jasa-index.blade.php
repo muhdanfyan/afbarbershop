@@ -3,7 +3,7 @@
     <div class="content-wrapper">
         <div class="row">
             <div class="col-sm-12 mb-4 mb-xl-0">
-                <h4 class="font-weight-bold text-dark">Data Barang</h4>
+                <h4 class="font-weight-bold text-dark">Data Jasa</h4>
             </div>
         </div>
         <div class="row">
@@ -12,14 +12,12 @@
                     class="form-control">
             </div>
             <div class="col-md-8 d-flex justify-content-end">
-                <!-- Button trigger modal -->
                 <button class="btn btn-sm btn-primary" wire:click.prevent="showCreateForm" wire:loading.attr="disabled"
                     wire:target="showCreateForm">
                     <span wire:loading wire:target="showCreateForm" class="spinner-border spinner-border-sm me-1"
                         role="status" aria-hidden="true"></span>
                     Tambah
                 </button>
-
             </div>
         </div><br>
         <div class="row">
@@ -30,45 +28,39 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Nama Barang</th>
+                                        <th>Nama Jasa</th>
                                         <th>Deskripsi</th>
-                                        <th>Harga Beli</th>
-                                        <th>Harga Jual</th>
-                                        <th>Stok</th>
+                                        <th>Harga</th>
                                         <th>Foto</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($dataBarang as $dtbarang)
+                                    @foreach ($dataJasa as $dtjasa)
                                         <tr>
-                                            
-                                            <td>{{ $dtbarang->nama }}</td>
-                                            <td>{{ $dtbarang->deskripsi }}</td>
-                                            <td>{{ number_format($dtbarang->harga_beli, 0, ',', '.') }}</td>
-                                            <td>{{ number_format($dtbarang->harga_jual, 0, ',', '.') }}</td>
-                                            <td>{{ $dtbarang->stok }}</td>
+                                            <td>{{ $dtjasa->nama }}</td>
+                                            <td>{{ $dtjasa->deskripsi }}</td>
+                                            <td>{{ number_format($dtjasa->harga, 0, ',', '.') }}</td>
                                             <td>
-                                                @if($dtbarang->foto)
-                                                    <img src="{{ asset('storage/' . $dtbarang->foto) }}" width="60"
-                                                        class="img-thumbnail">
+                                                @if($dtjasa->foto)
+                                                    <img src="{{ asset('storage/' . $dtjasa->foto) }}" width="90" class="img-thumbnail">
                                                 @else
                                                     <span class="text-muted">-</span>
                                                 @endif
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-info" wire:click="edit({{ $dtbarang->id }})"
-                                                    wire:loading.attr="disabled" wire:target="edit({{ $dtbarang->id }})">
-                                                    <span wire:loading wire:target="edit({{ $dtbarang->id }})"
+                                                <button class="btn btn-sm btn-info" wire:click="edit({{ $dtjasa->id }})"
+                                                    wire:loading.attr="disabled" wire:target="edit({{ $dtjasa->id }})">
+                                                    <span wire:loading wire:target="edit({{ $dtjasa->id }})"
                                                         class="spinner-border spinner-border-sm me-1" role="status"
                                                         aria-hidden="true"></span>
                                                     Edit
                                                 </button>
                                                 <button class="btn btn-sm btn-danger"
-                                                    wire:click="confirmDelete({{ $dtbarang->id }})"
+                                                    wire:click="confirmDelete({{ $dtjasa->id }})"
                                                     wire:loading.attr="disabled"
-                                                    wire:target="confirmDelete({{ $dtbarang->id }})">
-                                                    <span wire:loading wire:target="confirmDelete({{ $dtbarang->id }})"
+                                                    wire:target="confirmDelete({{ $dtjasa->id }})">
+                                                    <span wire:loading wire:target="confirmDelete({{ $dtjasa->id }})"
                                                         class="spinner-border spinner-border-sm me-1" role="status"
                                                         aria-hidden="true"></span>
                                                     Hapus
@@ -83,7 +75,7 @@
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <p>Apakah Anda yakin ingin menghapus
-                                                                        <b>{{ $dtbarang->nama }}</b>
+                                                                        <b>{{ $dtjasa->nama }}</b>
                                                                         ini?
                                                                     </p>
                                                                 </div>
@@ -115,7 +107,7 @@
         </div><br>
         <div class="row">
             <div class="col-md-12">
-                {{ $dataBarang->links() }}
+                {{ $dataJasa->links() }}
             </div>
         </div>
     </div>
@@ -126,38 +118,22 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{ $barangIdEdit ? 'Edit Barang' : 'Tambah Barang' }}</h5>
+                        <h5 class="modal-title">{{ $jasaIdEdit ? 'Edit Jasa' : 'Tambah Jasa' }}</h5>
                     </div>
                     <div class="modal-body" style="overflow-y:auto; max-height:70vh;">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Nama Barang</label>
-                                    <input type="text" class="form-control" wire:model.defer="nama_barang">
-                                    @error('nama_barang') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <label>Nama Jasa</label>
+                                    <input type="text" class="form-control" wire:model.defer="nama">
+                                    @error('nama') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Stok</label>
-                                    <input type="number" class="form-control" wire:model.defer="stok">
-                                    @error('stok') <span class="text-danger">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Harga Beli</label>
-                                    <input type="number" class="form-control" wire:model.defer="harga_beli">
-                                    @error('harga_beli') <span class="text-danger">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Harga Jual</label>
-                                    <input type="number" class="form-control" wire:model.defer="harga_jual">
-                                    @error('harga_jual') <span class="text-danger">{{ $message }}</span> @enderror
+                                    <label>Harga</label>
+                                    <input type="number" class="form-control" wire:model.defer="harga">
+                                    @error('harga') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>
@@ -178,21 +154,12 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" wire:click.prevent="batal">Batal</button>
-                        @if ($barangIdEdit)
-                            <button type="button" class="btn btn-primary" wire:click.prevent="simpan"
-                                wire:loading.attr="disabled" wire:target="simpan">
-                                <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"
-                                    role="status" aria-hidden="true"></span>
-                                Simpan
-                            </button>
-                        @else
-                            <button type="button" class="btn btn-primary" wire:click.prevent="simpan"
-                                wire:loading.attr="disabled" wire:target="simpan">
-                                <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"
-                                    role="status" aria-hidden="true"></span>
-                                Simpan
-                            </button>
-                        @endif
+                        <button type="button" class="btn btn-primary" wire:click.prevent="simpan"
+                            wire:loading.attr="disabled" wire:target="simpan">
+                            <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"
+                                role="status" aria-hidden="true"></span>
+                            Simpan
+                        </button>
                     </div>
                 </div>
             </div>
