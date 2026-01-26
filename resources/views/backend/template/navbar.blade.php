@@ -36,7 +36,7 @@
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
                     aria-labelledby="notificationDropdown">
                     <p class="mb-0 font-weight-normal float-left dropdown-header">Settings</p>
-                    <a href="/profile" class="dropdown-item preview-item">
+                    <a href="/admin/profile" class="dropdown-item preview-item">
                         <i class="icon-head"></i> Profile
                     </a>
                     <a href="/admin/logout" class="dropdown-item preview-item">

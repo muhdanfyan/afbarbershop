@@ -114,6 +114,11 @@
                     </div>
                     <div class="modal-body" style="overflow-y:auto; max-height:70vh;">
                         <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" class="form-control" wire:model.defer="username">
+                            @error('username') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="form-group">
                             <label>Nama</label>
                             <input type="text" class="form-control" wire:model.defer="name">
                             @error('name') <span class="text-danger">{{ $message }}</span> @enderror

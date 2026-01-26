@@ -38,7 +38,15 @@
             <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background-color:grey !important;">
                 <div class="user-profile">
                     <div class="user-image">
-                        <img src="{{ asset('/') }}tem_admin/template/images/faces/face28.png">
+                        @php
+                            $foto = auth()->user()->foto ?? null;
+                        @endphp
+                        @if ($foto)
+                            <img src="{{ asset('storage/' . $foto) }}" class="img-thumbnail rounded-circle" width="60">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}"
+                                class="img-thumbnail rounded-circle" width="60">
+                        @endif
                     </div>
                     <div class="user-name">
                         {{ auth()->user()->name }}

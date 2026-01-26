@@ -15,4 +15,9 @@ class Kapster extends Model
         'alamat',
         'foto'
     ];
+
+    public function transaksis()
+    {
+        return $this->hasMany(\App\Models\Transaksi::class, 'kapster_id');
+    }
 }

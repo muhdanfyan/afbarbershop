@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AFBARBERSHOP - Premium Grooming & Coffee</title>
+    <title>{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} - Premium Grooming & Coffee</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -157,6 +158,9 @@
             }
         }
     </style>
+
+    @stack('styles')
+    @livewireStyles
 </head>
 
 <body class="bg-gray-50 scroll-smooth">
@@ -166,9 +170,10 @@
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-3">
-                    <img src="https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614"
-                        alt="AFBARBERSHOP Logo" class="h-10 w-auto logo-animation">
-                    <span class="text-white font-display text-3xl font-bold tracking-wider">AFBARBERSHOP</span>
+                    <img src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
+                        alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo" class="h-10 w-auto logo-animation">
+                    <span
+                        class="text-white font-display text-3xl font-bold tracking-wider">{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}</span>
                 </div>
 
                 <div class="hidden md:flex space-x-8">
@@ -210,15 +215,16 @@
 
         <div class="relative z-10 text-center text-white px-4 animate-fadeInUp">
             <div class="mb-8">
-                <img src="https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614"
-                    alt="AFBARBERSHOP Logo" class="h-24 w-auto mx-auto mb-6 logo-animation">
+                <img src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
+                    alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo"
+                    class="h-24 w-auto mx-auto mb-6 logo-animation">
                 <i class="fas fa-coffee text-4xl text-accent mb-4 inline-block ml-6 coffee-steam"></i>
             </div>
             <h1 class="font-display text-6xl md:text-8xl font-black mb-4 text-shadow tracking-wider">
-                AFBARBERSHOP
+                {{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}
             </h1>
             <p class="text-xl md:text-3xl mb-8 text-gray-200 font-serif">
-                Premium Grooming Experience with Coffee
+                {{ $settings['slogan'] ?? 'Premium Grooming Experience with Coffee' }}
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <button onclick="scrollToSection('booking')"
@@ -245,151 +251,57 @@
                 <p class="text-gray-600 text-xl font-serif">Grooming terbaik dengan sentuhan modern</p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-gradient-to-r from-black to-gray-900 rounded-2xl p-8 text-white">
                 <!-- Main Barber Services -->
                 <div class="md:col-span-2">
                     <div class="bg-black rounded-2xl p-8 hover-lift">
                         <div class="text-center mb-8">
-                            <img src="https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614"
-                                alt="AFBARBERSHOP Logo" class="h-16 w-auto mx-auto mb-4">
+                            <img src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
+                                alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo"
+                                class="h-16 w-auto mx-auto mb-4">
                             <h3 class="font-display text-4xl font-black text-white mb-2">BARBER SERVICES</h3>
-                            <p class="text-gray-400 text-lg">Layanan grooming premium untuk pria modern</p>
+                            <!-- <p class="text-gray-400 text-lg">Layanan grooming premium untuk pria modern</p> -->
                         </div>
-
                         <div class="grid md:grid-cols-2 gap-4">
-                            <div
-                                class="bg-gray-900 rounded-xl p-5 card-hover border-2 border-transparent hover:border-white">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-scissors text-white text-2xl mr-4"></i>
-                                        <div>
-                                            <span class="text-white font-semibold text-lg">Signature Cut</span>
-                                            <p class="text-gray-400 text-sm">Potongan premium</p>
+                            @foreach($jasa as $item)
+                                <div
+                                    class="bg-gray-900 rounded-xl p-5 card-hover border-2 border-transparent hover:border-white">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            @if($item->foto)
+                                                <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama }}"
+                                                    class="h-10 w-10 rounded-full mr-4 object-cover">
+                                            @else
+                                                <i class="fas fa-scissors text-white text-2xl mr-4"></i>
+                                            @endif
+                                            <div>
+                                                <span class="text-white font-semibold text-lg">{{ $item->nama }}</span>
+                                                <p class="text-gray-400 text-sm">{{ $item->deskripsi }}</p>
+                                            </div>
                                         </div>
+                                        <span
+                                            class="text-white font-bold text-xl">{{ number_format($item->harga, 0, ',', '.') }}</span>
                                     </div>
-                                    <span class="text-white font-bold text-xl">75K</span>
                                 </div>
-                            </div>
-
-                            <div
-                                class="bg-gray-900 rounded-xl p-5 card-hover border-2 border-transparent hover:border-white">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-beard text-white text-2xl mr-4"></i>
-                                        <div>
-                                            <span class="text-white font-semibold text-lg">Beard Design</span>
-                                            <p class="text-gray-400 text-sm">Styling jenggot</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-white font-bold text-xl">60K</span>
-                                </div>
-                            </div>
-
-                            <div
-                                class="bg-gray-900 rounded-xl p-5 card-hover border-2 border-transparent hover:border-white">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-shower text-white text-2xl mr-4"></i>
-                                        <div>
-                                            <span class="text-white font-semibold text-lg">Royal Shave</span>
-                                            <p class="text-gray-400 text-sm">Cukur premium</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-white font-bold text-xl">80K</span>
-                                </div>
-                            </div>
-
-                            <div
-                                class="bg-gray-900 rounded-xl p-5 card-hover border-2 border-transparent hover:border-white">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-crown text-white text-2xl mr-4"></i>
-                                        <div>
-                                            <span class="text-white font-semibold text-lg">VIP Package</span>
-                                            <p class="text-gray-400 text-sm">Complete treatment</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-white font-bold text-xl">150K</span>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
-                <!-- Coffee Services -->
-                <div class="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl p-8 hover-lift">
-                    <div class="text-center mb-6">
-                        <i class="fas fa-coffee text-5xl text-secondary mb-4"></i>
-                        <h3 class="font-display text-3xl font-black text-gray-900 mb-2">COFFEE CORNER</h3>
-                        <p class="text-gray-600">Nikmati kopi premium</p>
-                    </div>
-
-                    <div class="space-y-4">
-                        <div
-                            class="flex items-center justify-between p-4 bg-white rounded-lg hover:shadow-md transition-shadow">
-                            <div class="flex items-center">
-                                <i class="fas fa-mug-hot text-secondary mr-3"></i>
-                                <span class="text-gray-900 font-medium">Espresso</span>
-                            </div>
-                            <span class="text-secondary font-bold">25K</span>
-                        </div>
-
-                        <div
-                            class="flex items-center justify-between p-4 bg-white rounded-lg hover:shadow-md transition-shadow">
-                            <div class="flex items-center">
-                                <i class="fas fa-mug-hot text-secondary mr-3"></i>
-                                <span class="text-gray-900 font-medium">Cappuccino</span>
-                            </div>
-                            <span class="text-secondary font-bold">35K</span>
-                        </div>
-
-                        <div
-                            class="flex items-center justify-between p-4 bg-white rounded-lg hover:shadow-md transition-shadow">
-                            <div class="flex items-center">
-                                <i class="fas fa-mug-hot text-secondary mr-3"></i>
-                                <span class="text-gray-900 font-medium">Cold Brew</span>
-                            </div>
-                            <span class="text-secondary font-bold">40K</span>
-                        </div>
-
-                        <div
-                            class="flex items-center justify-between p-4 bg-white rounded-lg hover:shadow-md transition-shadow">
-                            <div class="flex items-center">
-                                <i class="fas fa-mug-hot text-secondary mr-3"></i>
-                                <span class="text-gray-900 font-medium">AF Signature</span>
-                            </div>
-                            <span class="text-secondary font-bold">45K</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Special Packages -->
-            <div class="bg-gradient-to-r from-black to-gray-900 rounded-2xl p-8 text-white">
-                <h3 class="font-display text-3xl font-black text-accent mb-6 text-center">PAKET SPESIAL</h3>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="text-center">
-                        <i class="fas fa-gift text-4xl text-white mb-3"></i>
-                        <h4 class="font-bold text-xl mb-2">Grooming Package</h4>
-                        <p class="text-gray-400 mb-3">Cut + Beard + Shave</p>
-                        <span class="text-3xl font-black text-white">180K</span>
-                    </div>
-                    <div class="text-center">
-                        <i class="fas fa-users text-4xl text-white mb-3"></i>
-                        <h4 class="font-bold text-xl mb-2">Group Package</h4>
-                        <p class="text-gray-400 mb-3">3+ Persons Discount</p>
-                        <span class="text-3xl font-black text-white">-20%</span>
-                    </div>
-                    <div class="text-center">
-                        <i class="fas fa-star text-4xl text-white mb-3"></i>
-                        <h4 class="font-bold text-xl mb-2">Member Package</h4>
-                        <p class="text-gray-400 mb-3">Monthly Subscription</p>
-                        <span class="text-3xl font-black text-white">500K</span>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
+
+    <!-- Antrian Section -->
+    <section id="antrian" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="font-display text-5xl md:text-6xl font-black text-gray-900 mb-4">ANTRIAN PELANGGAN</h2>
+            </div>
+            @livewire('front.antrian-status')
+        </div>
+    </section>
+
 
     <!-- About Section -->
     <section id="about" class="py-20 bg-gray-100">
@@ -398,16 +310,13 @@
                 <div class="relative">
                     <img src="https://picsum.photos/seed/afabout/600/500" alt="About" class="rounded-2xl shadow-2xl">
                     <div class="absolute -bottom-6 -right-6 bg-accent text-black rounded-xl p-4 shadow-xl">
-                        <div class="text-center">
-                            <div class="text-3xl font-black">15+</div>
-                            <div class="font-semibold">Tahun Pengalaman</div>
-                        </div>
                     </div>
                 </div>
                 <div>
                     <h2 class="font-display text-5xl font-black text-gray-900 mb-6">TENTANG KAMI</h2>
                     <p class="text-gray-600 mb-4 text-lg leading-relaxed">
-                        AFBARBERSHOP adalah destinasi grooming premium yang telah melayani ribuan pelanggan sejak 2009.
+                        {{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} adalah destinasi grooming premium yang telah
+                        melayani ribuan pelanggan sejak 2009.
                         Kami menggabungkan teknik traditional dengan modern styling untuk memberikan hasil terbaik.
                     </p>
                     <p class="text-gray-600 mb-6 text-lg leading-relaxed">
@@ -415,28 +324,7 @@
                         grooming yang tidak hanya membuat Anda tampil percaya diri, tetapi juga nyaman dan rileks.
                     </p>
 
-                    <div class="grid grid-cols-3 gap-4 mb-8">
-                        <div class="text-center bg-white rounded-lg p-4">
-                            <i class="fas fa-award text-accent text-3xl mb-2"></i>
-                            <div class="text-2xl font-black text-gray-900">10K+</div>
-                            <div class="text-gray-600 text-sm">Pelanggan</div>
-                        </div>
-                        <div class="text-center bg-white rounded-lg p-4">
-                            <i class="fas fa-cut text-accent text-3xl mb-2"></i>
-                            <div class="text-2xl font-black text-gray-900">50K+</div>
-                            <div class="text-gray-600 text-sm">Potongan</div>
-                        </div>
-                        <div class="text-center bg-white rounded-lg p-4">
-                            <i class="fas fa-star text-accent text-3xl mb-2"></i>
-                            <div class="text-2xl font-black text-gray-900">4.9</div>
-                            <div class="text-gray-600 text-sm">Rating</div>
-                        </div>
-                    </div>
 
-                    <button
-                        class="gold-gradient hover:shadow-2xl text-black font-bold py-3 px-8 rounded-full transition-all transform hover:scale-105">
-                        <i class="fas fa-play-circle mr-2"></i>Video Tour
-                    </button>
                 </div>
             </div>
         </div>
@@ -588,7 +476,8 @@
                         <i class="fas fa-star text-accent"></i>
                     </div>
                     <p class="text-gray-300 mb-4 italic">
-                        "Sudah langganan 3 tahun di AFBARBERSHOP. Kualitasnya selalu konsisten, worth every penny!"
+                        "Sudah langganan 3 tahun di {{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}. Kualitasnya selalu
+                        konsisten, worth every penny!"
                     </p>
                     <div class="flex items-center">
                         <img src="https://picsum.photos/seed/afuser3/50/50" alt="User"
@@ -613,83 +502,7 @@
                 </div>
 
                 <div class="bg-white rounded-2xl p-8 shadow-2xl">
-                    <form onsubmit="handleBooking(event)">
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Nama Lengkap</label>
-                                <input type="text" required
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors"
-                                    placeholder="Masukkan nama Anda">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Nomor Telepon</label>
-                                <input type="tel" required
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors"
-                                    placeholder="0812-3456-7890">
-                            </div>
-                        </div>
-
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Pilih Layanan</label>
-                                <select required
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors">
-                                    <option value="">-- Pilih Layanan --</option>
-                                    <option value="signature">Signature Cut (75K)</option>
-                                    <option value="beard">Beard Design (60K)</option>
-                                    <option value="shave">Royal Shave (80K)</option>
-                                    <option value="vip">VIP Package (150K)</option>
-                                    <option value="grooming">Grooming Package (180K)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Tanggal</label>
-                                <input type="date" required
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors">
-                            </div>
-                        </div>
-
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Waktu</label>
-                                <select required
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors">
-                                    <option value="">-- Pilih Waktu --</option>
-                                    <option value="09:00">09:00</option>
-                                    <option value="10:00">10:00</option>
-                                    <option value="11:00">11:00</option>
-                                    <option value="13:00">13:00</option>
-                                    <option value="14:00">14:00</option>
-                                    <option value="15:00">15:00</option>
-                                    <option value="16:00">16:00</option>
-                                    <option value="17:00">17:00</option>
-                                    <option value="18:00">18:00</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 font-bold mb-2">Barber Pilihan</label>
-                                <select
-                                    class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors">
-                                    <option value="">-- Bebas --</option>
-                                    <option value="master1">Master Barber 1</option>
-                                    <option value="master2">Master Barber 2</option>
-                                    <option value="master3">Master Barber 3</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-bold mb-2">Catatan Tambahan</label>
-                            <textarea rows="3"
-                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors"
-                                placeholder="Permintaan khusus..."></textarea>
-                        </div>
-
-                        <button type="submit"
-                            class="w-full gold-gradient hover:shadow-2xl text-black font-black py-4 rounded-lg transition-all transform hover:scale-105 text-lg">
-                            <i class="fas fa-check-circle mr-2"></i>KONFIRMASI BOOKING
-                        </button>
-                    </form>
+                    @livewire('front.booking-form')
                 </div>
             </div>
         </div>
@@ -710,7 +523,7 @@
                             <i class="fas fa-map-marker-alt text-accent text-xl mr-4 mt-1"></i>
                             <div>
                                 <h3 class="text-white font-bold mb-1">Alamat</h3>
-                                <p class="text-gray-400">Jl. Betoambari<br>Kota Baubau</p>
+                                <p class="text-gray-400">{!! nl2br(e($settings['alamat'] ?? '')) !!}</p>
                             </div>
                         </div>
 
@@ -718,7 +531,7 @@
                             <i class="fas fa-phone text-accent text-xl mr-4 mt-1"></i>
                             <div>
                                 <h3 class="text-white font-bold mb-1">Telepon</h3>
-                                <p class="text-gray-400">+62 852-2021-0003</p>
+                                <p class="text-gray-400">{{ $settings['telepon'] ?? '' }}</p>
                             </div>
                         </div>
 
@@ -726,7 +539,7 @@
                             <i class="fas fa-envelope text-accent text-xl mr-4 mt-1"></i>
                             <div>
                                 <h3 class="text-white font-bold mb-1">Email</h3>
-                                <p class="text-gray-400">info@afbarbershop.com</p>
+                                <p class="text-gray-400">{{ $settings['email'] ?? '' }}</p>
                             </div>
                         </div>
 
@@ -734,7 +547,7 @@
                             <i class="fas fa-clock text-accent text-xl mr-4 mt-1"></i>
                             <div>
                                 <h3 class="text-white font-bold mb-1">Jam Buka</h3>
-                                <p class="text-gray-400">Senin - Sabtu: 09:00 - 21:00<br>Minggu: 10:00 - 20:00</p>
+                                <p class="text-gray-400">{!! nl2br(e($settings['jam_buka'] ?? '')) !!}</p>
                             </div>
                         </div>
                     </div>
@@ -797,11 +610,13 @@
         <div class="container mx-auto px-4">
             <div class="text-center">
                 <div class="flex items-center justify-center space-x-3 mb-4">
-                    <img src="https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614"
-                        alt="AFBARBERSHOP Logo" class="h-10 w-auto">
-                    <span class="text-white font-display text-3xl font-black tracking-wider">AFBARBERSHOP</span>
+                    <img src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
+                        alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo" class="h-10 w-auto">
+                    <span
+                        class="text-white font-display text-3xl font-black tracking-wider">{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}</span>
                 </div>
-                <p class="text-gray-400 mb-4">© 2025 AFBARBERSHOP. All rights reserved.</p>
+                <p class="text-gray-400 mb-4">© 2025 {{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}. All rights
+                    reserved.</p>
             </div>
         </div>
     </footer>
@@ -854,13 +669,32 @@
             }
         });
 
-        // Handle Booking Form
-        function handleBooking(event) {
+        // Handle Booking Form (AJAX)
+        document.getElementById('bookingForm').addEventListener('submit', async function (event) {
             event.preventDefault();
-            document.getElementById('modalMessage').textContent = 'Booking Anda telah berhasil dikonfirmasi. Kami akan menghubungi Anda segera.';
-            showModal();
-            event.target.reset();
-        }
+            const form = event.target;
+            const formData = new FormData(form);
+            try {
+                const response = await fetch('/booking', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('modalMessage').textContent = 'Booking Anda telah berhasil dikonfirmasi. Kami akan menghubungi Anda segera.';
+                    showModal();
+                    form.reset();
+                } else {
+                    alert(data.message || 'Terjadi kesalahan.');
+                }
+            } catch (e) {
+                alert('Terjadi kesalahan saat mengirim booking.');
+            }
+        });
 
         // Handle Contact Form
         function handleContact(event) {
@@ -925,6 +759,18 @@
             dateInput.min = today;
         }
     </script>
+
+    @stack('scripts')
+
+    <script>
+        document.addEventListener('livewire:load', function () {
+            Livewire.on('transaksi-updated', () => {
+                Livewire.emit('refresh');
+            });
+        });
+    </script>
+
+    @livewireScripts
 </body>
 
 </html>

@@ -14,7 +14,7 @@ class UserIndex extends Component
     public $paginationTheme = 'bootstrap';
     public $showDeleteModal = false;
     public $deleteId = null;
-    public $name, $email, $password, $level, $userIdEdit = null;
+    public $name, $username, $email, $password, $level, $userIdEdit = null;
     public $editMode = false;
     public $showForm = false;
     public $search = '';
@@ -36,6 +36,7 @@ class UserIndex extends Component
         $user = User::findOrFail($id);
         $this->userIdEdit = $user->id;
         $this->name = $user->name;
+        $this->username = $user->username;
         $this->email = $user->email;
         $this->level = $user->level;
         $this->editMode = true;
@@ -55,6 +56,7 @@ class UserIndex extends Component
     public function resetFormUser()
     {
         $this->name = '';
+        $this->username = '';
         $this->email = '';
         $this->password = '';
         $this->level = '';
@@ -70,6 +72,7 @@ class UserIndex extends Component
     {
         $this->showForm = false;
         $this->name = null;
+        $this->username = null;
         $this->email = null;
         $this->password = null;
         $this->level = null;
@@ -98,6 +101,7 @@ class UserIndex extends Component
     {
         $rules = [
             'name' => 'required|string',
+            'username' => 'required|string|unique:users,username,' . $this->userIdEdit,
             'email' => 'required|email|unique:users,email,' . $this->userIdEdit,
             'level' => 'required|in:admin,kasir,kapster',
         ];
@@ -110,6 +114,7 @@ class UserIndex extends Component
             $user = User::findOrFail($this->userIdEdit);
             $data = [
                 'name' => $this->name,
+                'username' => $this->username,
                 'email' => $this->email,
                 'level' => $this->level,
             ];
@@ -123,6 +128,7 @@ class UserIndex extends Component
         } else {
             User::create([
                 'name' => $this->name,
+                'username' => $this->username,
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
                 'level' => $this->level,

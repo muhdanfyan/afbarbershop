@@ -14,6 +14,11 @@
 
         <!-- Login Form -->
         <div class="p-8">
+            @if (session('error'))
+                <div class="mb-4 bg-red-600 text-white text-center py-2 px-4 rounded-xl">
+                    {{ session('error') }}
+                </div>
+            @endif
             <form id="loginForm" wire:submit.prevent="login">
                 <div class="mb-6 slide-up">
                     <label class="block text-gray-300 font-semibold mb-2">Email atau Username</label>
