@@ -7,24 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\Jasa;
 use App\Models\Kapster;
 use App\Models\Setting;
+use App\Models\Gallery;
 
 class FrontController extends Controller
 {
     public function index()
     {
         $jasa = Jasa::all();
-        $kapster = Kapster::all();
-        $kapsterStats = $kapster->map(function ($k) {
-            return [
-                'id' => $k->id,
-                'nama' => $k->nama,
-                'foto' => $k->foto,
-                'menunggu' => $k->transaksis()->where('status', 'menunggu')->count(),
-                'proses' => $k->transaksis()->where('status', 'proses')->count(),
-                'selesai' => $k->transaksis()->where('status', 'selesai')->count(),
-            ];
-        });
         $settings = Setting::pluck('value', 'key');
-        return view('front.index', compact('jasa', 'kapster', 'kapsterStats', 'settings'));
+        $galleries = Gallery::latest()->get();
+        $kapsters = Kapster::where('status', 'bekerja')->get();
+        return view('front.index', compact('jasa', 'settings', 'galleries', 'kapsters'));
     }
 }

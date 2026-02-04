@@ -17,7 +17,7 @@ class AntrianStatus extends Component
 
     public function updateStats()
     {
-        $kapsters = Kapster::all();
+        $kapsters = Kapster::where('status', 'bekerja')->get();
         $today = now()->toDateString();
         $this->kapsterStats = $kapsters->map(function ($k) use ($today) {
             $menunggu = Transaksi::where('kapster_id', $k->id)->where('status', 'menunggu')->whereDate('created_at', $today)->count();
@@ -27,6 +27,7 @@ class AntrianStatus extends Component
                 'id' => $k->id,
                 'nama' => $k->nama,
                 'foto' => $k->foto,
+                'sertifikat' => $k->sertifikat,
                 'menunggu' => $menunggu,
                 'proses' => $proses,
                 'selesai' => $selesai,

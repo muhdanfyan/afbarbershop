@@ -25,7 +25,7 @@ class BookingForm extends Component
     public function mount()
     {
         $this->jasaList = Jasa::all();
-        $this->kapsterList = Kapster::all();
+        $this->kapsterList = Kapster::where('status', 'bekerja')->get();
         if (!$this->tanggal) {
             $this->tanggal = now()->format('Y-m-d');
         }

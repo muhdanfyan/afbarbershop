@@ -10,10 +10,12 @@ class Kapster extends Model
 
     protected $fillable = [
         'nama',
+        'status',
         'nik',
         'no_wa',
         'alamat',
-        'foto'
+        'foto',
+        'sertifikat'
     ];
 
     public function transaksis()

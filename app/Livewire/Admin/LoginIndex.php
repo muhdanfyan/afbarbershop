@@ -79,6 +79,11 @@ class LoginIndex extends Component
 
     public function render()
     {
-        return view('livewire.admin.login-index');
+        $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
+        $slogan = \App\Models\Setting::where('key', 'slogan')->value('value') ?? 'Premium Grooming Portal';
+        return view('livewire.admin.login-index', [
+            'nama_usaha' => $namaUsaha,
+            'slogan' => $slogan,
+        ]);
     }
 }

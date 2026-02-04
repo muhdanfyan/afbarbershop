@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class SettingIndex extends Component
 {
@@ -20,6 +21,13 @@ class SettingIndex extends Component
     public $logo;
     public $logo_lama;
 
+    public $qrImage;
+    public $waStatus;
+    public $waConnected = false;
+    public $waNumber;
+    public $testNumber;
+    public $testMessage;
+
     public function mount()
     {
         $this->nama_usaha = Setting::where('key', 'nama_usaha')->value('value') ?? '';
@@ -30,6 +38,138 @@ class SettingIndex extends Component
         $this->slogan = Setting::where('key', 'slogan')->value('value') ?? '';
         $this->logo = Setting::where('key', 'logo')->value('value') ?? null;
         $this->logo_lama = $this->logo;
+
+        $this->checkWaConnection();
+    }
+
+    public function checkWaConnection()
+    {
+        try {
+            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
+            $response = Http::get($baseUrl . '/');
+            if ($response->successful()) {
+                $data = $response->json();
+                $this->waStatus = $data['status'];
+                $this->waConnected = $data['connected'];
+                $this->waNumber = $data['user']['id'] ?? null;
+
+                if ($this->waNumber) {
+                    $this->waNumber = explode(':', $this->waNumber)[0];
+                }
+
+                if (!$this->waConnected && $data['hasQr']) {
+                    $this->getQrCode();
+                }
+            } else {
+                $this->waStatus = 'Error connecting to Gateway';
+                $this->waConnected = false;
+            }
+        } catch (\Exception $e) {
+            $this->waStatus = 'Gateway Offline';
+            $this->waConnected = false;
+        }
+    }
+
+    public function getQrCode()
+    {
+        try {
+            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
+            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
+
+            $response = Http::withHeaders([
+                'x-api-key' => $apiKey
+            ])->get($baseUrl . '/api/qr');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if ($data['status'] === 'success') {
+                    $this->qrImage = $data['qrImage'];
+                }
+            }
+        } catch (\Exception $e) {
+            // Handle error
+        }
+    }
+
+    public function reconnectWa()
+    {
+        try {
+            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
+            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
+
+            Http::withHeaders([
+                'x-api-key' => $apiKey
+            ])->post($baseUrl . '/api/reconnect');
+
+            $this->checkWaConnection();
+        } catch (\Exception $e) {
+            // Handle error
+        }
+    }
+
+    public function logoutWa()
+    {
+        try {
+            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
+            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
+
+            Http::withHeaders([
+                'x-api-key' => $apiKey
+            ])->post($baseUrl . '/api/logout');
+
+            $this->qrImage = null;
+            $this->checkWaConnection();
+        } catch (\Exception $e) {
+            // Handle error
+        }
+    }
+
+    public function testSendWa()
+    {
+        if (!$this->testNumber || !$this->testMessage) {
+            session()->flash('error_wa', 'Nomor dan pesan harus diisi!');
+            return;
+        }
+
+        // Format nomor jika diawali dengan 0 atau +
+        $number = $this->testNumber;
+        if (str_starts_with($number, '0')) {
+            $number = '62' . substr($number, 1);
+        } elseif (str_starts_with($number, '+')) {
+            $number = substr($number, 1);
+        }
+
+        try {
+            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
+            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
+
+            $response = Http::withHeaders([
+                'x-api-key' => $apiKey
+            ])->post($baseUrl . '/api/send-message', [
+                        'number' => $number,
+                        'message' => $this->testMessage,
+                    ]);
+
+            if ($response->successful()) {
+                session()->flash('success_wa', 'Pesan test berhasil dikirim!');
+                $this->testMessage = '';
+            } else {
+                $data = $response->json();
+                session()->flash('error_wa', 'Gagal kirim: ' . ($data['message'] ?? 'Unknown error'));
+            }
+        } catch (\Exception $e) {
+            session()->flash('error_wa', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function updatedTestNumber($value)
+    {
+        if ($value === '081242871122') {
+            if (!$this->testMessage) {
+                $this->testMessage = 'Halo! Ini adalah pesan test otomatis dari sistem ' . ($this->nama_usaha ?? 'AF Barbershop') . '.';
+            }
+            $this->testSendWa();
+        }
     }
 
     public function simpanSetting()

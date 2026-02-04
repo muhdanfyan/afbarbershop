@@ -14,7 +14,7 @@ class KapsterIndex extends Component
     public $paginationTheme = 'bootstrap';
     public $showDeleteModal = false;
     public $deleteId = null;
-    public $nama, $nik, $no_wa, $alamat, $foto, $foto_lama;
+    public $nama, $status, $nik, $no_wa, $alamat, $foto, $foto_lama, $sertifikat, $sertifikat_lama;
     public $kapsterIdEdit = null;
     public $editMode = false;
     public $showForm = false;
@@ -37,10 +37,12 @@ class KapsterIndex extends Component
         $kapster = Kapster::findOrFail($id);
         $this->kapsterIdEdit = $kapster->id;
         $this->nama = $kapster->nama;
+        $this->status = $kapster->status;
         $this->nik = $kapster->nik;
         $this->no_wa = $kapster->no_wa;
         $this->alamat = $kapster->alamat;
         $this->foto_lama = $kapster->foto;
+        $this->sertifikat_lama = $kapster->sertifikat;
         $this->editMode = true;
         $this->showForm = true;
     }
@@ -50,6 +52,9 @@ class KapsterIndex extends Component
         $kapster = Kapster::findOrFail($id);
         if ($kapster->foto && \Storage::disk('public')->exists($kapster->foto)) {
             \Storage::disk('public')->delete($kapster->foto);
+        }
+        if ($kapster->sertifikat && \Storage::disk('public')->exists($kapster->sertifikat)) {
+            \Storage::disk('public')->delete($kapster->sertifikat);
         }
         $kapster->delete();
         session()->flash('message', 'Kapster berhasil dihapus!');
@@ -61,11 +66,14 @@ class KapsterIndex extends Component
     public function resetFormKapster()
     {
         $this->nama = '';
+        $this->status = 'bekerja';
         $this->nik = '';
         $this->no_wa = '';
         $this->alamat = '';
         $this->foto = null;
         $this->foto_lama = null;
+        $this->sertifikat = null;
+        $this->sertifikat_lama = null;
         $this->kapsterIdEdit = null;
     }
 
@@ -78,11 +86,14 @@ class KapsterIndex extends Component
     {
         $this->showForm = false;
         $this->nama = null;
+        $this->status = null;
         $this->nik = null;
         $this->no_wa = null;
         $this->alamat = null;
         $this->foto = null;
         $this->foto_lama = null;
+        $this->sertifikat = null;
+        $this->sertifikat_lama = null;
         $this->kapsterIdEdit = null;
         $this->editMode = false;
     }
@@ -108,10 +119,12 @@ class KapsterIndex extends Component
     {
         $rules = [
             'nama' => 'required|string',
+            'status' => 'required|in:bekerja,libur',
             'nik' => 'required|string|unique:kapster,nik,' . $this->kapsterIdEdit,
             'no_wa' => 'required|string',
             'alamat' => 'required|string',
             'foto' => $this->kapsterIdEdit ? 'nullable|image|max:2048' : 'required|image|max:2048',
+            'sertifikat' => 'nullable|file|mimes:pdf,jpg,png,jpeg|max:5120',
         ];
         $this->validate($rules);
 
@@ -123,14 +136,24 @@ class KapsterIndex extends Component
             $fotoPath = $this->foto->store('kapster', 'public');
         }
 
+        $sertifikatPath = $this->sertifikat_lama;
+        if ($this->sertifikat) {
+            if ($this->sertifikat_lama && \Storage::disk('public')->exists($this->sertifikat_lama)) {
+                \Storage::disk('public')->delete($this->sertifikat_lama);
+            }
+            $sertifikatPath = $this->sertifikat->store('sertifikat_kapster', 'public');
+        }
+
         if (isset($this->kapsterIdEdit) && $this->kapsterIdEdit) {
             $kapster = Kapster::findOrFail($this->kapsterIdEdit);
             $kapster->update([
                 'nama' => $this->nama,
+                'status' => $this->status,
                 'nik' => $this->nik,
                 'no_wa' => $this->no_wa,
                 'alamat' => $this->alamat,
                 'foto' => $fotoPath,
+                'sertifikat' => $sertifikatPath,
             ]);
             session()->flash('message', 'Kapster berhasil diupdate!');
             $this->resetForm();
@@ -138,15 +161,26 @@ class KapsterIndex extends Component
         } else {
             Kapster::create([
                 'nama' => $this->nama,
+                'status' => $this->status,
                 'nik' => $this->nik,
                 'no_wa' => $this->no_wa,
                 'alamat' => $this->alamat,
                 'foto' => $fotoPath,
+                'sertifikat' => $sertifikatPath,
             ]);
             session()->flash('message', 'Kapster berhasil ditambahkan!');
             $this->resetForm();
             $this->resetPage();
         }
+    }
+
+    public function toggleStatus($id)
+    {
+        $kapster = Kapster::findOrFail($id);
+        $kapster->status = $kapster->status == 'bekerja' ? 'libur' : 'bekerja';
+        $kapster->save();
+
+        session()->flash('message', 'Status ' . $kapster->nama . ' berhasil diubah menjadi ' . strtoupper($kapster->status));
     }
 
     public function render()

@@ -61,6 +61,12 @@
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link" href="/admin/gallery" style="border:none;">
+            <i class="mdi mdi-image-multiple menu-icon"></i>
+            <span class="menu-title">Gallery</span>
+        </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link" href="/admin/setting" style="border:none;">
             <i class="mdi mdi-settings menu-icon"></i>
             <span class="menu-title">Setting</span>

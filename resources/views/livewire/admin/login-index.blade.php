@@ -5,11 +5,11 @@
         <!-- Header -->
         <div class="text-center py-8 px-6 border-b border-gray-800">
             <div class="mb-4">
-                <img src="https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614"
-                    alt="AF BARBERSHOP Logo" class="h-16 w-auto mx-auto mb-3">
+                <img src="{{ asset('/') }}logoposeidonputih.png" alt="{{ $nama_usaha }} Logo"
+                    class="h-32 w-auto mx-auto mb-3">
             </div>
-            <h1 class="font-display text-4xl font-black text-white mb-2">AF BARBERSHOP</h1>
-            <p class="text-gray-400 font-serif">Premium Grooming Portal</p>
+            <!-- <h1 class="font-display text-4xl font-black text-white mb-2">{{ $nama_usaha }}</h1> -->
+            <p class="text-gray-400 font-serif">{{ $slogan }}</p>
         </div>
 
         <!-- Login Form -->

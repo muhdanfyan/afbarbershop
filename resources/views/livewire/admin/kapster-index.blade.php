@@ -6,6 +6,14 @@
                 <h4 class="font-weight-bold text-dark">Data Kapster</h4>
             </div>
         </div>
+        @if (session()->has('message'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('message') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
         <div class="row">
             <div class="col-md-4">
                 <input type="text" name="cari" wire:model.live="search" id="search" placeholder="Cari..."
@@ -30,8 +38,10 @@
                                     <tr>
                                         <th>Foto</th>
                                         <th>Nama</th>
+                                        <th>Status</th>
                                         <th>NIK</th>
                                         <th>No. WA</th>
+                                        <th>Sertifikat</th>
                                         <th>Alamat</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -48,8 +58,27 @@
                                                 @endif
                                             </td>
                                             <td>{{ $dtkapster->nama }}</td>
+                                            <td style="cursor: pointer;" wire:click="toggleStatus({{ $dtkapster->id }})">
+                                                @if($dtkapster->status == 'bekerja')
+                                                    <span class="badge badge-success"
+                                                        title="Klik untuk ubah ke Libur">Bekerja</span>
+                                                @else
+                                                    <span class="badge badge-danger"
+                                                        title="Klik untuk ubah ke Bekerja">Libur</span>
+                                                @endif
+                                            </td>
                                             <td>{{ $dtkapster->nik }}</td>
                                             <td>{{ $dtkapster->no_wa }}</td>
+                                            <td>
+                                                @if ($dtkapster->sertifikat)
+                                                    <a href="{{ asset('storage/' . $dtkapster->sertifikat) }}" target="_blank"
+                                                        class="btn btn-xs btn-outline-info">
+                                                        <i class="mdi mdi-certificate"></i> Lihat
+                                                    </a>
+                                                @else
+                                                    <span class="text-muted">No Cert</span>
+                                                @endif
+                                            </td>
                                             <td>{{ $dtkapster->alamat }}</td>
                                             <td>
                                                 <button class="btn btn-sm btn-info" wire:click="edit({{ $dtkapster->id }})"
@@ -135,6 +164,19 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
+                                        <label>Status</label>
+                                        <select class="form-control" wire:model.defer="status">
+                                            <option value="">Pilih Status</option>
+                                            <option value="bekerja">Bekerja</option>
+                                            <option value="libur">Libur</option>
+                                        </select>
+                                        @error('status') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-3">
                                         <label>NIK</label>
                                         <input type="text" class="form-control" wire:model.defer="nik">
                                         @error('nik') <span class="text-danger">{{ $message }}</span> @enderror
@@ -171,6 +213,25 @@
                                                 width="100">
                                         @endif
                                         @error('foto') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group mb-3">
+                                        <label>Sertifikat (PDF/Gambar, Max 5MB)</label>
+                                        <input type="file" class="form-control" wire:model="sertifikat">
+                                        <div wire:loading wire:target="sertifikat" class="text-info mt-1">Uploading...</div>
+                                        @if ($sertifikat_lama)
+                                            <div class="mt-2">
+                                                <small class="text-muted">Sertifikat saat ini: </small>
+                                                <a href="{{ asset('storage/' . $sertifikat_lama) }}" target="_blank"
+                                                    class="badge badge-info text-decoration-none">
+                                                    Lihat File
+                                                </a>
+                                            </div>
+                                        @endif
+                                        @error('sertifikat') <span class="text-danger">{{ $message }}</span> @enderror
                                     </div>
                                 </div>
                             </div>
