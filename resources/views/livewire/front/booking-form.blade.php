@@ -8,41 +8,32 @@
         <div class="grid md:grid-cols-2 gap-4 md:gap-6">
             <div>
                 <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Nama Lengkap</label>
-                <input type="text" wire:model.defer="nama" required
+                <input type="text" wire:model="nama" required
                     class="w-full px-4 py-2 md:py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors text-sm md:text-base"
                     placeholder="Masukkan nama Anda">
                 @error('nama') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
             <div>
                 <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Nomor Telepon</label>
-                <input type="tel" wire:model.defer="no_hp" required
+                <input type="tel" wire:model="no_hp" required
                     class="w-full px-4 py-2 md:py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors text-sm md:text-base"
                     placeholder="0812-3456-7890">
                 @error('no_hp') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
         </div>
         <div class="grid md:grid-cols-2 gap-4 md:gap-6">
-            <div>
-                <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Tanggal</label>
-                <input type="date" wire:model.defer="tanggal" required
-                    class="w-full px-4 py-2 md:py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors text-sm md:text-base">
-                @error('tanggal') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-            </div>
-            <div>
-                <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Waktu</label>
-                <select wire:model.defer="waktu" required
-                    class="w-full px-4 py-2 md:py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors text-sm md:text-base">
-                    <option value="">-- Pilih Waktu --</option>
-                    <option value="09:00">09:00</option>
-                    <option value="10:00">10:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="13:00">13:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:00">16:00</option>
-                    <option value="17:00">17:00</option>
-                    <option value="18:00">18:00</option>
-                </select>
+            <div class="col-span-full">
+                <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Pilih Tanggal & Waktu
+                    Booking</label>
+                <div class="relative">
+                    <input type="datetime-local" wire:model.live="waktu_lengkap" required
+                        min="{{ now()->format('Y-m-d\TH:i') }}"
+                        class="w-full px-4 py-2 md:py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors text-sm md:text-base bg-white appearance-none">
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none pr-10">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                </div>
+                @error('waktu_lengkap') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 @error('waktu') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
             </div>
         </div>
@@ -95,10 +86,20 @@
                 @endforeach
             </div>
             @error('barber') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+
+            @if($barber && $estimasiTunggu > 0)
+                <div class="mt-2 text-yellow-600 font-bold text-sm bg-yellow-50 p-2 rounded-lg border border-yellow-200">
+                    <i class="fas fa-clock mr-1"></i> Estimasi Menunggu: {{ $estimasiTunggu }} Menit
+                </div>
+            @elseif($barber)
+                <div class="mt-2 text-green-600 font-bold text-sm bg-green-50 p-2 rounded-lg border border-green-200">
+                    <i class="fas fa-check-circle mr-1"></i> Barber siap melayani (Tanpa Antrian)
+                </div>
+            @endif
         </div>
         <div>
             <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Catatan Tambahan</label>
-            <textarea wire:model.defer="catatan" rows="2 md:3"
+            <textarea wire:model="catatan" rows="2 md:3"
                 class="w-full px-4 py-2 md:py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors text-sm md:text-base"
                 placeholder="Permintaan khusus..."></textarea>
             @error('catatan') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror

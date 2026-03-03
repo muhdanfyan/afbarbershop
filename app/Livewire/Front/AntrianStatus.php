@@ -5,6 +5,7 @@ namespace App\Livewire\Front;
 use Livewire\Component;
 use App\Models\Kapster;
 use App\Models\Transaksi;
+use Livewire\Attributes\On;
 
 class AntrianStatus extends Component
 {
@@ -15,14 +16,18 @@ class AntrianStatus extends Component
         $this->updateStats();
     }
 
+    #[On('transaksi-updated')]
     public function updateStats()
     {
         $kapsters = Kapster::where('status', 'bekerja')->get();
         $today = now()->toDateString();
         $this->kapsterStats = $kapsters->map(function ($k) use ($today) {
-            $menunggu = Transaksi::where('kapster_id', $k->id)->where('status', 'menunggu')->whereDate('created_at', $today)->count();
-            $proses = Transaksi::where('kapster_id', $k->id)->where('status', 'proses')->whereDate('created_at', $today)->count();
-            $selesai = Transaksi::where('kapster_id', $k->id)->where('status', 'selesai')->whereDate('created_at', $today)->count();
+            $menunggu = Transaksi::where('kapster_id', $k->id)->where('status', 'menunggu')->where('tanggal', $today)->count();
+            $proses = Transaksi::where('kapster_id', $k->id)->where('status', 'proses')->where('tanggal', $today)->count();
+            $selesai = Transaksi::where('kapster_id', $k->id)->where('status', 'selesai')->where('tanggal', $today)->count();
+
+            $estimasi = $menunggu * 30; // 30 menit per antrian
+
             return [
                 'id' => $k->id,
                 'nama' => $k->nama,
@@ -31,14 +36,13 @@ class AntrianStatus extends Component
                 'menunggu' => $menunggu,
                 'proses' => $proses,
                 'selesai' => $selesai,
+                'estimasi' => $estimasi,
             ];
         });
     }
 
     public function render()
     {
-        $this->updateStats();
-        $this->dispatch('antrian-updated');
         return view('livewire.front.antrian-status');
     }
 }

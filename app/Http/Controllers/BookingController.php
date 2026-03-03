@@ -25,7 +25,7 @@ class BookingController extends Controller
 
         // Find or create member
         $member = Member::firstOrCreate(
-            ['no_hp' => $request->no_hp],
+            ['nomor_wa' => $request->no_hp],
             ['nama' => $request->nama, 'alamat' => null]
         );
 
@@ -41,8 +41,9 @@ class BookingController extends Controller
         // Create transaksi with status 'menunggu'
         $transaksi = Transaksi::create([
             'nama' => $member->nama,
-            'no_hp' => $member->no_hp,
+            'no_hp' => $member->nomor_wa,
             'tanggal' => $request->tanggal,
+            'jasa_id' => $jasa ? $jasa->id : null,
             'jumlah' => 1,
             'total_harga' => $jasa ? $jasa->harga : 0,
             'status' => 'menunggu',

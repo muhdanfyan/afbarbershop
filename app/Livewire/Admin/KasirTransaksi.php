@@ -411,9 +411,9 @@ class KasirTransaksi extends Component
     {
         $listMember = Member::select('nama', 'nomor_wa')->orderBy('nama')->get();
         $today = now()->toDateString();
-        $transaksiBooking = Transaksi::where('status', 'menunggu')->whereDate('created_at', $today)->orderBy('created_at', 'desc')->get();
-        $transaksiProses = Transaksi::where('status', 'proses')->whereDate('created_at', $today)->orderBy('created_at', 'desc')->get();
-        $transaksiSelesai = Transaksi::where('status', 'selesai')->whereDate('created_at', $today)->orderBy('created_at', 'desc')->get();
+        $transaksiBooking = Transaksi::where('status', 'menunggu')->where('tanggal', $today)->orderBy('created_at', 'desc')->get();
+        $transaksiProses = Transaksi::where('status', 'proses')->where('tanggal', $today)->orderBy('created_at', 'desc')->get();
+        $transaksiSelesai = Transaksi::where('status', 'selesai')->where('tanggal', $today)->orderBy('created_at', 'desc')->get();
         $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
 
         return view('livewire.admin.kasir-transaksi', [

@@ -29,6 +29,15 @@
                         <span class="bg-green-600 px-2 py-1 rounded-full whitespace-nowrap">Selesai:
                             <b>{{ $k['selesai'] }}</b></span>
                     </div>
+                    @if($k['estimasi'] > 0)
+                        <div class="mt-4 text-accent font-bold text-sm animate-pulse">
+                            <i class="fas fa-clock mr-1"></i> Estimasi Tunggu: {{ $k['estimasi'] }} Menit
+                        </div>
+                    @else
+                        <div class="mt-4 text-green-400 font-bold text-sm">
+                            <i class="fas fa-check-circle mr-1"></i> Siap Melayani
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>
