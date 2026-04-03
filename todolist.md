@@ -1,0 +1,7 @@
+- scheduling booking kalau booked tidak bisa diakses oleh pelanggan lain
+- whatsapp reminder otomatis 15menit,10 menit, 5menit, juga menu chat dari kasir untuk perubahan transaksi
+- theme dark/light
+- tampilan display antrian untuk admin dan user konek spotify playlist
+- menu penjualan produk di halaman utama
+- bookingan yang selain hari ini juga harus tampil di display kasir
+- sortir desc berdasarkan jam booking

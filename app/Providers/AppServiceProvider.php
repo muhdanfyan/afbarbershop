@@ -21,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $settings = Setting::pluck('value', 'key')->toArray();
-        View::share('settings', $settings);
+        if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+            $settings = Setting::pluck('value', 'key')->toArray();
+            View::share('settings', $settings);
+        }
     }
 }

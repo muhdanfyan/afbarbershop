@@ -14,22 +14,34 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create(
+        User::updateOrCreate(
+            ['username' => 'hayatulhabirun'],
             [
                 'name' => 'Hayatul Habirun',
-                'username' => 'hayatulhabirun',
                 'email' => 'hayatulhabirun@gmail.com',
                 'password' => Hash::make('12345678'),
                 'level' => 'admin',
-            ],
+            ]
+        );
+
+        User::updateOrCreate(
+            ['username' => 'afberbershop'],
             [
                 'name' => 'barbershop',
-                'username' => 'afberbershop',
                 'email' => 'poseidon@gmail.com',
                 'password' => Hash::make('12345678'),
                 'level' => 'admin',
-            ],
+            ]
+        );
 
+        User::updateOrCreate(
+            ['username' => 'pengunjung'],
+            [
+                'name' => 'Pengunjung',
+                'email' => 'pengunjung@gmail.com',
+                'password' => Hash::make('12345678'),
+                'level' => 'kasir', // Using kasir as placeholder for visitor if applicable
+            ]
         );
     }
 }

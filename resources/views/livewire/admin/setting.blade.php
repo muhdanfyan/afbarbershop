@@ -45,6 +45,13 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
+                            <label for="youtube_playlist_id" class="form-label">YouTube Playlist ID</label>
+                            <input type="text" class="form-control" id="youtube_playlist_id" wire:model.defer="youtube_playlist_id" placeholder="Contoh: PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG">
+                            <small class="text-muted">ID Playlist dapat diambil dari URL YouTube playlist (kode setelah &list= atau ?list=)</small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
                             <label for="logo" class="form-label">Logo</label>
                             <input type="file" class="form-control" id="logo" wire:model="logo" accept="image/*">
                             @if ($logo)

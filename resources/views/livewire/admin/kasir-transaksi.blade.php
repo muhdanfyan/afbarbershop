@@ -698,7 +698,18 @@ $bookingIds = collect($transaksiBooking)->sortBy('created_at')->pluck('id')->val
                                         menit
                                     </div>
                                 </div>
-                                <span class="badge bg-warning text-dark">{{ $trx->status }}</span>
+                                <div class="d-flex flex-column align-items-end gap-2">
+                                    <span class="badge bg-warning text-dark">{{ $trx->status }}</span>
+                                    @if($trx->no_hp)
+                                        <a href="https://wa.me/{{ str_starts_with($trx->no_hp, '0') ? '62' . substr($trx->no_hp, 1) : (str_starts_with($trx->no_hp, '+') ? substr($trx->no_hp, 1) : $trx->no_hp) }}?text={{ urlencode('Halo ' . $trx->nama . ', kami dari AF Barbershop ingin mengonfirmasi booking Anda pada pukul ' . $trx->waktu . '. Ada perubahan?') }}" 
+                                           target="_blank"
+                                           class="btn btn-success p-1 px-2" 
+                                           style="font-size: 0.65rem; background: #25D366; border: none;"
+                                           onclick="event.stopPropagation();">
+                                            <i class="fab fa-whatsapp me-1"></i> Chat
+                                        </a>
+                                    @endif
+                                </div>
                             </li>
                         @empty
                             <li class="list-group-item text-center py-4 opacity-50">
@@ -868,30 +879,31 @@ $bookingIds = collect($transaksiBooking)->sortBy('created_at')->pluck('id')->val
                         @endforeach
                     </div>
 
-                    <div class="section-title d-flex justify-content-between align-items-center mt-2">
-                        <span><i class="fas fa-user-tie"></i> Pilih Kapster</span>
-                        @if($kapster)
-                            <span class="badge bg-success" style="font-size: 0.6rem;">Sudah Dipilih</span>
-                        @endif
+                    @error('kapster') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+
+                    <div class="section-title d-flex justify-content-between align-items-center mt-4">
+                        <span><i class="fas fa-box"></i> Pilih Produk</span>
+                        <span class="badge bg-accent text-dark" style="font-size: 0.6rem;">{{ count($barangSelected) }} Terpilih</span>
                     </div>
 
-                    <div class="staff-grid" style="{{ $status === 'selesai' ? 'pointer-events: none; opacity: 0.8;' : '' }}">
-                        @foreach($listKapster as $k)
-                            <div class="staff-card{{ $kapster == $k->id ? ' selected' : '' }}"
-                                @if($status !== 'selesai') wire:click="$set('kapster', {{ $k->id }})" @endif>
+                    <div class="service-grid" style="{{ $status === 'selesai' ? 'pointer-events: none; opacity: 0.8;' : '' }}">
+                        @foreach($listBarang as $b)
+                            <div class="service-card{{ in_array($b->id, $barangSelected) ? ' selected' : '' }}"
+                                @if($status !== 'selesai') wire:click="toggleBarang({{ $b->id }})" @endif>
                                 <div class="card-image-wrapper">
-                                    @if($k->foto)
-                                        <img src="{{ asset('storage/' . $k->foto) }}" alt="{{ $k->nama }}">
+                                    @if($b->foto)
+                                        <img src="{{ asset('storage/' . $b->foto) }}" alt="{{ $b->nama }}">
                                     @else
-                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($k->nama) }}&background=d4af37&color=0a0a0a"
-                                            alt="{{ $k->nama }}">
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($b->nama) }}&background=2a2a2a&color=d4af37"
+                                            alt="{{ $b->nama }}">
                                     @endif
                                 </div>
-                                <div class="staff-name mt-1">{{ $k->nama }}</div>
+                                <h6 class="text-truncate px-2 w-100">{{ $b->nama }}</h6>
+                                <div class="ultra-small text-secondary">Stok: {{ $b->stok }}</div>
+                                <div class="small text-accent fw-bold mt-1">Rp {{ number_format($b->harga_jual, 0, ',', '.') }}</div>
                             </div>
                         @endforeach
                     </div>
-                    @error('kapster') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                 </div>
             </div>
 
@@ -908,30 +920,60 @@ $bookingIds = collect($transaksiBooking)->sortBy('created_at')->pluck('id')->val
                     <table class="receipt-table w-100">
                         <thead>
                             <tr>
-                                <th class="pb-2 text-start">LAYANAN</th>
-                                <th class="pb-2 text-right">HARGA</th>
+                                <th class="pb-2 text-start">DETAIL</th>
+                                <th class="pb-2 text-center" style="width: 80px;">QTY</th>
+                                <th class="pb-2 text-right">SUBTOTAL</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($selectedJasaItems as $item)
+                            @foreach($selectedJasaItems as $item)
                                 <tr wire:key="selected-jasa-{{ $item->id }}">
-                                    <td class="py-3">
-                                        <div class="fw-bold text-dark" style="font-size: 0.95rem;">{{ $item->nama }}</div>
-                                        <small class="text-muted text-uppercase tracking-tighter"
-                                            style="font-size: 0.7rem;">Professional Service</small>
+                                    <td class="py-2">
+                                        <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $item->nama }}</div>
+                                        <small class="text-muted text-uppercase" style="font-size: 0.6rem;">Service</small>
                                     </td>
-                                    <td class="text-right fw-bold text-dark" style="font-size: 1rem;">
-                                        Rp {{ number_format($item->harga, 0, ',', '.') }}
+                                    <td class="text-center text-dark">1</td>
+                                    <td class="text-right fw-bold text-dark" style="font-size: 0.9rem;">
+                                        {{ number_format($item->harga, 0, ',', '.') }}
                                     </td>
                                 </tr>
-                            @empty
+                            @endforeach
+
+                            @foreach($selectedBarangItems as $item)
+                                <tr wire:key="selected-barang-{{ $item->id }}">
+                                    <td class="py-2">
+                                        <div class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $item->nama }}</div>
+                                        <small class="text-muted text-uppercase" style="font-size: 0.6rem;">Product</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex align-items-center justify-content-center gap-1">
+                                            @if($status !== 'selesai')
+                                                <button type="button" class="btn btn-sm p-0 px-1 border" 
+                                                        wire:click="updateJumlahBarang({{ $item->id }}, {{ ($jumlahBarang[$item->id] ?? 1) - 1 }})"
+                                                        @if(($jumlahBarang[$item->id] ?? 1) <= 1) disabled @endif style="font-size: 0.7rem;">-</button>
+                                            @endif
+                                            <span class="text-dark fw-bold" style="font-size: 0.85rem;">{{ $jumlahBarang[$item->id] ?? 1 }}</span>
+                                            @if($status !== 'selesai')
+                                                <button type="button" class="btn btn-sm p-0 px-1 border" 
+                                                        wire:click="updateJumlahBarang({{ $item->id }}, {{ ($jumlahBarang[$item->id] ?? 1) + 1 }})"
+                                                        @if(($jumlahBarang[$item->id] ?? 1) >= $item->stok) disabled @endif style="font-size: 0.7rem;">+</button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="text-right fw-bold text-dark" style="font-size: 0.9rem;">
+                                        {{ number_format($item->harga_jual * ($jumlahBarang[$item->id] ?? 1), 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                            @if(count($jasa) === 0 && count($barangSelected) === 0)
                                 <tr>
-                                    <td colspan="2" class="text-center py-5 text-muted">
-                                        <i class="fas fa-cut mb-2 d-block" style="font-size: 2rem; opacity: 0.3;"></i>
-                                        Belum ada layanan dipilih
+                                    <td colspan="3" class="text-center py-5 text-muted">
+                                        <i class="fas fa-shopping-cart mb-2 d-block" style="font-size: 2rem; opacity: 0.3;"></i>
+                                        Belum ada yang dipilih
                                     </td>
                                 </tr>
-                            @endforelse
+                            @endif
                         </tbody>
                     </table>
                 </div>

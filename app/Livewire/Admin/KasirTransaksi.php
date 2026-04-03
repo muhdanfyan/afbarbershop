@@ -6,6 +6,7 @@ use App\Models\Jasa;
 use App\Models\Kapster;
 use App\Models\Transaksi;
 use App\Models\Member;
+use App\Models\Barang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -177,6 +178,8 @@ class KasirTransaksi extends Component
     public $total = 0;
     public $memberSearch = '';
     public $status;
+    public $barangSelected = [];
+    public $jumlahBarang = []; // [id => jumlah]
 
     public function mount()
     {
@@ -207,6 +210,13 @@ class KasirTransaksi extends Component
             $jasa = Jasa::find($jasaId);
             if ($jasa) {
                 $this->total += $jasa->harga;
+            }
+        }
+        foreach ($this->barangSelected as $barangId) {
+            $barang = Barang::find($barangId);
+            if ($barang) {
+                $jumlah = $this->jumlahBarang[$barangId] ?? 1;
+                $this->total += ($barang->harga_jual * $jumlah);
             }
         }
         $this->updatedUangBayar();
@@ -259,6 +269,14 @@ class KasirTransaksi extends Component
                     'status' => 'selesai',
                 ]);
                 $transaksi->jasa()->sync($this->jasa);
+                
+                // Sync barangs and reduce stock
+                $barangSyncData = [];
+                foreach ($this->barangSelected as $bId) {
+                    $jml = $this->jumlahBarang[$bId] ?? 1;
+                    $barangSyncData[$bId] = ['jumlah' => $jml];
+                }
+                $transaksi->barangs()->sync($barangSyncData);
             } else {
                 // Buat transaksi baru
                 $transaksi = Transaksi::create([
@@ -276,10 +294,26 @@ class KasirTransaksi extends Component
                     'status' => 'selesai',
                 ]);
                 $transaksi->jasa()->attach($this->jasa);
+                
+                foreach ($this->barangSelected as $bId) {
+                    $jml = $this->jumlahBarang[$bId] ?? 1;
+                    $transaksi->barangs()->attach($bId, ['jumlah' => $jml]);
+                }
             }
+
+            // REDUCE STOCK logic
+            foreach ($this->barangSelected as $bId) {
+                $barang = Barang::find($bId);
+                if ($barang) {
+                    $jml = $this->jumlahBarang[$bId] ?? 1;
+                    $barang->stok = $barang->stok - $jml;
+                    $barang->save();
+                }
+            }
+
             // $this->dispatch('print-struk', ['invoice' => $this->invoice]);
             $this->kirimStrukWa($transaksi);
-            $this->dispatch('swal-success', ['message' => 'Transaksi berhasil disimpan!']);
+            $this->dispatch('swal-success', ['message' => 'Transaksi berhasil disimpan & Stok dikurangi!']);
             $this->resetForm();
         } catch (\Exception $e) {
             $this->dispatch('swal-error', ['message' => 'Transaksi gagal: ' . $e->getMessage()]);
@@ -298,6 +332,8 @@ class KasirTransaksi extends Component
         $this->uang_kembali = 0;
         $this->total = 0;
         $this->status = null;
+        $this->barangSelected = [];
+        $this->jumlahBarang = [];
         $this->showRandomInvoice = false;
         $this->randomInvoiceDisplay = null;
         $this->dispatch('close-modal');
@@ -357,6 +393,15 @@ class KasirTransaksi extends Component
                 $pesan .= "@ Rp" . number_format($j->harga, 0, ',', '.') . ", Total Rp" . number_format($j->harga, 0, ',', '.') . "\n";
             }
 
+            if ($transaksi->barangs->count() > 0) {
+                $pesan .= "\nProduk:\n";
+                foreach ($transaksi->barangs as $b) {
+                    $jml = $b->pivot->jumlah ?? 1;
+                    $pesan .= "🛒 " . $b->nama . " (x" . $jml . ")\n";
+                    $pesan .= "@ Rp" . number_format($b->harga_jual, 0, ',', '.') . ", Total Rp" . number_format($b->harga_jual * $jml, 0, ',', '.') . "\n";
+                }
+            }
+
             $pesan .= "\n==============\n";
             $pesan .= "Detail biaya :\n";
             $pesan .= "Total tagihan : Rp" . number_format($transaksi->total_harga, 0, ',', '.') . "\n";
@@ -407,18 +452,56 @@ class KasirTransaksi extends Component
         $this->hitungTotal();
     }
 
+    public function toggleBarang($id)
+    {
+        if ($this->status === 'selesai') {
+            return;
+        }
+        if (($key = array_search($id, $this->barangSelected)) !== false) {
+            unset($this->barangSelected[$key]);
+            unset($this->jumlahBarang[$id]);
+        } else {
+            $this->barangSelected[] = $id;
+            $this->jumlahBarang[$id] = 1;
+        }
+        $this->barangSelected = array_values($this->barangSelected);
+        $this->hitungTotal();
+    }
+
+    public function updateJumlahBarang($id, $jumlah)
+    {
+        if ($this->status === 'selesai') {
+            return;
+        }
+        $this->jumlahBarang[$id] = $jumlah;
+        $this->hitungTotal();
+    }
+
     public function render()
     {
         $listMember = Member::select('nama', 'nomor_wa')->orderBy('nama')->get();
         $today = now()->toDateString();
-        $transaksiBooking = Transaksi::where('status', 'menunggu')->where('tanggal', $today)->orderBy('created_at', 'desc')->get();
-        $transaksiProses = Transaksi::where('status', 'proses')->where('tanggal', $today)->orderBy('created_at', 'desc')->get();
-        $transaksiSelesai = Transaksi::where('status', 'selesai')->where('tanggal', $today)->orderBy('created_at', 'desc')->get();
+        // Booking selain hari ini juga tampil (Item 6) & Urut DESC berdasarkan jam (Item 7)
+        $transaksiBooking = Transaksi::where('status', 'menunggu')
+            ->where('tanggal', '>=', $today)
+            ->orderBy('tanggal', 'desc')
+            ->orderBy('waktu', 'desc')
+            ->get();
+        $transaksiProses = Transaksi::where('status', 'proses')
+            ->where('tanggal', $today)
+            ->orderBy('waktu', 'desc')
+            ->get();
+        $transaksiSelesai = Transaksi::where('status', 'selesai')
+            ->where('tanggal', $today)
+            ->orderBy('waktu', 'desc')
+            ->get();
         $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
 
         return view('livewire.admin.kasir-transaksi', [
             'listJasa' => Jasa::all(),
             'selectedJasaItems' => Jasa::whereIn('id', collect($this->jasa)->map(fn($id) => (int) $id)->toArray())->get(),
+            'listBarang' => Barang::where('stok', '>', 0)->get(),
+            'selectedBarangItems' => Barang::whereIn('id', collect($this->barangSelected)->map(fn($id) => (int) $id)->toArray())->get(),
             'listKapster' => Kapster::where('status', 'bekerja')->get(),
             'listMember' => $listMember,
             'transaksiBooking' => $transaksiBooking,

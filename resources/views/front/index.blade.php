@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon"
-        href="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : asset('favicon.ico') }}"
+        href="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : asset('logo-icon.png') }}"
         type="image/x-icon">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap');
@@ -173,6 +173,7 @@
 
     @stack('styles')
     @livewireStyles
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-gray-50 scroll-smooth">
@@ -198,11 +199,21 @@
                     <a href="#gallery" class="text-gray-300 hover:text-accent transition-colors font-medium">Galeri</a>
                     <a href="#pricing" class="text-gray-300 hover:text-accent transition-colors font-medium">Harga</a>
                     <a href="#contact" class="text-gray-300 hover:text-accent transition-colors font-medium">Kontak</a>
+                    <button id="theme-toggle" class="text-gray-300 hover:text-accent transition-colors ml-4 focus:outline-none">
+                        <i class="fas fa-sun hidden dark:block"></i>
+                        <i class="fas fa-moon block dark:hidden"></i>
+                    </button>
                 </div>
 
-                <button class="md:hidden text-white" onclick="toggleMobileMenu()">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
+                <div class="flex items-center space-x-4 md:hidden">
+                    <button id="theme-toggle-mobile" class="text-gray-300 hover:text-accent transition-colors focus:outline-none">
+                        <i class="fas fa-sun hidden dark:block"></i>
+                        <i class="fas fa-moon block dark:hidden"></i>
+                    </button>
+                    <button class="text-white" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -305,6 +316,42 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-12 md:py-20 bg-gray-50 border-t border-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-8 md:mb-12">
+                <h2 class="font-display text-4xl md:text-6xl font-black text-gray-900 mb-4">PRODUK KAMI</h2>
+                <p class="text-gray-600 text-lg md:text-xl font-serif">Koleksi perawatan rambut premium</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                @forelse($barangs ?? [] as $barang)
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-md hover-lift border border-gray-100">
+                        <div class="aspect-square relative">
+                            @if($barang->foto)
+                                <img src="{{ asset('storage/' . $barang->foto) }}" alt="{{ $barang->nama }}"
+                                    class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-box text-4xl text-gray-400"></i>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="font-bold text-gray-900 text-sm md:text-base line-clamp-1 mb-1">{{ $barang->nama }}</h3>
+                            <div class="text-accent font-black text-base md:text-lg">Rp {{ number_format($barang->harga_jual, 0, ',', '.') }}</div>
+                            <div class="text-xs text-gray-500 mt-1 italic">Stok: {{ $barang->stok }}</div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-span-full text-center py-10">
+                        <p class="text-gray-500">Belum ada produk tersedia.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>
