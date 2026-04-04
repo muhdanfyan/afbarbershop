@@ -81,9 +81,8 @@
             letter-spacing: 0.3px;
         }
         
-        /* Navbar to Match Sidebar */
         /* Navbar Layout Tuning */
-        .navbar.fixed-top {
+        .navbar {
             background: transparent !important;
             box-shadow: none !important;
             border-bottom: none !important;

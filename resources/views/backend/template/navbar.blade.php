@@ -1,5 +1,5 @@
 <!-- partial:partials/_navbar.html -->
-<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" style="box-shadow: none; border: none; background: transparent;">
+<nav class="navbar col-lg-12 col-12 p-0 d-flex flex-row" style="border: none; background: transparent;">
     <!-- Logo Area (Top of Sidebar) -->
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center" style="background: #111827 !important; border-bottom: none; width: 240px; flex: 0 0 240px;">
         @php
@@ -11,7 +11,7 @@
     </div>
     
     <!-- Top Header Area (Right of Sidebar) -->
-    <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between px-4" style="background: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border-bottom: 1px solid #f1f5f9; width: calc(100% - 240px); margin-left: auto;">
+    <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between px-4" style="background: #ffffff; border-bottom: 1px solid #f1f5f9; width: calc(100% - 240px); margin-left: auto;">
         
         <!-- Left Side: Hamburger & Search -->
         <div class="d-flex align-items-center">
