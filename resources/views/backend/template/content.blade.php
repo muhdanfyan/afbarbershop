@@ -34,6 +34,9 @@
             box-shadow: 4px 0 20px rgba(0,0,0,0.05);
             border-right: none !important;
         }
+        .sidebar .nav {
+            padding-top: 0.5rem !important;
+        }
         .sidebar .nav .nav-category {
             color: #9ca3af !important; /* Muted text */
             text-transform: uppercase;
@@ -46,6 +49,9 @@
             margin-right: 1.5rem;
             margin-left: 1.5rem;
             font-family: 'Montserrat', sans-serif;
+        }
+        .sidebar .nav .nav-category:first-of-type {
+            padding-top: 0.25rem !important;
         }
         .sidebar .nav .nav-item .nav-link {
             color: #d1d5db !important;
