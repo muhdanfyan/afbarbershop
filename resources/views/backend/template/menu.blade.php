@@ -1,5 +1,5 @@
 <!-- Sidebar Logo Header -->
-<div class="d-flex align-items-center justify-content-center py-3 px-3" style="height: 70px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+<div class="d-flex align-items-center justify-content-center px-3" style="height: 70px; border-bottom: 1px solid rgba(255,255,255,0.06);">
     @php
         $logoPath = isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : asset('logoposeidonputih.png');
     @endphp

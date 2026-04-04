@@ -15,138 +15,67 @@ class KasirTransaksi extends Component
 {
     public function menungguTransaksi()
     {
-        if ($this->status === 'selesai') {
-            $this->dispatch('swal-error', ['message' => 'Transaksi sudah selesai, tidak bisa diubah!']);
-            return;
-        }
-        try {
-            $this->validate([
-                'nama' => 'required',
-                'no_hp' => 'required',
-                'jasa' => 'required|array|min:1',
-                'kapster' => 'required',
-            ]);
-            if ($this->bayar === null || $this->bayar === '' || !is_numeric($this->bayar)) {
-                $this->bayar = 0;
-            }
-            if ($this->kembali === null || $this->kembali === '' || !is_numeric($this->kembali)) {
-                $this->kembali = 0;
-            }
-            $member = Member::firstOrCreate(
-                [
-                    'nama' => $this->nama,
-                    'nomor_wa' => $this->no_hp
-                ],
-                [
-                    'alamat' => null
-                ]
-            );
-            if ($this->trxId) {
-                $transaksi = Transaksi::findOrFail($this->trxId);
-                $transaksi->update([
-                    'invoice' => $this->invoice,
-                    'nama' => $this->nama,
-                    'no_hp' => $this->no_hp,
-                    'kapster_id' => $this->kapster_id,
-                    'total_harga' => $this->total,
-                    'uang_bayar' => $this->bayar,
-                    'uang_kembali' => $this->kembali,
-                    'metode_pembayaran' => $this->metode_pembayaran,
-                    'kasir_id' => Auth::id(),
-                    'tanggal' => now()->toDateString(),
-                    'status' => 'menunggu',
-                ]);
-                $transaksi->jasa()->sync($this->jasa);
-            } else {
-                $transaksi = Transaksi::create([
-                    'invoice' => $this->invoice,
-                    'nama' => $this->nama,
-                    'no_hp' => $this->no_hp,
-                    'jasa_id' => is_array($this->jasa) && count($this->jasa) === 1 ? $this->jasa[0] : null,
-                    'kapster_id' => $this->kapster_id,
-                    'total_harga' => $this->total,
-                    'uang_bayar' => $this->bayar,
-                    'uang_kembali' => $this->kembali,
-                    'metode_pembayaran' => $this->metode_pembayaran,
-                    'kasir_id' => Auth::id(),
-                    'tanggal' => now()->toDateString(),
-                    'jumlah' => 1,
-                    'status' => 'menunggu',
-                ]);
-                $transaksi->jasa()->attach($this->jasa);
-            }
-            $this->dispatch('swal-success', message: 'Transaksi disimpan sebagai MENUNGGU!');
-            $this->dispatch('transaksi-updated');
-            $this->resetForm();
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            throw $e;
-        } catch (\Exception $e) {
-            $this->dispatch('swal-error', ['message' => 'Transaksi gagal: ' . $e->getMessage()]);
-        }
+        $this->saveTransactionWithStatus('menunggu');
     }
+
     public function prosesTransaksi()
+    {
+        $this->saveTransactionWithStatus('proses');
+    }
+
+    private function saveTransactionWithStatus($newStatus)
     {
         if ($this->status === 'selesai') {
             $this->dispatch('swal-error', ['message' => 'Transaksi sudah selesai, tidak bisa diubah!']);
             return;
         }
+
         try {
             $this->validate([
                 'nama' => 'required',
                 'no_hp' => 'required',
                 'jasa' => 'required|array|min:1',
-                'kapster' => 'required',
+                'kapster_id' => 'required',
             ]);
+
             if ($this->bayar === null || $this->bayar === '' || !is_numeric($this->bayar)) {
                 $this->bayar = 0;
             }
             if ($this->kembali === null || $this->kembali === '' || !is_numeric($this->kembali)) {
                 $this->kembali = 0;
             }
+
             $member = Member::firstOrCreate(
-                [
-                    'nama' => $this->nama,
-                    'nomor_wa' => $this->no_hp
-                ],
-                [
-                    'alamat' => null
-                ]
+                ['nama' => $this->nama, 'nomor_wa' => $this->no_hp],
+                ['alamat' => null]
             );
+
+            $data = [
+                'invoice' => $this->invoice ?: 'OTW-' . now()->format('YmdHis'),
+                'nama' => $this->nama,
+                'no_hp' => $this->no_hp,
+                'kapster_id' => $this->kapster_id,
+                'total_harga' => $this->total,
+                'uang_bayar' => $this->bayar,
+                'uang_kembali' => $this->kembali,
+                'metode_pembayaran' => $this->metode_pembayaran,
+                'kasir_id' => Auth::id(),
+                'tanggal' => now()->toDateString(),
+                'status' => $newStatus,
+            ];
+
             if ($this->trxId) {
                 $transaksi = Transaksi::findOrFail($this->trxId);
-                $transaksi->update([
-                    'invoice' => $this->invoice,
-                    'nama' => $this->nama,
-                    'no_hp' => $this->no_hp,
-                    'kapster_id' => $this->kapster_id,
-                    'total_harga' => $this->total,
-                    'uang_bayar' => $this->bayar,
-                    'uang_kembali' => $this->kembali,
-                    'metode_pembayaran' => $this->metode_pembayaran,
-                    'kasir_id' => Auth::id(),
-                    'tanggal' => now()->toDateString(),
-                    'status' => 'proses',
-                ]);
+                $transaksi->update($data);
                 $transaksi->jasa()->sync($this->jasa);
             } else {
-                $transaksi = Transaksi::create([
-                    'invoice' => $this->invoice,
-                    'nama' => $this->nama,
-                    'no_hp' => $this->no_hp,
-                    'jasa_id' => is_array($this->jasa) && count($this->jasa) === 1 ? $this->jasa[0] : null,
-                    'kapster_id' => $this->kapster_id,
-                    'total_harga' => $this->total,
-                    'uang_bayar' => $this->bayar,
-                    'uang_kembali' => $this->kembali,
-                    'metode_pembayaran' => $this->metode_pembayaran,
-                    'kasir_id' => Auth::id(),
-                    'tanggal' => now()->toDateString(),
-                    'jumlah' => 1,
-                    'status' => 'proses',
-                ]);
+                $data['jumlah'] = 1;
+                $data['jasa_id'] = count($this->jasa) === 1 ? $this->jasa[0] : null;
+                $transaksi = Transaksi::create($data);
                 $transaksi->jasa()->attach($this->jasa);
             }
-            $this->dispatch('swal-success', message: 'Transaksi disimpan sebagai PROSES!');
+
+            $this->dispatch('swal-success', ['message' => 'Transaksi disimpan sebagai ' . strtoupper($newStatus) . '!']);
             $this->dispatch('transaksi-updated');
             $this->resetForm();
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -155,6 +84,7 @@ class KasirTransaksi extends Component
             $this->dispatch('swal-error', ['message' => 'Transaksi gagal: ' . $e->getMessage()]);
         }
     }
+
     public $trxId = null;
     public $showRandomInvoice = false;
     public $randomInvoiceDisplay = null;

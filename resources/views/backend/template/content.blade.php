@@ -23,17 +23,48 @@
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('logo-icon.png') }}" />
     <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
         .nav-link {
             border: none;
         }
         /* --- Premium Sidebar & Navbar Enhancements --- */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
         
+        .container-scroller, .page-body-wrapper, .main-panel, .sidebar, .navbar {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
         .sidebar {
             background: #111827 !important;
             box-shadow: 4px 0 20px rgba(0,0,0,0.05);
             border-right: none !important;
-            padding-top: 0 !important;
+            position: relative;
+            z-index: 1010;
+        }
+        .page-body-wrapper { 
+            height: 100vh;
+            max-height: 100vh;
+            display: flex; 
+            flex-direction: row;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+        .main-panel {
+            flex: 1;
+            height: 100vh;
+            max-height: 100vh;
+            overflow-y: auto;
+            background: #f8fafc;
+            padding-left: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
         .sidebar .nav {
             padding-top: 0.5rem !important;
@@ -97,35 +128,51 @@
             background: #f8fafc !important; /* Soft premium gray/white for content */
         }
         
-        /* Icon-only sidebar handling */
+        /* Icon-only sidebar handling (For precise centering) */
         .sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-title,
         .sidebar-icon-only .sidebar .nav .nav-category {
             display: none !important;
         }
         .sidebar-icon-only .sidebar .nav .nav-item .nav-link {
             justify-content: center !important;
-            padding: 0.8rem !important;
+            padding: 0.8rem 0 !important;
+            margin: 0.25rem 0 !important;
+            border-radius: 0 !important;
+            width: 100% !important;
+        }
+        .sidebar-icon-only .sidebar .nav .nav-item.active > .nav-link, 
+        .sidebar-icon-only .sidebar .nav .nav-item .nav-link:hover {
+            transform: none !important; /* Disable slide on compact mode */
         }
         .sidebar-icon-only .sidebar .nav .nav-item .nav-link i.menu-icon {
             margin-right: 0 !important;
-            font-size: 1.5rem !important;
+            font-size: 1.4rem !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 
 <body>
     <div class="container-scroller">
-
-        @include('backend.template.navbar')
-
         <div class="container-fluid page-body-wrapper">
-            <!-- partial:partials/_sidebar.html -->
+            <!-- Sidebar (Pillar Mode) -->
             <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 @include('backend.template.menu')
             </nav>
-            @yield('content')
+            
+            <!-- Main Content Area -->
+            <div class="main-panel">
+                @include('backend.template.navbar')
+                
+                <div class="content-wrapper">
+                    @yield('content')
+                </div>
+                
+                @include('backend.template.footer')
+            </div>
         </div>
-        <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
 

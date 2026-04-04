@@ -1,29 +1,20 @@
 <!-- Top Header Bar (sits to the right of sidebar) -->
-<nav class="navbar col-lg-12 col-12 p-0 d-flex flex-row">
-    <!-- Empty spacer matching sidebar width -->
-    <div class="navbar-brand-wrapper d-flex align-items-center" style="background: #111827 !important; visibility: hidden;"></div>
-    
+<nav class="navbar default-layout-navbar p-0 d-flex flex-row" style="position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; left: 0 !important;">
     <!-- Header Content Area -->
-    <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between px-4" style="background: #ffffff; border-bottom: 1px solid #f1f5f9; height: 70px;">
+    <div class="navbar-menu-wrapper d-flex justify-content-between px-4 w-100" style="background: #ffffff; border-bottom: 1px solid #f1f5f9; height: 70px;">
         
-        <!-- Left: Hamburger & Search -->
+        <!-- Left: Toggle & Search -->
         <div class="d-flex align-items-center">
             <button class="navbar-toggler align-self-center d-none d-lg-flex align-items-center justify-content-center mr-3" type="button" data-toggle="minimize" style="border: none; background: #f8fafc; color: #475569; width: 38px; height: 38px; border-radius: 10px; transition: all 0.2s ease;">
                 <i class="mdi mdi-menu m-0" style="font-size: 1.4rem;"></i>
             </button>
-            <div class="search-wrapper d-none d-md-flex align-items-center">
-                <div class="input-group d-flex align-items-center" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.35rem 1rem;">
-                    <i class="mdi mdi-magnify mr-2" style="font-size: 1.15rem; color: #94a3b8;"></i>
-                    <input type="text" class="form-control border-0 bg-transparent p-0 shadow-none" placeholder="Cari data..." style="height: auto; font-size: 0.85rem; width: 200px; color: #334155;">
-                </div>
-            </div>
         </div>
 
         <!-- Right: User Profile -->
-        <div class="d-flex align-items-center">
+        <div class="d-flex">
             <ul class="navbar-nav navbar-nav-right">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center px-3 py-2 m-0" href="#" data-toggle="dropdown" id="profileDropdown" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                    <a class="nav-link dropdown-toggle d-flex px-3 py-2 m-0" href="#" data-toggle="dropdown" id="profileDropdown" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
                         <img src="{{ auth()->user()->foto ? asset('storage/'.auth()->user()->foto) : 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name).'&background=111827&color=fff' }}" alt="profile" class="rounded-circle mr-2" style="width: 30px; height: 30px; border: 2px solid #e2e8f0;"/>
                         <div class="d-flex flex-column justify-content-center text-left mr-1">
                             <span class="small font-weight-bold d-block" style="color: #1e293b; line-height: 1.2;">{{ auth()->user()->name }}</span>

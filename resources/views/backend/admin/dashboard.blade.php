@@ -34,8 +34,6 @@
         }
     </style>
     <!-- partial -->
-    <div class="main-panel">
-        <div class="content-wrapper">
             <div class="row">
                 <div class="col-sm-12 mb-4 mb-xl-0 border-bottom pb-3">
                     <h4 class="font-weight-bold text-dark" style="font-family: 'Montserrat', sans-serif;">Hi {{ auth()->user()->name }}, selamat datang!</h4>
@@ -278,10 +276,5 @@
                     }
                 });
             });
-            </script>
-        </div>
-        <!-- content-wrapper ends -->
-        @include('backend.template.footer')
-    </div>
-    <!-- main-panel ends -->
+    </script>
 @endsection

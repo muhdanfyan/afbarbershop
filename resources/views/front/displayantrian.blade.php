@@ -1030,9 +1030,40 @@
             document.getElementById('date').textContent = dateString;
         }
 
-        // No-ops for controls that were mock before
-        function playSound() {}
-        function nextQueue() {}
+        // Play queue sound and show wave
+        function playSound() {
+            const sound = document.getElementById('queueSound');
+            const wave = document.getElementById('soundWave');
+            
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Audio play blocked:", e));
+            }
+            
+            if (wave) {
+                wave.style.display = 'inline-flex';
+                setTimeout(() => {
+                    wave.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Show notification for next queue
+        function nextQueue() {
+            const toast = document.getElementById('notificationToast');
+            const msg = document.getElementById('notificationMessage');
+            
+            // Get the first item from the queue list if exists
+            const nextItem = document.querySelector('.queue-item .queue-number');
+            const number = nextItem ? nextItem.textContent : '---';
+            
+            if (msg) msg.textContent = `Nomor ${number} dipanggil! Silakan menuju kursi.`;
+            if (toast) {
+                toast.classList.add('show');
+                playSound();
+                setTimeout(() => toast.classList.remove('show'), 5000);
+            }
+        }
 
         // Toggle Fullscreen
         function toggleFullscreen() {

@@ -21,20 +21,21 @@ class FrontDisplayAntrianController extends Controller
     {
         $today = now()->toDateString();
         
-        // Optimize by fetching all kapsters and their currently active 'proses' transactions in one go
-        // To avoid N+1, we can use a join or eager loading with a constraint
-        $kapsters = \App\Models\Kapster::all()->map(function($k) use ($today) {
-            $currentTrx = \App\Models\Transaksi::where('kapster_id', $k->id)
-                ->where('tanggal', $today)
-                ->where('status', 'proses')
-                ->with('layanan')
-                ->first();
+        $today = now()->toDateString();
+        
+        // Optimize: Fetch kapsters with their active 'proses' transactions for today in one go
+        $kapsters = \App\Models\Kapster::with(['transaksis' => function($query) use ($today) {
+            $query->where('tanggal', $today)
+                  ->where('status', 'proses')
+                  ->with('jasa');
+        }])->get()->map(function($k) {
+            $currentTrx = $k->transaksis->first();
             
             return [
                 'id' => $k->id,
                 'name' => $k->nama,
                 'avatar' => $k->foto ? asset('storage/' . $k->foto) : 'https://ui-avatars.com/api/?name='.urlencode($k->nama).'&background=2a2a2a&color=d4af37',
-                'status' => $currentTrx ? 'serving' : ($k->is_active ? 'available' : 'busy'),
+                'status' => $currentTrx ? 'serving' : ($k->status === 'bekerja' ? 'available' : 'busy'),
                 'currentQueue' => $currentTrx ? ($currentTrx->invoice ? substr($currentTrx->invoice, -4) : 'PROC') : null,
                 'service' => $currentTrx ? ($currentTrx->jasa->pluck('nama')->implode(', ') ?: 'Service') : null,
             ];
