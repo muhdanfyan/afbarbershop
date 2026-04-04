@@ -577,17 +577,19 @@
 
 @push('scripts')
     <script>
-        function toggleFullscreen(btn) {
+        window.toggleFullscreen = function(btn) {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                btn.querySelector('i').className = 'fas fa-compress';
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error("Error attempting to enable full-screen mode: " + err.message);
+                });
+                if(btn) btn.querySelector('i').className = 'fas fa-compress';
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
-                    btn.querySelector('i').className = 'fas fa-expand';
+                    if(btn) btn.querySelector('i').className = 'fas fa-expand';
                 }
             }
-        }
+        };
 
         document.addEventListener('livewire:init', function () {
             Livewire.on('swal-success', (e) => {

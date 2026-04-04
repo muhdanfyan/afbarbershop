@@ -40,17 +40,17 @@
             font-size: 0.65rem;
             font-weight: 800;
             letter-spacing: 2px;
-            padding-top: 1.25rem;
-            margin-bottom: 0.25rem;
-            padding-bottom: 0.25rem;
+            padding-top: 1rem;
+            margin-bottom: 0.1rem;
+            padding-bottom: 0.1rem;
             margin-right: 1.5rem;
             margin-left: 1.5rem;
             font-family: 'Montserrat', sans-serif;
         }
         .sidebar .nav .nav-item .nav-link {
             color: #d1d5db !important;
-            padding: 0.6rem 1.25rem !important;
-            margin: 0.15rem 1rem !important;
+            padding: 0.45rem 1.25rem !important;
+            margin: 0.1rem 1rem !important;
             border-radius: 10px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             align-items: center;
