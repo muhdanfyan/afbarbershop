@@ -5,17 +5,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display Antrian - Barbershop Queue System</title>
-    <!-- Theme Detection Script -->
     <script>
         (function() {
             const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             if (theme === 'dark') document.documentElement.classList.add('dark');
         })();
+
+        function updateThemeIcon(isDark) {
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                if (isDark) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun', 'text-warning');
+                } else {
+                    icon.classList.remove('fa-sun', 'text-warning');
+                    icon.classList.add('fa-moon');
+                }
+            }
+        }
         
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon(isDark);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            updateThemeIcon(isDark);
+        });
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -781,6 +799,14 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- YouTube Playlist Embed (Non-Floating) -->
+                <div class="youtube-panel" style="width: 100%; height: 250px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease;">
+                    <iframe width="100%" height="100%" 
+                        src="https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&autoplay=1&mute=1" 
+                        title="YouTube Playlist" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
             </div>
 
             <!-- Center Panel - Kapsters Status -->
@@ -821,7 +847,7 @@
             <i class="fas fa-sync-alt"></i>
         </button>
         <button class="control-btn" onclick="toggleTheme()" title="Toggle Tema">
-            <i class="fas fa-moon dark-hidden"></i>
+            <i id="theme-icon" class="fas fa-moon"></i>
         </button>
         <button class="control-btn" onclick="toggleFullscreen()" title="Fullscreen">
             <i class="fas fa-expand"></i>
@@ -847,14 +873,6 @@
             src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmFgU7k9n1unEiBC13yO/eizEIHWq+8+OWT"
             type="audio/wav">
     </audio>
-
-    <!-- Spotify Playlist Embed (Replaces YouTube for Premium Vibes) -->
-    <div class="spotify-container" style="position: fixed; bottom: 20px; left: 20px; width: 320px; height: 160px; z-index: 1000; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 2px solid var(--primary-gold); transition: all 0.3s ease;">
-        <iframe style="border-radius:12px" 
-                src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8Ueb99id36R?utm_source=generator&theme=0" 
-                width="100%" height="160" frameBorder="0" allowfullscreen="" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
 
     <script>
         let currentQueueNumber = 0;
