@@ -82,10 +82,11 @@
         }
         
         /* Navbar to Match Sidebar */
+        /* Navbar Layout Tuning */
         .navbar.fixed-top {
-            background: #111827 !important;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: transparent !important;
+            box-shadow: none !important;
+            border-bottom: none !important;
         }
         .navbar .navbar-brand-wrapper {
             background: #111827 !important;
