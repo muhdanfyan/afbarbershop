@@ -51,20 +51,20 @@
                         class="text-white font-display text-2xl md:text-3xl font-bold tracking-wider">{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}</span> -->
                 </div>
 
-                <div class="hidden md:flex space-x-8">
-                    <a href="#home" class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors font-medium">Beranda</a>
-                    <a href="#services"
-                        class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors font-medium">Layanan</a>
-                    <a href="#about" class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors font-medium">Tentang</a>
-                    <a href="#barbers" class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors font-medium">Barber</a>
-                    <a href="#gallery" class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors font-medium">Galeri</a>
-                    <a href="#pricing" class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors font-medium">Harga</a>
-                    <a href="#contact" class="text-gray-600 dark:text-gray-300 hover:text-accent transition-colors font-medium">Kontak</a>
-                    <div class="flex items-center bg-white/10 backdrop-blur-md rounded-full p-1 ml-4 border border-white/5" id="theme-toggle-container">
-                        <button onclick="setTheme('light')" id="btn-light" class="w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300 focus:outline-none" title="Light Mode">
+                <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                    <a href="#home" class="nav-link text-gray-700 dark:text-gray-300">Beranda</a>
+                    <a href="#services" class="nav-link text-gray-700 dark:text-gray-300">Layanan</a>
+                    <a href="#about" class="nav-link text-gray-700 dark:text-gray-300">Tentang</a>
+                    <a href="#barbers" class="nav-link text-gray-700 dark:text-gray-300">Barber</a>
+                    <a href="#gallery" class="nav-link text-gray-700 dark:text-gray-300">Galeri</a>
+                    <a href="#pricing" class="nav-link text-gray-700 dark:text-gray-300">Harga</a>
+                    <a href="#contact" class="nav-link text-gray-700 dark:text-gray-300">Kontak</a>
+                    
+                    <div id="theme-toggle-container" class="ml-4">
+                        <button onclick="setTheme('light')" id="btn-light" class="w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300" title="Light Mode">
                             <i class="fas fa-sun text-xs"></i>
                         </button>
-                        <button onclick="setTheme('dark')" id="btn-dark" class="w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300 focus:outline-none" title="Dark Mode">
+                        <button onclick="setTheme('dark')" id="btn-dark" class="w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300" title="Dark Mode">
                             <i class="fas fa-moon text-xs"></i>
                         </button>
                     </div>
@@ -797,30 +797,44 @@
             }, 200);
         }
 
-        // Animate on Scroll
-        // Scroll Progress
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
+        // Scroll Progress & Navbar Shrink
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
             document.getElementById("scroll-progress").style.width = scrolled + "%";
-        });
 
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+            // Navbar Shrink
+            const navbar = document.getElementById('navbar');
+            if (winScroll > 50) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
         };
 
-        const observer = new IntersectionObserver(function (entries) {
+        // Active Section Highlight (IntersectionObserver)
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -70% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fadeInUp');
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
                 }
             });
         }, observerOptions);
 
-        // Observe all sections
-        document.querySelectorAll('section').forEach(section => {
+        document.querySelectorAll('section[id]').forEach((section) => {
             observer.observe(section);
         });
 

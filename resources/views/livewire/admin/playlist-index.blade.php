@@ -4,10 +4,10 @@
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #FFD700, #B8860B);">
-                    <i class="mdi mdi-youtube-tv text-dark fs-4"></i>
+                    <i class="mdi mdi-music-circle text-dark fs-4"></i>
                 </div>
                 <div>
-                    <h4 class="font-weight-bold text-dark mb-0">Playlist Studio AF</h4>
+                    <h4 class="font-weight-bold text-dark mb-0">Playlist Studio AF (Spotify & YT)</h4>
                     <p class="text-muted small mb-0">Media streaming konfigurasi untuk layar tampilan antrean</p>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                                     <th class="ps-4 py-3 text-uppercase small fw-bold text-muted" style="width: 80px;">Urutan</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Informasi Konten</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Tipe Media</th>
-                                    <th class="py-3 text-uppercase small fw-bold text-muted">ID YouTube</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted">Media ID</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted text-center">Status</th>
                                     <th class="pe-4 py-3 text-uppercase small fw-bold text-muted text-end">Kelola</th>
                                 </tr>
@@ -61,6 +61,10 @@
                                                         <img src="https://img.youtube.com/vi/{{ $row->url_id }}/mqdefault.jpg" 
                                                             style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;"
                                                             onerror="this.parentElement.innerHTML='<div class=\'d-flex align-items-center justify-content-center h-100\'><i class=\'mdi mdi-play-circle text-muted\'></i></div>';">
+                                                    @elseif(str_contains($row->jenis, 'spotify'))
+                                                        <div class="d-flex align-items-center justify-content-center h-100 bg-dark text-white-50" style="background: #191414 !important;">
+                                                            <i class="mdi mdi-spotify fs-3" style="color: #1DB954;"></i>
+                                                        </div>
                                                     @else
                                                         <div class="d-flex align-items-center justify-content-center h-100 bg-dark text-white-50">
                                                             <i class="mdi {{ $row->jenis == 'youtube_playlist' ? 'mdi-playlist-play' : 'mdi-video-off' }} fs-5"></i>
@@ -79,11 +83,19 @@
                                         <td>
                                             @if($row->jenis === 'youtube_playlist')
                                                 <span class="badge border-0 rounded-pill px-3 py-2 bg-gradient-danger text-white shadow-sm" style="background: linear-gradient(45deg, #f44336, #e91e63);">
-                                                    <i class="mdi mdi-playlist-play me-1"></i> Playlist
+                                                    <i class="mdi mdi-youtube me-1"></i> YT Playlist
+                                                </span>
+                                            @elseif($row->jenis === 'spotify_playlist')
+                                                <span class="badge border-0 rounded-pill px-3 py-2 text-white shadow-sm" style="background: linear-gradient(45deg, #1DB954, #191414);">
+                                                    <i class="mdi mdi-spotify me-1"></i> Spotify Playlist
+                                                </span>
+                                            @elseif($row->jenis === 'spotify_track')
+                                                <span class="badge border-0 rounded-pill px-3 py-2 text-white shadow-sm" style="background: linear-gradient(45deg, #18ac4d, #14c8d4);">
+                                                    <i class="mdi mdi-play-network me-1"></i> Spotify Track
                                                 </span>
                                             @else
                                                 <span class="badge border-0 rounded-pill px-3 py-2 bg-gradient-primary text-white shadow-sm" style="background: linear-gradient(45deg, #2196f3, #00BCD4);">
-                                                    <i class="mdi mdi-video me-1"></i> Single Video
+                                                    <i class="mdi mdi-video me-1"></i> YT Video
                                                 </span>
                                             @endif
                                         </td>
@@ -117,7 +129,7 @@
                                                 </div>
                                                 <h5 class="fw-bold text-dark">Alunan Studio Belum Tersedia</h5>
                                                 <p class="text-muted mx-auto mb-4" style="max-width: 400px;">
-                                                    Belum ada konten YouTube yang dikonfigurasi untuk tampilan layar antrean. 
+                                                    Belum ada konten Media (YouTube/Spotify) yang dikonfigurasi untuk tampilan layar antrean. 
                                                     Tambahkan konten pertama Anda sekarang untuk menghidupkan suasana barbershop.
                                                 </p>
                                                 <button wire:click="create()" class="btn btn-premium-add px-4 shadow-sm">
@@ -160,10 +172,16 @@
                         
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Tipe Konten YT</label>
+                                <label class="form-label small fw-bold text-uppercase text-muted">Tipe Konten Media</label>
                                 <select class="form-select" wire:model="jenis">
-                                    <option value="youtube_video">Single Video</option>
-                                    <option value="youtube_playlist">Playlist Link</option>
+                                    <optgroup label="YouTube">
+                                        <option value="youtube_video">Single Video</option>
+                                        <option value="youtube_playlist">Playlist Link</option>
+                                    </optgroup>
+                                    <optgroup label="Spotify">
+                                        <option value="spotify_playlist">Spotify Playlist</option>
+                                        <option value="spotify_track">Spotify Track</option>
+                                    </optgroup>
                                 </select>
                                 @error('jenis') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
                             </div>
@@ -175,13 +193,17 @@
                         </div>
 
                         <div class="mb-2">
-                            <label class="form-label small fw-bold text-uppercase text-muted">YouTube Content ID</label>
+                            <label class="form-label small fw-bold text-uppercase text-muted">Media Content URL / ID</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-link-variant text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0" wire:model="url_id" placeholder="ID Unik dari URL">
+                                <span class="input-group-text bg-white border-end-0"><i class="mdi {{ str_contains($jenis, 'spotify') ? 'mdi-spotify text-success' : 'mdi-youtube text-danger' }}"></i></span>
+                                <input type="text" class="form-control border-start-0" wire:model="url_id" placeholder="Copy-paste URL dari browser">
                             </div>
                             <div class="mt-2 text-center p-3 rounded bg-light border border-dashed">
-                                <span class="text-muted small">Preview: <strong>https://youtube.com/{{ $jenis == 'youtube_playlist' ? 'playlist?list=' : 'watch?v=' }}{{ $url_id ?: '...' }}</strong></span>
+                                @if(str_contains($jenis, 'spotify'))
+                                    <span class="text-muted small">Target: <strong>Spotify {{ str_replace('spotify_', '', $jenis) }}</strong></span>
+                                @else
+                                    <span class="text-muted small">Preview: <strong>https://youtube.com/{{ $jenis == 'youtube_playlist' ? 'playlist?list=' : 'watch?v=' }}{{ $url_id ?: '...' }}</strong></span>
+                                @endif
                             </div>
                             @error('url_id') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
                         </div>

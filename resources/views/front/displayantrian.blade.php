@@ -917,10 +917,17 @@
                     </div>
 
                     @php
-                        $youtubeSrc = "https://www.youtube.com/embed/jfKfPfyJRdk?playlist=rUxyKA_-grg,5qap5aO4i9A,7NOSDKb0H6k,w1hS_xL4DCM&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                        $mediaSrc = "https://www.youtube.com/embed/jfKfPfyJRdk?playlist=rUxyKA_-grg,5qap5aO4i9A,7NOSDKb0H6k,w1hS_xL4DCM&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                        $isSpotify = false;
                         
-                        // Helper to extract ID
-                        $extractId = function($input) {
+                        // Helper to extract IDs if not already sanitized (though admin does it)
+                        $extractId = function($input, $jenis = 'youtube_video') {
+                            if (str_contains($jenis, 'spotify')) {
+                                if (preg_match('/(?:spotify:|(?:https?:\/\/)?open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|playlist|album)\/)([a-zA-Z0-9]+)(?:.*)$/', $input, $matches)) {
+                                    return $matches[2];
+                                }
+                                return $input;
+                            }
                             if (preg_match('/list=([^&]+)/', $input, $matches)) return $matches[1];
                             if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $input, $matches)) return $matches[1];
                             return $input;
@@ -928,31 +935,37 @@
 
                         if(isset($playlists) && count($playlists) > 0) {
                             $first = $playlists->first();
-                            $firstId = $extractId($first->url_id);
+                            $firstId = $extractId($first->url_id, $first->jenis);
                             
-                            if($first->jenis == 'youtube_playlist') {
-                                $youtubeSrc = "https://www.youtube.com/embed/videoseries?list=" . $firstId . "&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                            if(str_contains($first->jenis, 'spotify')) {
+                                $isSpotify = true;
+                                $type = str_replace('spotify_', '', $first->jenis);
+                                $mediaSrc = "https://open.spotify.com/embed/" . $type . "/" . $firstId;
                             } else {
-                                $youtubeSrc = "https://www.youtube.com/embed/" . $firstId . "?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1&playlist=" . $firstId;
-                                
-                                if(count($playlists) > 1) {
-                                    $additionalIds = $playlists->slice(1)->map(function($p) use ($extractId) {
-                                        return $extractId($p->url_id);
-                                    })->filter()->implode(',');
+                                if($first->jenis == 'youtube_playlist') {
+                                    $mediaSrc = "https://www.youtube.com/embed/videoseries?list=" . $firstId . "&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                                } else {
+                                    $mediaSrc = "https://www.youtube.com/embed/" . $firstId . "?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1&playlist=" . $firstId;
                                     
-                                    if($additionalIds) {
-                                        $youtubeSrc = str_replace("&playlist=" . $firstId, "&playlist=" . $firstId . "," . $additionalIds, $youtubeSrc);
+                                    if(count($playlists) > 1) {
+                                        $additionalIds = $playlists->slice(1)->filter(fn($p) => !str_contains($p->jenis, 'spotify'))->map(function($p) use ($extractId) {
+                                            return $extractId($p->url_id, $p->jenis);
+                                        })->filter()->implode(',');
+                                        
+                                        if($additionalIds) {
+                                            $mediaSrc = str_replace("&playlist=" . $firstId, "&playlist=" . $firstId . "," . $additionalIds, $mediaSrc);
+                                        }
                                     }
                                 }
                             }
                         }
                     @endphp
-                    <!-- Dynamic Dashboard Playlist -->
-                    <iframe id="youtubeIframe" width="100%" height="100%" 
-                        src="{{ $youtubeSrc }}" 
+                    <!-- Dynamic Dashboard Media (YT/Spotify) -->
+                    <iframe id="mediaIframe" width="100%" height="100%" 
+                        src="{{ $mediaSrc }}" 
                         role="presentation"
-                        title="Barbershop Vibes Playlist" frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                        title="Barbershop Studio Media" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
                 </div>
             </div>
 

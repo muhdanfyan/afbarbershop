@@ -75,9 +75,10 @@
             font-size: 0.65rem;
             font-weight: 800;
             letter-spacing: 2px;
-            padding-top: 1rem;
-            margin-bottom: 0.1rem;
-            padding-bottom: 0.1rem;
+            letter-spacing: 2px;
+            padding-top: 0.5rem;
+            margin-bottom: 0px;
+            padding-bottom: 0px;
             margin-right: 1.5rem;
             margin-left: 1.5rem;
             font-family: 'Montserrat', sans-serif;
@@ -87,8 +88,8 @@
         }
         .sidebar .nav .nav-item .nav-link {
             color: #d1d5db !important;
-            padding: 0.65rem 1.25rem !important;
-            margin: 0.25rem 1.25rem !important;
+            padding: 0.4rem 1.25rem !important;
+            margin: 0.1rem 1.25rem !important;
             border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             align-items: center;
@@ -102,12 +103,12 @@
         }
         .sidebar .nav .nav-item .nav-link i.menu-icon {
             color: inherit !important;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             margin-right: 1rem;
         }
         .sidebar .nav .nav-item .nav-link .menu-title {
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-family: 'Montserrat', sans-serif;
             color: inherit !important;
             letter-spacing: 0.3px;
@@ -129,7 +130,7 @@
         }
         
         .content-wrapper {
-            padding: 2rem !important;
+            padding: 1rem 1.5rem !important;
             width: 100% !important;
             max-width: 100% !important;
             flex-grow: 1;
@@ -140,7 +141,7 @@
             border-radius: 16px !important;
             box-shadow: 0 4px 25px rgba(0,0,0,0.04) !important;
             width: 100% !important;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
         }
 
         .table-responsive {
@@ -159,11 +160,11 @@
             font-weight: 800;
             letter-spacing: 1px;
             border-top: none !important;
-            padding: 1.25rem 1rem !important;
+            padding: 0.75rem 1rem !important;
         }
 
         .table tbody td {
-            padding: 1.25rem 1rem !important;
+            padding: 0.75rem 1rem !important;
             vertical-align: middle !important;
         }
 

@@ -50,12 +50,12 @@ class PlaylistIndex extends Component
     {
         $this->validate([
             'judul' => 'required',
-            'jenis' => 'required|in:youtube_video,youtube_playlist',
+            'jenis' => 'required|in:youtube_video,youtube_playlist,spotify_playlist,spotify_track',
             'url_id' => 'required',
             'urutan' => 'integer',
         ]);
 
-        $extractedId = $this->extractYoutubeId($this->url_id);
+        $extractedId = $this->extractMediaId($this->url_id, $this->jenis);
 
         Playlist::updateOrCreate(['id' => $this->playlist_id], [
             'judul' => $this->judul,
@@ -71,8 +71,17 @@ class PlaylistIndex extends Component
         $this->resetInputFields();
     }
 
-    private function extractYoutubeId($input)
+    private function extractMediaId($input, $jenis)
     {
+        // Spotify logic
+        if (str_contains($jenis, 'spotify')) {
+            if (preg_match('/(?:spotify:|(?:https?:\/\/)?open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|playlist|album)\/)([a-zA-Z0-9]+)(?:.*)$/', $input, $matches)) {
+                return $matches[2];
+            }
+            return $input;
+        }
+
+        // YouTube logic
         // For Playlist: ?list=ID
         if (preg_match('/list=([^&]+)/', $input, $matches)) {
             return $matches[1];

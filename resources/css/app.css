@@ -90,6 +90,37 @@
         @apply border-accent;
     }
 
+    /* Navbar Polish */
+    .nav-link {
+        @apply relative py-1 px-1 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] transition-all duration-300;
+    }
+
+    .nav-link::after {
+        content: '';
+        @apply absolute bottom-0 left-1/2 w-0 h-0.5 bg-accent transition-all duration-300 -translate-x-1/2;
+    }
+
+    .nav-link:hover::after, .nav-link.active::after {
+        @apply w-full;
+    }
+
+    .nav-link.active {
+        @apply text-accent;
+    }
+
+    .navbar-scrolled {
+        @apply py-2 md:py-3 shadow-2xl bg-white/95 dark:bg-black/95 backdrop-blur-xl border-b border-accent/20;
+    }
+
+    /* Theme Toggle Refinement */
+    #theme-toggle-container, #theme-toggle-mobile-container {
+        @apply flex items-center bg-gray-100 dark:bg-gray-800 rounded-full p-1 border border-gray-200 dark:border-gray-700 shadow-inner overflow-hidden;
+    }
+
+    .theme-btn-active {
+        @apply bg-accent text-black shadow-lg scale-105;
+    }
+
     /* Dark Mode Overrides */
     .dark section.bg-white {
         @apply bg-gray-950;
