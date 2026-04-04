@@ -10,6 +10,9 @@ class PlaylistIndex extends Component
     public $playlists;
     public $judul, $jenis, $url_id, $urutan, $status, $playlist_id;
     public $isModalOpen = 0;
+    public $showDeleteModal = false;
+    public $deleteId = null;
+    public $deleteNama = '';
 
     public function render()
     {
@@ -52,10 +55,12 @@ class PlaylistIndex extends Component
             'urutan' => 'integer',
         ]);
 
+        $extractedId = $this->extractYoutubeId($this->url_id);
+
         Playlist::updateOrCreate(['id' => $this->playlist_id], [
             'judul' => $this->judul,
             'jenis' => $this->jenis,
-            'url_id' => $this->url_id,
+            'url_id' => $extractedId,
             'urutan' => $this->urutan ?? 0,
             'status' => $this->status ?? true,
         ]);
@@ -64,6 +69,21 @@ class PlaylistIndex extends Component
 
         $this->closeModal();
         $this->resetInputFields();
+    }
+
+    private function extractYoutubeId($input)
+    {
+        // For Playlist: ?list=ID
+        if (preg_match('/list=([^&]+)/', $input, $matches)) {
+            return $matches[1];
+        }
+        
+        // For Video: v=ID or youtu.be/ID or embed/ID
+        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $input, $matches)) {
+            return $matches[1];
+        }
+
+        return $input; // Return as is if already an ID or no match
     }
 
     public function edit($id)
@@ -79,10 +99,27 @@ class PlaylistIndex extends Component
         $this->openModal();
     }
 
+    public function confirmDelete($id)
+    {
+        $playlist = Playlist::find($id);
+        if ($playlist) {
+            $this->deleteId = $id;
+            $this->deleteNama = $playlist->judul;
+            $this->showDeleteModal = true;
+        }
+    }
+
+    public function cancelDelete()
+    {
+        $this->deleteId = null;
+        $this->showDeleteModal = false;
+    }
+
     public function delete($id)
     {
         Playlist::find($id)->delete();
         session()->flash('message', 'Playlist Deleted Successfully.');
+        $this->cancelDelete();
     }
 
     public function toggleStatus($id)

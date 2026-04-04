@@ -18,16 +18,22 @@ class UserIndex extends Component
     public $editMode = false;
     public $showForm = false;
     public $search = '';
+    public $deleteNama = '';
 
     public function confirmDelete($id)
     {
-        $this->deleteId = $id;
-        $this->showDeleteModal = true;
+        $user = User::find($id);
+        if ($user) {
+            $this->deleteId = $id;
+            $this->deleteNama = $user->name;
+            $this->showDeleteModal = true;
+        }
     }
 
     public function cancelDelete()
     {
         $this->deleteId = null;
+        $this->deleteNama = null;
         $this->showDeleteModal = false;
     }
 

@@ -14,6 +14,7 @@ class JasaIndex extends Component
     public $paginationTheme = 'bootstrap';
     public $showDeleteModal = false;
     public $deleteId = null;
+    public $deleteNama = null;
     public $nama, $deskripsi, $harga, $foto, $foto_lama;
     public $jasaIdEdit = null;
     public $editMode = false;
@@ -22,13 +23,16 @@ class JasaIndex extends Component
 
     public function confirmDelete($id)
     {
+        $jasa = Jasa::findOrFail($id);
         $this->deleteId = $id;
+        $this->deleteNama = $jasa->nama;
         $this->showDeleteModal = true;
     }
 
     public function cancelDelete()
     {
         $this->deleteId = null;
+        $this->deleteNama = null;
         $this->showDeleteModal = false;
     }
 

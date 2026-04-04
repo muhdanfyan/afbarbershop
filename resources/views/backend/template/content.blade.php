@@ -123,11 +123,50 @@
             background: #111827 !important;
         }
         
-        /* Main Body Background */
+        /* Main Body Background & Full Width Layout */
         body, .page-body-wrapper {
             background: #f8fafc !important; /* Soft premium gray/white for content */
         }
         
+        .content-wrapper {
+            padding: 2rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            flex-grow: 1;
+        }
+
+        .card {
+            border: none !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.04) !important;
+            width: 100% !important;
+            margin-bottom: 2rem;
+        }
+
+        .table-responsive {
+            width: 100% !important;
+            border: none !important;
+        }
+
+        .table {
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        .table thead th {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            border-top: none !important;
+            padding: 1.25rem 1rem !important;
+        }
+
+        .table tbody td {
+            padding: 1.25rem 1rem !important;
+            vertical-align: middle !important;
+        }
+
         /* Icon-only sidebar handling (For precise centering) */
         .sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-title,
         .sidebar-icon-only .sidebar .nav .nav-category {
@@ -150,6 +189,76 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        /* Premium Button System */
+        .btn-premium-add {
+            background: linear-gradient(135deg, #d4af37, #b8972e);
+            color: #000 !important;
+            font-weight: 700;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-premium-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            filter: brightness(1.1);
+        }
+        .btn-premium-edit {
+            background: #e0f2fe;
+            color: #0369a1 !important;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+        .btn-premium-edit:hover {
+            background: #bae6fd;
+            transform: scale(1.05);
+        }
+        .btn-premium-delete {
+            background: #fee2e2;
+            color: #b91c1c !important;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+        .btn-premium-delete:hover {
+            background: #fecaca;
+            transform: scale(1.05);
+        }
+        .btn-premium-view {
+            background: #f1f5f9;
+            color: #475569 !important;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+        .btn-premium-view:hover {
+            background: #e2e8f0;
+            transform: scale(1.05);
+        }
+        .btn-premium-add i, .btn-premium-edit i, .btn-premium-delete i, .btn-premium-view i {
+            margin-right: 6px;
+            font-size: 1.1rem;
         }
     </style>
 </head>

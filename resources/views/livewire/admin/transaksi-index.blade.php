@@ -1,62 +1,101 @@
 <div>
-    <div class="mb-3">
-        <a wire:click.prevent="$set('status', 'menunggu')" href="#"
-            class="btn btn-warning btn-sm mr-2 {{ $status == 'menunggu' ? 'font-weight-bold' : '' }}">Menunggu</a>
-        <a wire:click.prevent="$set('status', 'proses')" href="#"
-            class="btn btn-primary btn-sm mr-2 {{ $status == 'proses' ? 'font-weight-bold' : '' }}">Proses</a>
-        <a wire:click.prevent="$set('status', 'selesai')" href  ="#"
-            class="btn btn-success btn-sm {{ $status == 'selesai' ? 'font-weight-bold' : '' }}">Selesai</a>
+    <div class="row">
+        <div class="col-sm-12 mb-4 mb-xl-0 d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="font-weight-bold text-dark">Daftar Transaksi</h4>
+                <p class="font-weight-normal mb-2 text-muted">Kelola dan tinjau riwayat transaksi layanan</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button wire:click.prevent="$set('status', 'menunggu')" 
+                    class="btn btn-sm {{ $status == 'menunggu' ? 'btn-warning font-weight-bold shadow-sm' : 'btn-outline-warning' }}" style="border-radius: 8px; padding: 0.5rem 1rem;">
+                    Menunggu
+                </button>
+                <button wire:click.prevent="$set('status', 'proses')" 
+                    class="btn btn-sm {{ $status == 'proses' ? 'btn-primary font-weight-bold shadow-sm' : 'btn-outline-primary' }}" style="border-radius: 8px; padding: 0.5rem 1rem;">
+                    Proses
+                </button>
+                <button wire:click.prevent="$set('status', 'selesai')" 
+                    class="btn btn-sm {{ $status == 'selesai' ? 'btn-success font-weight-bold shadow-sm' : 'btn-outline-success' }}" style="border-radius: 8px; padding: 0.5rem 1rem;">
+                    Selesai
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Tanggal</th>
-                    <th>Nama</th>
-                    <th>Layanan</th>
-                    <th>Kapster</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($transaksis as $trx)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $trx->created_at->format('d-m-Y H:i') }}</td>
-                        <td>{{ $trx->nama }}</td>
-                        <td>
-                            @if($trx->jasa && $trx->jasa->count())
-                                <ul class="mb-0 pl-3">
-                                    @foreach($trx->jasa as $j)
-                                        <li>{{ $j->nama }}</li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                -
-                            @endif
-                        </td>
-                        <td>{{ $trx->kapster->nama ?? '-' }}</td>
-                        <td>
-                            @if($trx->status == 'menunggu')
-                                <span class="badge badge-warning">Menunggu</span>
-                            @elseif($trx->status == 'proses')
-                                <span class="badge badge-primary">Proses</span>
-                            @elseif($trx->status == 'selesai')
-                                <span class="badge badge-success">Selesai</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.transaksi.show', $trx->id) }}" class="btn btn-info btn-sm">Detail</a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" class="text-center text-muted">Tidak ada transaksi.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0" style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead style="background: #111827; color: #fff;">
+                                <tr>
+                                    <th class="border-0 px-4 py-3" style="border-top-left-radius: 12px; border-bottom-left-radius: 12px;">#</th>
+                                    <th class="border-0 px-4 py-3">Tanggal</th>
+                                    <th class="border-0 px-4 py-3">Nama</th>
+                                    <th class="border-0 px-4 py-3">Layanan</th>
+                                    <th class="border-0 px-4 py-3">Kapster</th>
+                                    <th class="border-0 px-4 py-3">Status</th>
+                                    <th class="border-0 px-4 py-3" style="border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align:right;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($transaksis as $trx)
+                                    <tr>
+                                        <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                                        <td class="px-4 py-3">
+                                            <span class="text-muted"><i class="mdi mdi-calendar-range me-1"></i> {{ $trx->created_at->format('d-m-Y') }}</span>
+                                            <div class="small text-muted">{{ $trx->created_at->format('H:i') }}</div>
+                                        </td>
+                                        <td class="px-4 py-3 fw-bold">{{ $trx->nama }}</td>
+                                        <td class="px-4 py-3">
+                                            @if($trx->jasa && $trx->jasa->count())
+                                                @foreach($trx->jasa as $j)
+                                                    <span class="badge" style="background: rgba(212, 175, 55, 0.1); color: #b8972e; border: 1px solid rgba(212, 175, 55, 0.2); margin-right: 2px;">{{ $j->nama }}</span>
+                                                @endforeach
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            @if($trx->kapster)
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ $trx->kapster->foto ? asset('storage/' . $trx->kapster->foto) : 'https://ui-avatars.com/api/?name='.urlencode($trx->kapster->nama).'&background=333&color=fff' }}" 
+                                                        class="rounded-circle me-2" width="30" height="30">
+                                                    <span>{{ $trx->kapster->nama }}</span>
+                                                </div>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            @if($trx->status == 'menunggu')
+                                                <span class="badge badge-warning">Menunggu</span>
+                                            @elseif($trx->status == 'proses')
+                                                <span class="badge badge-primary">Proses</span>
+                                            @elseif($trx->status == 'selesai')
+                                                <span class="badge badge-success">Selesai</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-4 py-3 text-end">
+                                            <a href="{{ route('admin.transaksi.show', $trx->id) }}" class="btn btn-premium-view">
+                                                <i class="mdi mdi-eye-outline"></i> Detail
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5 text-muted">
+                                            <i class="mdi mdi-cash-multiple mdi-48px d-block mb-3 opacity-25"></i>
+                                            <p class="mb-0">Tidak ada transaksi yang ditemukan.</p>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

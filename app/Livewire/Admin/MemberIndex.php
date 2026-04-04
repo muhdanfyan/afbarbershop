@@ -13,6 +13,9 @@ class MemberIndex extends Component
     public $search = '';
     public $nama, $nomor_wa, $alamat, $memberIdEdit;
     public $showForm = false;
+    public $showDeleteModal = false;
+    public $deleteId = null;
+    public $deleteNama = '';
 
     protected $rules = [
         'nama' => 'required',
@@ -69,12 +72,25 @@ class MemberIndex extends Component
 
     public function confirmDelete($id)
     {
-        $this->dispatch('confirm-delete', id: $id);
+        $member = Member::find($id);
+        if ($member) {
+            $this->deleteId = $id;
+            $this->deleteNama = $member->nama;
+            $this->showDeleteModal = true;
+        }
+    }
+
+    public function cancelDelete()
+    {
+        $this->deleteId = null;
+        $this->deleteNama = null;
+        $this->showDeleteModal = false;
     }
 
     public function delete($id)
     {
         Member::destroy($id);
+        $this->cancelDelete();
     }
 
     public function resetForm()

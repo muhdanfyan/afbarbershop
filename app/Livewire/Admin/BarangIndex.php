@@ -7,30 +7,35 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithFileUploads;
-
 class BarangIndex extends Component
 {
-    use WithFileUploads;
+    use WithPagination, WithoutUrlPagination, WithFileUploads;
+
     public $showDeleteModal = false;
     public $deleteId = null;
+    public $deleteNama = null;
+
+    public $paginationTheme = 'bootstrap';
+    public $nama_barang, $deskripsi, $harga_jual, $harga_beli, $stok, $foto, $foto_lama;
+    public $barangIdEdit = null;
+    public $editMode = false;
+    public $showForm = false;
+    public $search = '';
 
     public function confirmDelete($id)
     {
+        $barang = Barang::findOrFail($id);
         $this->deleteId = $id;
+        $this->deleteNama = $barang->nama;
         $this->showDeleteModal = true;
     }
 
     public function cancelDelete()
     {
         $this->deleteId = null;
+        $this->deleteNama = null;
         $this->showDeleteModal = false;
     }
-    use WithPagination, WithoutUrlPagination;
-    public $paginationTheme = 'bootstrap';
-    public $nama_barang, $deskripsi, $harga_jual, $harga_beli, $stok, $foto, $foto_lama;
-    public $barangIdEdit = null;
-    public $editMode = false;
-    public $showForm = false;
 
     public function edit($id)
     {
@@ -104,12 +109,9 @@ class BarangIndex extends Component
         $this->showForm();
     }
 
-    public $search = '';
-
     public function updatedSearch()
     {
         $this->resetPage();
-
     }
 
     public function simpan()

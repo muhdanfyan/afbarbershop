@@ -749,6 +749,101 @@
                 flex-wrap: wrap;
             }
         }
+        /* YouTube Panel & Overlay */
+        .youtube-panel {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .video-control-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+
+        .youtube-panel:hover .video-control-overlay {
+            opacity: 1;
+        }
+
+        .video-overlay-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .video-overlay-btn:hover {
+            background: var(--primary-gold);
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        /* Fullscreen Mode Fix */
+        .youtube-panel:fullscreen {
+            width: 100vw !important;
+            height: 100vh !important;
+            border: none !important;
+            border-radius: 0 !important;
+            background: #000;
+        }
+
+        .youtube-panel:fullscreen .video-control-overlay {
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Playlist Modal Styling */
+        .playlist-modal .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--primary-gold);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .playlist-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), transparent);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .playlist-card:hover {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .playlist-card.active {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .playlist-thumbnail {
+            width: 60px;
+            height: 45px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
     </style>
 </head>
 
@@ -810,27 +905,52 @@
                     </div>
                 </div>
 
-                <div class="youtube-panel" style="width: 100%; height: 180px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; flex-shrink: 0;">
+                <div class="youtube-panel" id="youtubePanel" style="width: 100%; height: 180px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; flex-shrink: 0;">
+                    <!-- Overlay Buttons -->
+                    <div class="video-control-overlay">
+                        <button class="video-overlay-btn" onclick="toggleVideoFullscreen()" title="Fullscreen">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                        <button class="video-overlay-btn" data-bs-toggle="modal" data-bs-target="#playlistExplorer" title="Playlist Explorer">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+
                     @php
                         $youtubeSrc = "https://www.youtube.com/embed/jfKfPfyJRdk?playlist=rUxyKA_-grg,5qap5aO4i9A,7NOSDKb0H6k,w1hS_xL4DCM&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                        
+                        // Helper to extract ID
+                        $extractId = function($input) {
+                            if (preg_match('/list=([^&]+)/', $input, $matches)) return $matches[1];
+                            if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $input, $matches)) return $matches[1];
+                            return $input;
+                        };
+
                         if(isset($playlists) && count($playlists) > 0) {
                             $first = $playlists->first();
+                            $firstId = $extractId($first->url_id);
+                            
                             if($first->jenis == 'youtube_playlist') {
-                                $youtubeSrc = "https://www.youtube.com/embed/videoseries?list=" . $first->url_id . "&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                                $youtubeSrc = "https://www.youtube.com/embed/videoseries?list=" . $firstId . "&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
                             } else {
-                                $youtubeSrc = "https://www.youtube.com/embed/" . $first->url_id . "?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                                $youtubeSrc = "https://www.youtube.com/embed/" . $firstId . "?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1&playlist=" . $firstId;
+                                
                                 if(count($playlists) > 1) {
-                                    $playlistIds = $playlists->slice(1)->pluck('url_id')->implode(',');
-                                    $youtubeSrc .= "&playlist=" . $playlistIds;
-                                } else {
-                                    $youtubeSrc .= "&playlist=" . $first->url_id;
+                                    $additionalIds = $playlists->slice(1)->map(function($p) use ($extractId) {
+                                        return $extractId($p->url_id);
+                                    })->filter()->implode(',');
+                                    
+                                    if($additionalIds) {
+                                        $youtubeSrc = str_replace("&playlist=" . $firstId, "&playlist=" . $firstId . "," . $additionalIds, $youtubeSrc);
+                                    }
                                 }
                             }
                         }
                     @endphp
                     <!-- Dynamic Dashboard Playlist -->
-                    <iframe width="100%" height="100%" 
+                    <iframe id="youtubeIframe" width="100%" height="100%" 
                         src="{{ $youtubeSrc }}" 
+                        role="presentation"
                         title="Barbershop Vibes Playlist" frameborder="0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
@@ -890,6 +1010,34 @@
             <div>
                 <div class="notification-title">Pemanggilan Antrian</div>
                 <div class="notification-message" id="notificationMessage">Nomor B015 dipanggil</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlist Explorer Modal -->
+    <div class="modal fade playlist-modal" id="playlistExplorer" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
+                <div class="modal-header border-0 p-4">
+                    <h5 class="modal-title fw-bold text-dark"><i class="fas fa-play-circle text-warning me-2"></i> Pilih Playlist Studio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 pt-0">
+                    <div class="playlist-container" style="max-height: 400px; overflow-y: auto;">
+                        @foreach($playlists as $p)
+                            <div class="playlist-card" onclick="changeMedia('{{ $p->url_id }}', '{{ $p->jenis }}', this)">
+                                <img src="https://img.youtube.com/vi/{{ $p->jenis === 'youtube_video' ? $p->url_id : 'videoseries' }}/default.jpg" 
+                                    class="playlist-thumbnail" 
+                                    onerror="this.src='{{ asset('images/placeholder-yt.jpg') }}'">
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold text-dark small" style="line-height: 1.2;">{{ $p->judul }}</div>
+                                    <small class="text-muted text-uppercase" style="font-size: 10px;">{{ str_replace('_', ' ', $p->jenis) }}</small>
+                                </div>
+                                <i class="fas fa-chevron-right text-muted small opacity-50"></i>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1078,6 +1226,56 @@
             }
         }
 
+        // Toggle YouTube Fullscreen
+        function toggleVideoFullscreen() {
+            const panel = document.getElementById('youtubePanel');
+            if (!document.fullscreenElement) {
+                if (panel.requestFullscreen) {
+                    panel.requestFullscreen();
+                } else if (panel.webkitRequestFullscreen) {
+                    panel.webkitRequestFullscreen();
+                } else if (panel.msRequestFullscreen) {
+                    panel.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Change YouTube Media
+        function changeMedia(id, type, element) {
+            const iframe = document.getElementById('youtubeIframe');
+            let src = '';
+            
+            // Clean ID (Extract in case seeder has URLs)
+            const extractId = (input) => {
+                const listMatch = input.match(/list=([^&]+)/);
+                if (listMatch) return listMatch[1];
+                const videoMatch = input.match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i');
+                if (videoMatch) return videoMatch[1];
+                return input;
+            };
+
+            const cleanId = extractId(id);
+
+            if (type === 'youtube_playlist') {
+                src = `https://www.youtube.com/embed/videoseries?list=${cleanId}&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1`;
+            } else {
+                src = `https://www.youtube.com/embed/${cleanId}?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1&playlist=${cleanId}`;
+            }
+
+            iframe.src = src;
+
+            // Highlight active card
+            document.querySelectorAll('.playlist-card').forEach(c => c.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            // Close modal using standard data attribute or BS instance
+            bootstrap.Modal.getInstance(document.getElementById('playlistExplorer')).hide();
+        }
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             switch (e.key) {
@@ -1094,9 +1292,13 @@
                 case 'f':
                     toggleFullscreen();
                     break;
+                case 'v': // New shortcut for video fullscreen
+                    toggleVideoFullscreen();
+                    break;
             }
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

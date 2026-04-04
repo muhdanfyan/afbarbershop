@@ -20,7 +20,7 @@ class GalleryIndex extends Component
     public $editMode = false;
 
     public $galleryIdEdit = null;
-    public $title, $file, $type, $description, $file_lama;
+    public $title, $file, $type, $description, $file_lama, $deleteNama;
 
     public function render()
     {
@@ -83,13 +83,18 @@ class GalleryIndex extends Component
 
     public function confirmDelete($id)
     {
-        $this->deleteId = $id;
-        $this->showDeleteModal = true;
+        $gallery = Gallery::find($id);
+        if ($gallery) {
+            $this->deleteNama = $gallery->title ?: 'Gallery Item #' . $gallery->id;
+            $this->deleteId = $id;
+            $this->showDeleteModal = true;
+        }
     }
 
     public function cancelDelete()
     {
         $this->deleteId = null;
+        $this->deleteNama = null;
         $this->showDeleteModal = false;
     }
 

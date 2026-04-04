@@ -1,132 +1,250 @@
 <div>
-    <div class="main-panel">
-        <div class="content-wrapper">
-            <div class="row">
-                <div class="col-sm-12 mb-4 mb-xl-0 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h4 class="font-weight-bold text-dark">Playlist Studio</h4>
-                        <p class="font-weight-normal mb-2 text-muted">Kelola Daftar Putar YouTube untuk Layar Antrean</p>
-                    </div>
-                    <button wire:click="create()" class="btn px-4 py-2" style="background: linear-gradient(135deg, #d4af37, #b8972e); color: #000; font-weight: 700; border-radius: 12px; border: none; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);">
-                        <i class="mdi mdi-plus me-1"></i> Tambah Playlist
-                    </button>
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #FFD700, #B8860B);">
+                    <i class="mdi mdi-youtube-tv text-dark fs-4"></i>
+                </div>
+                <div>
+                    <h4 class="font-weight-bold text-dark mb-0">Playlist Studio AF</h4>
+                    <p class="text-muted small mb-0">Media streaming konfigurasi untuk layar tampilan antrean</p>
                 </div>
             </div>
+            <button wire:click="create()" class="btn btn-premium-add px-4 py-2 shadow-sm animate__animated animate__pulse animate__infinite">
+                <i class="mdi mdi-plus-circle-outline me-1"></i> Tambah Playlist Baru
+            </button>
+        </div>
+    </div>
 
-            @if (session()->has('message'))
-                <div class="alert alert-success mt-3" style="border-radius: 12px; font-weight: 600;">
-                    <i class="mdi mdi-check-circle me-1"></i> {{ session('message') }}
-                </div>
-            @endif
+    <!-- Alert Section -->
+    @if (session()->has('message'))
+        <div class="alert alert-success alert-dismissible border-0 shadow-sm fade show mb-4 animate__animated animate__fadeInDown" role="alert" style="border-radius: 15px; background: #e8f5e9;">
+            <div class="d-flex align-items-center">
+                <i class="mdi mdi-check-alpha text-success mdi-24px me-3"></i>
+                <span class="text-success fw-bold">{{ session('message') }}</span>
+            </div>
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card stat-card border-0" style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-                        <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead style="background: #111827; color: #fff;">
-                                        <tr>
-                                            <th class="border-0 px-4 py-3" style="border-top-left-radius: 12px; border-bottom-left-radius: 12px;">#</th>
-                                            <th class="border-0 px-4 py-3">Urutan</th>
-                                            <th class="border-0 px-4 py-3">Nama Playlist</th>
-                                            <th class="border-0 px-4 py-3">Jenis</th>
-                                            <th class="border-0 px-4 py-3">Videl / Playlist ID</th>
-                                            <th class="border-0 px-4 py-3">Status</th>
-                                            <th class="border-0 px-4 py-3" style="border-top-right-radius: 12px; border-bottom-right-radius: 12px; text-align:right;">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($playlists as $index => $row)
-                                            <tr>
-                                                <td class="px-4 py-3">{{ $loop->iteration }}</td>
-                                                <td class="px-4 py-3">
-                                                    <span class="badge" style="background: #f1f5f9; color: #475569; font-weight: bold; padding: 0.5rem 0.8rem; border-radius: 8px;">
-                                                        {{ $row->urutan }}
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-3 fw-bold">{{ $row->judul }}</td>
-                                                <td class="px-4 py-3">
-                                                    @if($row->jenis === 'youtube_playlist')
-                                                        <span class="badge" style="background: rgba(220, 38, 38, 0.1); color: #dc2626;"><i class="mdi mdi-playlist-play"></i> YT Playlist</span>
+    <!-- Main Content Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background: #f8f9fa;">
+                                <tr>
+                                    <th class="ps-4 py-3 text-uppercase small fw-bold text-muted" style="width: 80px;">Urutan</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted">Informasi Konten</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted">Tipe Media</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted">ID YouTube</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted text-center">Status</th>
+                                    <th class="pe-4 py-3 text-uppercase small fw-bold text-muted text-end">Kelola</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($playlists as $row)
+                                    <tr class="transition-all">
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center justify-content-center bg-light fw-bold rounded-3" style="width: 35px; height: 35px; color: #444; border: 1px solid #eee;">
+                                                {{ $row->urutan }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3 position-relative shadow-sm rounded overflow-hidden" 
+                                                    style="width: 65px; height: 48px; background: #222; border: 1px solid #ddd;">
+                                                    @if($row->jenis === 'youtube_video' && strlen($row->url_id) == 11)
+                                                        <img src="https://img.youtube.com/vi/{{ $row->url_id }}/mqdefault.jpg" 
+                                                            style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;"
+                                                            onerror="this.parentElement.innerHTML='<div class=\'d-flex align-items-center justify-content-center h-100\'><i class=\'mdi mdi-play-circle text-muted\'></i></div>';">
                                                     @else
-                                                        <span class="badge" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;"><i class="mdi mdi-video"></i> YT Video</span>
+                                                        <div class="d-flex align-items-center justify-content-center h-100 bg-dark text-white-50">
+                                                            <i class="mdi {{ $row->jenis == 'youtube_playlist' ? 'mdi-playlist-play' : 'mdi-video-off' }} fs-5"></i>
+                                                        </div>
                                                     @endif
-                                                </td>
-                                                <td class="px-4 py-3 text-muted code" style="font-family: monospace;">{{ $row->url_id }}</td>
-                                                <td class="px-4 py-3">
-                                                    <button wire:click="toggleStatus({{ $row->id }})" class="btn btn-sm d-flex align-items-center justify-content-center" style="border-radius: 8px; width: 40px; height: 35px; background: {{ $row->status ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }}; color: {{ $row->status ? '#22c55e' : '#ef4444' }}; border: none;">
-                                                        <i class="mdi {{ $row->status ? 'mdi-toggle-switch' : 'mdi-toggle-switch-off' }}" style="font-size: 1.5rem;"></i>
-                                                    </button>
-                                                </td>
-                                                <td class="px-4 py-3 text-end" style="text-align: right;">
-                                                    <button wire:click="edit({{ $row->id }})" class="btn btn-sm btn-icon" style="background: #f8fafc; color: #3b82f6; border-radius: 8px;">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </button>
-                                                    <button wire:click="delete({{ $row->id }})" class="btn btn-sm btn-icon ms-1" style="background: #f8fafc; color: #ef4444; border-radius: 8px;" onclick="confirm('Apakah Anda yakin ingin menghapus data ini?') || event.stopImmediatePropagation()">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="7" class="text-center py-5 text-muted">
-                                                    <i class="mdi mdi-music-note-off mdi-48px d-block mb-3 opacity-25"></i>
-                                                    <p class="mb-0">Belum ada kompilasi Playlist yang ditambahkan.</p>
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                                    <div class="position-absolute hover-overlay w-100 h-100 top-0 start-0 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.2); transition: 0.3s; pointer-events: none;">
+                                                        <i class="mdi mdi-play text-white opacity-0" style="font-size: 14px;"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span class="fw-bold text-dark d-block mb-0">{{ $row->judul }}</span>
+                                                    <small class="text-muted text-uppercase" style="font-size: 10px; letter-spacing: 0.5px;">{{ str_replace('_', ' ', $row->jenis) }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if($row->jenis === 'youtube_playlist')
+                                                <span class="badge border-0 rounded-pill px-3 py-2 bg-gradient-danger text-white shadow-sm" style="background: linear-gradient(45deg, #f44336, #e91e63);">
+                                                    <i class="mdi mdi-playlist-play me-1"></i> Playlist
+                                                </span>
+                                            @else
+                                                <span class="badge border-0 rounded-pill px-3 py-2 bg-gradient-primary text-white shadow-sm" style="background: linear-gradient(45deg, #2196f3, #00BCD4);">
+                                                    <i class="mdi mdi-video me-1"></i> Single Video
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <code class="bg-light p-2 rounded text-primary small fw-bold border">{{ $row->url_id }}</code>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="form-check form-switch d-inline-block">
+                                                <input class="form-check-input custom-switch-gold" type="checkbox" role="switch" 
+                                                    {{ $row->status ? 'checked' : '' }}
+                                                    wire:click="toggleStatus({{ $row->id }})" style="cursor: pointer; width: 45px; height: 22px;">
+                                            </div>
+                                        </td>
+                                        <td class="pe-4 text-end">
+                                            <div class="btn-group shadow-sm rounded-pill overflow-hidden" style="border: 1px solid #eee;">
+                                                <button wire:click="edit({{ $row->id }})" class="btn bg-white text-info border-end p-2 px-3" title="Edit">
+                                                    <i class="mdi mdi-pencil-box-outline fs-5"></i>
+                                                </button>
+                                                <button wire:click="confirmDelete({{ $row->id }})" class="btn bg-white text-danger p-2 px-3" title="Hapus">
+                                                    <i class="mdi mdi-trash-can-outline fs-5"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5">
+                                            <div class="empty-state py-5">
+                                                <div class="mb-4 bg-light d-inline-flex p-4 rounded-circle border shadow-sm">
+                                                    <i class="mdi mdi-youtube-subscription text-muted mdi-48px"></i>
+                                                </div>
+                                                <h5 class="fw-bold text-dark">Alunan Studio Belum Tersedia</h5>
+                                                <p class="text-muted mx-auto mb-4" style="max-width: 400px;">
+                                                    Belum ada konten YouTube yang dikonfigurasi untuk tampilan layar antrean. 
+                                                    Tambahkan konten pertama Anda sekarang untuk menghidupkan suasana barbershop.
+                                                </p>
+                                                <button wire:click="create()" class="btn btn-premium-add px-4 shadow-sm">
+                                                    <i class="mdi mdi-plus me-1"></i> Konfigurasi Sekarang
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form (Tambah/Edit) -->
+    @if($isModalOpen)
+        <div class="modal-backdrop fade show"></div>
+        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
+                    <div class="modal-header border-0 p-4 pb-0">
+                        <div class="bg-light p-2 rounded-circle me-3">
+                            <i class="mdi mdi-television-guide text-warning fs-3"></i>
+                        </div>
+                        <h5 class="modal-title font-weight-bold text-dark">{{ $playlist_id ? 'Perbarui Konten Studio' : 'Konfigurasi Konten Baru' }}</h5>
+                        <button type="button" class="btn-close" wire:click="closeModal()"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-uppercase text-muted">Nama Tampilan Studio</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-format-title text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0" wire:model="judul" placeholder="Cth: Barber Music Night">
                             </div>
+                            @error('judul') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-uppercase text-muted">Tipe Konten YT</label>
+                                <select class="form-select" wire:model="jenis">
+                                    <option value="youtube_video">Single Video</option>
+                                    <option value="youtube_playlist">Playlist Link</option>
+                                </select>
+                                @error('jenis') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-uppercase text-muted">Urutan</label>
+                                <input type="number" class="form-control" wire:model="urutan">
+                                @error('urutan') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold text-uppercase text-muted">YouTube Content ID</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-link-variant text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0" wire:model="url_id" placeholder="ID Unik dari URL">
+                            </div>
+                            <div class="mt-2 text-center p-3 rounded bg-light border border-dashed">
+                                <span class="text-muted small">Preview: <strong>https://youtube.com/{{ $jenis == 'youtube_playlist' ? 'playlist?list=' : 'watch?v=' }}{{ $url_id ?: '...' }}</strong></span>
+                            </div>
+                            @error('url_id') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 p-4 pt-0">
+                        <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="closeModal()">Batal</button>
+                        <button type="button" class="btn btn-premium-add text-dark px-4 rounded-pill fw-bold shadow-sm" wire:click="store()"
+                            wire:loading.attr="disabled" wire:target="store">
+                            <span wire:loading wire:target="store" class="spinner-border spinner-border-sm me-1"></span>
+                            <i class="mdi mdi-content-save-check me-1"></i> Aktifkan Konten
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Konfirmasi Hapus -->
+    @if($showDeleteModal)
+        <div class="modal-backdrop fade show"></div>
+        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
+                    <div class="modal-body p-5 text-center">
+                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
+                            <i class="mdi mdi-delete-variant text-danger mdi-48px"></i>
+                        </div>
+                        <h4 class="font-weight-bold text-dark mb-2">Lepas Konten Studio?</h4>
+                        <p class="text-muted mb-4">Konten "<strong>{{ $deleteNama }}</strong>" akan dihapus secara permanen dari daftar putar.</p>
+                        
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
+                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="delete({{ $deleteId }})"
+                                wire:loading.attr="disabled" wire:target="delete">
+                                <span wire:loading wire:target="delete" class="spinner-border spinner-border-sm me-1"></span>
+                                Ya, Hapus Sekarang
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        @include('backend.template.footer')
-    </div>
-
-    @if($isModalOpen)
-    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                <div class="modal-header" style="border-bottom: 1px solid #f1f5f9; padding: 1.5rem;">
-                    <h5 class="modal-title fw-bold">{{ $playlist_id ? 'Edit Playlist' : 'Tambah Playlist Baru' }}</h5>
-                    <button type="button" class="btn-close" wire:click="closeModal()" style="border: none; background: transparent;"><i class="mdi mdi-close fs-4"></i></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Judul Playlist</label>
-                        <input type="text" class="form-control" wire:model="judul" placeholder="Contoh: Barber Lofi Mix 1" style="border-radius: 8px; padding: 0.6rem 1rem;">
-                        @error('judul') <span class="text-danger small">{{ $message }}</span> @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Jenis Tayangan</label>
-                        <select class="form-control" wire:model="jenis" style="border-radius: 8px; padding: 0.6rem 1rem; appearance: auto;">
-                            <option value="youtube_video">Satu Video Youtube (Bisa Digabung ke Antrean Video Lain)</option>
-                            <option value="youtube_playlist">YouTube Playlist (Satu Tautan Penuh)</option>
-                        </select>
-                        @error('jenis') <span class="text-danger small">{{ $message }}</span> @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Youtube Video/Playlist ID</label>
-                        <input type="text" class="form-control" wire:model="url_id" placeholder="Cth: jfKfPfyJRdk" style="border-radius: 8px; padding: 0.6rem 1rem;">
-                        <small class="text-muted mt-1 d-block">Ambil dari huruf di akhir link youtube (setelah ?v= atau &list=)</small>
-                        @error('url_id') <span class="text-danger small">{{ $message }}</span> @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted fw-bold" style="font-size: 0.85rem;">Urutan Putar</label>
-                        <input type="number" class="form-control" wire:model="urutan" style="border-radius: 8px; padding: 0.6rem 1rem;">
-                        @error('urutan') <span class="text-danger small">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-                <div class="modal-footer" style="border-top: 1px solid #f1f5f9; padding: 1.5rem;">
-                    <button type="button" class="btn text-muted" wire:click="closeModal()" style="font-weight: 600;">Batal</button>
-                    <button type="button" class="btn btn-primary px-4" wire:click="store()" style="border-radius: 8px; font-weight: 600;">Simpan Data</button>
-                </div>
-            </div>
-        </div>
-    </div>
     @endif
+
+    <style>
+        .custom-switch-gold:checked {
+            background-color: #B8860B !important;
+            border-color: #B8860B !important;
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #fffaf0 !important;
+            transform: scale(1.002);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .bg-gradient-danger {
+            background: linear-gradient(45deg, #f44336, #e91e63) !important;
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(45deg, #2196f3, #00BCD4) !important;
+        }
+    </style>
 </div>
+

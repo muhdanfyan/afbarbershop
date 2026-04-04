@@ -23,9 +23,10 @@ class TransaksiCrud extends Component
         'status' => 'menunggu',
         'catatan' => '',
     ];
-    public $confirmingDelete = false;
+    public $deleteNama = '';
     public $deleteId = null;
     public $detailId = null;
+    public $confirmingDelete = false;
 
     protected $queryString = ['status'];
     protected $rules = [
@@ -96,15 +97,25 @@ class TransaksiCrud extends Component
 
     public function confirmDelete($id)
     {
-        $this->confirmingDelete = true;
-        $this->deleteId = $id;
+        $trx = Transaksi::find($id);
+        if ($trx) {
+            $this->deleteId = $id;
+            $this->deleteNama = $trx->invoice ?? 'Transaksi #' . $trx->id;
+            $this->confirmingDelete = true;
+        }
     }
 
-    public function delete()
+    public function cancelDelete()
     {
-        Transaksi::findOrFail($this->deleteId)->delete();
         $this->confirmingDelete = false;
         $this->deleteId = null;
+        $this->deleteNama = '';
+    }
+
+    public function hapus()
+    {
+        Transaksi::findOrFail($this->deleteId)->delete();
+        $this->cancelDelete();
     }
 
     public function resetForm()

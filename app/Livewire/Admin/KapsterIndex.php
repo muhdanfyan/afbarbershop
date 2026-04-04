@@ -19,16 +19,22 @@ class KapsterIndex extends Component
     public $editMode = false;
     public $showForm = false;
     public $search = '';
+    public $deleteNama = '';
 
     public function confirmDelete($id)
     {
-        $this->deleteId = $id;
-        $this->showDeleteModal = true;
+        $kapster = Kapster::find($id);
+        if ($kapster) {
+            $this->deleteId = $id;
+            $this->deleteNama = $kapster->nama;
+            $this->showDeleteModal = true;
+        }
     }
 
     public function cancelDelete()
     {
         $this->deleteId = null;
+        $this->deleteNama = null;
         $this->showDeleteModal = false;
     }
 
