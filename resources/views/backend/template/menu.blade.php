@@ -1,4 +1,22 @@
 <ul class="nav">
+    <!-- Dedicated Sidebar Toggle Button -->
+    <li class="nav-item d-none d-lg-flex justify-content-center w-100 mb-2 mt-2 sidebar-toggler-container">
+        <button class="btn p-1 rounded-circle d-flex align-items-center justify-content-center" type="button" data-toggle="minimize" onclick="toggleSidebarIcon()" style="width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: #d4af37;">
+            <i class="mdi mdi-chevron-left" id="sidebarToggleIcon" style="font-size: 1.2rem; transition: transform 0.3s ease;"></i>
+        </button>
+    </li>
+    <script>
+        function toggleSidebarIcon() {
+            setTimeout(() => {
+                const icon = document.getElementById('sidebarToggleIcon');
+                if(document.body.classList.contains('sidebar-icon-only')) {
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.style.transform = 'rotate(0deg)';
+                }
+            }, 50);
+        }
+    </script>
     <li class="nav-category">Main</li>
     <li class="nav-item">
         <a class="nav-link" href="/admin/dashboard">
