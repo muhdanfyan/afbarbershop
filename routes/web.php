@@ -60,5 +60,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/setting', [AdminSettingController::class, 'index'])->name('admin.setting');
     Route::get('/admin/kasir', \App\Livewire\Admin\KasirTransaksi::class)->name('admin.kasir.transaksi');
     Route::view('/admin/gallery', 'backend.admin.gallery')->name('admin.gallery');
+    Route::view('/admin/playlist', 'backend.admin.playlist')->name('admin.playlist');
 
 });

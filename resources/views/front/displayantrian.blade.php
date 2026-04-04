@@ -811,9 +811,26 @@
                 </div>
 
                 <div class="youtube-panel" style="width: 100%; height: 180px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; flex-shrink: 0;">
-                    <!-- Custom Barbershop Vibes Playlist (Lofi, Lounge, Chill R&B Mixes) -->
+                    @php
+                        $youtubeSrc = "https://www.youtube.com/embed/jfKfPfyJRdk?playlist=rUxyKA_-grg,5qap5aO4i9A,7NOSDKb0H6k,w1hS_xL4DCM&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                        if(isset($playlists) && count($playlists) > 0) {
+                            $first = $playlists->first();
+                            if($first->jenis == 'youtube_playlist') {
+                                $youtubeSrc = "https://www.youtube.com/embed/videoseries?list=" . $first->url_id . "&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                            } else {
+                                $youtubeSrc = "https://www.youtube.com/embed/" . $first->url_id . "?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1";
+                                if(count($playlists) > 1) {
+                                    $playlistIds = $playlists->slice(1)->pluck('url_id')->implode(',');
+                                    $youtubeSrc .= "&playlist=" . $playlistIds;
+                                } else {
+                                    $youtubeSrc .= "&playlist=" . $first->url_id;
+                                }
+                            }
+                        }
+                    @endphp
+                    <!-- Dynamic Dashboard Playlist -->
                     <iframe width="100%" height="100%" 
-                        src="https://www.youtube.com/embed/jfKfPfyJRdk?playlist=rUxyKA_-grg,5qap5aO4i9A,7NOSDKb0H6k,w1hS_xL4DCM&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1" 
+                        src="{{ $youtubeSrc }}" 
                         title="Barbershop Vibes Playlist" frameborder="0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>

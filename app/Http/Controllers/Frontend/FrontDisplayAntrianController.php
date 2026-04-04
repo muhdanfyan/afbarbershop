@@ -13,7 +13,8 @@ class FrontDisplayAntrianController extends Controller
     {
         $settings = Setting::pluck('value', 'key');
         $kapster = Kapster::all();
-        return view('front.displayantrian', compact('settings', 'kapster'));
+        $playlists = \App\Models\Playlist::where('status', true)->orderBy('urutan', 'asc')->get();
+        return view('front.displayantrian', compact('settings', 'kapster', 'playlists'));
     }
 
     public function getQueueData()

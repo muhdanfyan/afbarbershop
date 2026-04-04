@@ -9,7 +9,10 @@
         </div>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
-        <div class="search-wrapper d-none d-md-block mr-auto ml-4">
+        <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-block mr-3" type="button" data-toggle="minimize" style="border: none; background: transparent; color: #9ca3af;">
+            <i class="mdi mdi-menu" style="font-size: 1.8rem;"></i>
+        </button>
+        <div class="search-wrapper d-none d-md-block mr-auto ml-1">
             <div class="input-group" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 5px 15px;">
                 <i class="mdi mdi-magnify text-muted mr-2" style="font-size: 1.2rem;"></i>
                 <input type="text" class="form-control border-0 bg-transparent p-0 text-white" placeholder="Search..." style="height: 30px; font-size: 0.85rem;">
