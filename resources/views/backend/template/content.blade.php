@@ -30,9 +30,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
         
         .sidebar {
-            background: #111827 !important; /* Premium Dark Navy/Black */
+            background: #111827 !important;
             box-shadow: 4px 0 20px rgba(0,0,0,0.05);
             border-right: none !important;
+            padding-top: 0 !important;
         }
         .sidebar .nav {
             padding-top: 0.5rem !important;
