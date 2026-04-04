@@ -99,7 +99,7 @@
         .main-container {
             position: relative;
             z-index: 2;
-            padding: 20px;
+            padding: 15px 20px;
             max-width: 1600px;
             margin: 0 auto;
             height: 100vh;
@@ -110,20 +110,20 @@
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             position: relative;
-            padding: 20px 0;
+            padding: 10px 0;
         }
 
         .header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 900;
             background: linear-gradient(135deg, var(--primary-gold), var(--light-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
-            margin-bottom: 5px;
+            margin-bottom: 0px;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
@@ -152,7 +152,7 @@
         }
 
         .datetime .time {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
             color: var(--primary-gold);
             font-family: 'Playfair Display', serif;
@@ -167,22 +167,24 @@
         .content-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
             flex: 1;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            min-height: 0;
         }
 
         /* Left Panel - Current Serving */
         .left-panel {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            min-height: 0;
         }
 
         .current-serving {
             background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px 15px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -233,14 +235,15 @@
         }
 
         .serving-number {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
             font-family: 'Playfair Display', serif;
             background: linear-gradient(135deg, var(--primary-gold), var(--light-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: pulse 2s ease-in-out infinite;
-            margin: 15px 0;
+            margin: 5px 0;
+            line-height: 1.1;
         }
 
         @keyframes pulse {
@@ -260,8 +263,8 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 10px;
+            padding: 10px;
             background: rgba(212, 175, 55, 0.1);
             border-radius: 10px;
         }
@@ -293,7 +296,7 @@
         .center-panel {
             background: var(--bg-card);
             border-radius: 20px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
             transition: background 0.3s ease, box-shadow 0.3s ease;
@@ -327,7 +330,7 @@
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), transparent);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 15px;
-            padding: 15px;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -375,8 +378,8 @@
         }
 
         .kapster-card-img {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid transparent;
@@ -453,7 +456,7 @@
         .queue-section {
             background: var(--bg-card);
             border-radius: 20px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             flex: 1;
             display: flex;
@@ -491,7 +494,7 @@
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), transparent);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 10px;
-            padding: 12px 15px;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -541,17 +544,17 @@
         /* Statistics Bar */
         .stats-bar {
             display: flex;
-            gap: 20px;
-            padding: 15px;
+            gap: 15px;
+            padding: 10px 15px;
             background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
             border-radius: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .stat-item {
             flex: 1;
             text-align: center;
-            padding: 10px;
+            padding: 5px;
             border-right: 1px solid rgba(212, 175, 55, 0.2);
         }
 
@@ -560,7 +563,7 @@
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary-gold);
             font-family: 'Playfair Display', serif;
@@ -749,6 +752,9 @@
     <div class="main-container">
         <!-- Header -->
         <header class="header">
+            <a href="{{ url('/admin/dashboard') }}" class="btn btn-outline-secondary" style="position: absolute; left: 0px; top: 10px; border-color: var(--primary-gold); color: inherit; font-size: 0.9rem;" title="Kembali ke Dashboard">
+                <i class="fas fa-arrow-left"></i> <span class="d-none d-md-inline ms-1">Dashboard</span>
+            </a>
             <h1>{{ $settings['nama_usaha'] }}</h1>
             <p class="subtitle">{{ $settings['slogan'] }}</p>
             <div class="datetime">
@@ -801,7 +807,7 @@
                 </div>
 
                 <!-- YouTube Playlist Embed (Non-Floating) -->
-                <div class="youtube-panel" style="width: 100%; height: 250px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease;">
+                <div class="youtube-panel" style="width: 100%; height: 180px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; flex-shrink: 0;">
                     <iframe width="100%" height="100%" 
                         src="https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&autoplay=1&mute=1" 
                         title="YouTube Playlist" frameborder="0" 
