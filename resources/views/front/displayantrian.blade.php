@@ -119,11 +119,15 @@
             font-family: 'Playfair Display', serif;
             font-size: 2.2rem;
             font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0px;
+        }
+
+        html.dark .header h1 {
             background: linear-gradient(135deg, var(--primary-gold), var(--light-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
-            margin-bottom: 0px;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
@@ -809,9 +813,9 @@
                 <!-- YouTube Playlist Embed (Non-Floating) -->
                 <div class="youtube-panel" style="width: 100%; height: 180px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; flex-shrink: 0;">
                     <iframe width="100%" height="100%" 
-                        src="https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&autoplay=1&mute=1" 
+                        src="https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1" 
                         title="YouTube Playlist" frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
             </div>
 
