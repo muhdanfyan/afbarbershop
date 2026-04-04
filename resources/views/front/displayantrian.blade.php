@@ -810,11 +810,11 @@
                     </div>
                 </div>
 
-                <!-- YouTube Playlist Embed (Non-Floating) -->
                 <div class="youtube-panel" style="width: 100%; height: 180px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); border: 2px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; flex-shrink: 0;">
+                    <!-- Custom Barbershop Vibes Playlist (Lofi, Lounge, Chill R&B Mixes) -->
                     <iframe width="100%" height="100%" 
-                        src="https://www.youtube.com/embed/videoseries?list=PLOzDu-MXXLliO9fBNZOQTBDddoA3FzZUo&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1" 
-                        title="YouTube Playlist" frameborder="0" 
+                        src="https://www.youtube.com/embed/jfKfPfyJRdk?playlist=rUxyKA_-grg,5qap5aO4i9A,7NOSDKb0H6k,w1hS_xL4DCM&autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&loop=1" 
+                        title="Barbershop Vibes Playlist" frameborder="0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 </div>
             </div>
