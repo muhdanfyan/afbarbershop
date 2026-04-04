@@ -1,11 +1,12 @@
 <!-- partial:partials/_footer.html -->
 <footer class="footer">
     <div class="d-sm-flex justify-content-center justify-content-sm-between">
-        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright ©
-            bootstrapdash.com 2020</span>
-        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a
-                href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard templates</a>
-            from Bootstrapdash.com</span>
+        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">
+            Copyright © {{ date('Y') }} <strong>Hayatul Habirun</strong>
+        </span>
+        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+            <i class="mdi mdi-email text-primary mr-1"></i> hayatulhabirun@gmail.com
+        </span>
     </div>
 </footer>
 <!-- partial -->

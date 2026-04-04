@@ -564,7 +564,7 @@
                     <span
                         class="text-gray-900 dark:text-white font-display text-3xl font-black tracking-wider uppercase">{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}</span>
                 </div>
-                <p class="text-gray-500 dark:text-gray-400 mb-4 font-medium">© 2025 {{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}. All rights
+                <p class="text-gray-500 dark:text-gray-400 mb-4 font-medium">© {{ date('Y') }} <strong>Hayatul Habirun</strong> (hayatulhabirun@gmail.com). All rights
                     reserved.</p>
             </div>
         </div>

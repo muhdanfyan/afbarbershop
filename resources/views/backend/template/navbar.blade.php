@@ -123,9 +123,105 @@
         background: #0a0f1a !important;
         box-shadow: 4px 0 20px rgba(0,0,0,0.3) !important;
     }
+
+    /* --- Text Contrast & Utility Overrides --- */
+    body.admin-dark .text-dark, 
+    body.admin-dark h1, body.admin-dark h2, body.admin-dark h3, 
+    body.admin-dark h4, body.admin-dark h5, body.admin-dark h6 {
+        color: #f1f5f9 !important;
+    }
+    body.admin-dark .text-muted {
+        color: #94a3b8 !important;
+    }
+    body.admin-dark .bg-light {
+        background-color: #1e293b !important;
+    }
+    body.admin-dark .border-bottom {
+        border-bottom-color: #334155 !important;
+    }
+
+    /* --- Stat Cards & Icons --- */
+    body.admin-dark .stat-card {
+        background: #1e293b !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+    body.admin-dark .bg-light-primary { background: rgba(67, 97, 238, 0.15) !important; color: #818cf8 !important; }
+    body.admin-dark .bg-light-success { background: rgba(34, 197, 94, 0.15) !important; color: #4ade80 !important; }
+    body.admin-dark .bg-light-info { background: rgba(59, 130, 246, 0.15) !important; color: #60a5fa !important; }
+    body.admin-dark .bg-light-danger { background: rgba(239, 68, 68, 0.15) !important; color: #f87171 !important; }
+    body.admin-dark .bg-light-warning { background: rgba(245, 158, 11, 0.15) !important; color: #fbbf24 !important; }
+
+    /* --- Charts & Tables --- */
+    body.admin-dark .table-premium th {
+        background: #0f172a !important;
+        color: #94a3b8 !important;
+        border-bottom-color: #334155 !important;
+    }
+    body.admin-dark canvas {
+        filter: brightness(0.9) saturate(1.2);
+    }
+    /* --- Dashboard Specific Overrides --- */
+    body.admin-dark .card[style*="background: linear-gradient"] {
+        background: #1e293b !important;
+    }
+    body.admin-dark .greetings-text h2,
+    body.admin-dark h3.font-weight-bold.text-dark {
+        color: #f8fafc !important;
+    }
+    body.admin-dark .bg-white {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    body.admin-dark .shadow-sm {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+    }
+    body.admin-dark .border-gray-100 {
+        border-color: #334155 !important;
+    }
 </style>
 
 <script>
+    // ===== SIDEBAR PERSISTENCE & MOBILE RESPONSIVENESS =====
+    (function () {
+        const body = document.body;
+        const savedSidebar = localStorage.getItem('sidebarMinimized');
+        const isMobile = window.innerWidth < 992;
+
+        // 1. Initial State: Force minimized on mobile OR if previously saved as minimized
+        if (isMobile || savedSidebar === 'minimized') {
+            body.classList.add('sidebar-icon-only');
+        }
+
+        // 2. Monitoring & Persistence
+        document.addEventListener('DOMContentLoaded', function() {
+            // Monitor desktop toggle button
+            const sidebarToggle = document.querySelector('[data-toggle="minimize"]');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    // Small delay to wait for template JS to toggle classes
+                    setTimeout(() => {
+                        const isMinimized = body.classList.contains('sidebar-icon-only');
+                        localStorage.setItem('sidebarMinimized', isMinimized ? 'minimized' : 'expanded');
+                    }, 50);
+                });
+            }
+
+            // 3. Mobile Auto-Shrink on Resize
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    const mobileNow = window.innerWidth < 992;
+                    if (mobileNow) {
+                        body.classList.add('sidebar-icon-only');
+                    } else if (localStorage.getItem('sidebarMinimized') === 'expanded') {
+                        body.classList.remove('sidebar-icon-only');
+                    }
+                }, 250);
+            });
+        });
+    })();
+
     // ===== ADMIN DARK MODE TOGGLE =====
     function adminToggleTheme() {
         const body = document.body;
