@@ -87,6 +87,22 @@ class BookingForm extends Component
                 if ($isBooked) {
                     $status = 'booked';
                 }
+            } else {
+                // If "Bebas" (no specific barber), check if ALL active barbers are booked
+                $activeKapsterCount = Kapster::where('status', 'bekerja')->count();
+                $startTime = $start->copy()->subMinutes(29);
+                $endTime = $start->copy()->addMinutes(29);
+                
+                $bookedKapsterCount = Transaksi::whereNotNull('kapster_id')
+                    ->where('tanggal', $this->tanggal)
+                    ->whereIn('status', ['menunggu', 'proses'])
+                    ->whereBetween('waktu', [$startTime->format('H:i'), $endTime->format('H:i')])
+                    ->distinct('kapster_id')
+                    ->count();
+
+                if ($activeKapsterCount > 0 && $bookedKapsterCount >= $activeKapsterCount) {
+                    $status = 'booked';
+                }
             }
 
             $slots[] = [

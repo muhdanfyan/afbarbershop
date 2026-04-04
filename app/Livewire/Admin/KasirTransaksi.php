@@ -26,11 +26,11 @@ class KasirTransaksi extends Component
                 'jasa' => 'required|array|min:1',
                 'kapster' => 'required',
             ]);
-            if ($this->uang_bayar === null || $this->uang_bayar === '' || !is_numeric($this->uang_bayar)) {
-                $this->uang_bayar = 0;
+            if ($this->bayar === null || $this->bayar === '' || !is_numeric($this->bayar)) {
+                $this->bayar = 0;
             }
-            if ($this->uang_kembali === null || $this->uang_kembali === '' || !is_numeric($this->uang_kembali)) {
-                $this->uang_kembali = 0;
+            if ($this->kembali === null || $this->kembali === '' || !is_numeric($this->kembali)) {
+                $this->kembali = 0;
             }
             $member = Member::firstOrCreate(
                 [
@@ -47,10 +47,11 @@ class KasirTransaksi extends Component
                     'invoice' => $this->invoice,
                     'nama' => $this->nama,
                     'no_hp' => $this->no_hp,
-                    'kapster_id' => $this->kapster,
+                    'kapster_id' => $this->kapster_id,
                     'total_harga' => $this->total,
-                    'uang_bayar' => $this->uang_bayar,
-                    'uang_kembali' => $this->uang_kembali,
+                    'uang_bayar' => $this->bayar,
+                    'uang_kembali' => $this->kembali,
+                    'metode_pembayaran' => $this->metode_pembayaran,
                     'kasir_id' => Auth::id(),
                     'tanggal' => now()->toDateString(),
                     'status' => 'menunggu',
@@ -62,10 +63,11 @@ class KasirTransaksi extends Component
                     'nama' => $this->nama,
                     'no_hp' => $this->no_hp,
                     'jasa_id' => is_array($this->jasa) && count($this->jasa) === 1 ? $this->jasa[0] : null,
-                    'kapster_id' => $this->kapster,
+                    'kapster_id' => $this->kapster_id,
                     'total_harga' => $this->total,
-                    'uang_bayar' => $this->uang_bayar,
-                    'uang_kembali' => $this->uang_kembali,
+                    'uang_bayar' => $this->bayar,
+                    'uang_kembali' => $this->kembali,
+                    'metode_pembayaran' => $this->metode_pembayaran,
                     'kasir_id' => Auth::id(),
                     'tanggal' => now()->toDateString(),
                     'jumlah' => 1,
@@ -73,9 +75,11 @@ class KasirTransaksi extends Component
                 ]);
                 $transaksi->jasa()->attach($this->jasa);
             }
-            $this->dispatch('swal-success', ['message' => 'Transaksi disimpan sebagai MENUNGGU!']);
+            $this->dispatch('swal-success', message: 'Transaksi disimpan sebagai MENUNGGU!');
             $this->dispatch('transaksi-updated');
             $this->resetForm();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->dispatch('swal-error', ['message' => 'Transaksi gagal: ' . $e->getMessage()]);
         }
@@ -93,11 +97,11 @@ class KasirTransaksi extends Component
                 'jasa' => 'required|array|min:1',
                 'kapster' => 'required',
             ]);
-            if ($this->uang_bayar === null || $this->uang_bayar === '' || !is_numeric($this->uang_bayar)) {
-                $this->uang_bayar = 0;
+            if ($this->bayar === null || $this->bayar === '' || !is_numeric($this->bayar)) {
+                $this->bayar = 0;
             }
-            if ($this->uang_kembali === null || $this->uang_kembali === '' || !is_numeric($this->uang_kembali)) {
-                $this->uang_kembali = 0;
+            if ($this->kembali === null || $this->kembali === '' || !is_numeric($this->kembali)) {
+                $this->kembali = 0;
             }
             $member = Member::firstOrCreate(
                 [
@@ -114,10 +118,11 @@ class KasirTransaksi extends Component
                     'invoice' => $this->invoice,
                     'nama' => $this->nama,
                     'no_hp' => $this->no_hp,
-                    'kapster_id' => $this->kapster,
+                    'kapster_id' => $this->kapster_id,
                     'total_harga' => $this->total,
-                    'uang_bayar' => $this->uang_bayar,
-                    'uang_kembali' => $this->uang_kembali,
+                    'uang_bayar' => $this->bayar,
+                    'uang_kembali' => $this->kembali,
+                    'metode_pembayaran' => $this->metode_pembayaran,
                     'kasir_id' => Auth::id(),
                     'tanggal' => now()->toDateString(),
                     'status' => 'proses',
@@ -129,10 +134,11 @@ class KasirTransaksi extends Component
                     'nama' => $this->nama,
                     'no_hp' => $this->no_hp,
                     'jasa_id' => is_array($this->jasa) && count($this->jasa) === 1 ? $this->jasa[0] : null,
-                    'kapster_id' => $this->kapster,
+                    'kapster_id' => $this->kapster_id,
                     'total_harga' => $this->total,
-                    'uang_bayar' => $this->uang_bayar,
-                    'uang_kembali' => $this->uang_kembali,
+                    'uang_bayar' => $this->bayar,
+                    'uang_kembali' => $this->kembali,
+                    'metode_pembayaran' => $this->metode_pembayaran,
                     'kasir_id' => Auth::id(),
                     'tanggal' => now()->toDateString(),
                     'jumlah' => 1,
@@ -140,9 +146,11 @@ class KasirTransaksi extends Component
                 ]);
                 $transaksi->jasa()->attach($this->jasa);
             }
-            $this->dispatch('swal-success', ['message' => 'Transaksi disimpan sebagai PROSES!']);
+            $this->dispatch('swal-success', message: 'Transaksi disimpan sebagai PROSES!');
             $this->dispatch('transaksi-updated');
             $this->resetForm();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->dispatch('swal-error', ['message' => 'Transaksi gagal: ' . $e->getMessage()]);
         }
@@ -153,17 +161,24 @@ class KasirTransaksi extends Component
 
     public function isiFormDariTransaksi($id)
     {
-        $trx = Transaksi::with(['jasa'])->findOrFail($id);
+        $trx = Transaksi::with(['jasa', 'barangs'])->findOrFail($id);
         $this->trxId = $trx->id;
         $this->invoice = $trx->invoice;
         $this->nama = $trx->nama;
         $this->no_hp = $trx->no_hp;
         $this->jasa = $trx->jasa->pluck('id')->toArray();
-        $this->kapster = $trx->kapster_id;
-        $this->uang_bayar = $trx->uang_bayar;
-        $this->uang_kembali = $trx->uang_kembali;
+        $this->kapster_id = $trx->kapster_id;
+        $this->bayar = $trx->uang_bayar;
+        $this->kembali = $trx->uang_kembali;
+        $this->metode_pembayaran = $trx->metode_pembayaran ?: 'cash';
         $this->total = $trx->total_harga;
         $this->status = $trx->status;
+        $this->barangSelected = $trx->barangs->pluck('id')->toArray();
+        $this->jumlahBarang = [];
+        foreach($trx->barangs as $b) {
+            $this->jumlahBarang[$b->id] = $b->pivot->jumlah;
+        }
+
         // Generate random invoice for display only
         $this->showRandomInvoice = true;
         $this->randomInvoiceDisplay = 'NOTA-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(4));
@@ -172,9 +187,10 @@ class KasirTransaksi extends Component
     public $nama;
     public $no_hp;
     public $jasa = [];
-    public $kapster;
-    public $uang_bayar;
-    public $uang_kembali;
+    public $kapster_id;
+    public $bayar;
+    public $kembali = 0;
+    public $metode_pembayaran = 'cash';
     public $total = 0;
     public $memberSearch = '';
     public $status;
@@ -196,11 +212,11 @@ class KasirTransaksi extends Component
         $this->hitungTotal();
     }
 
-    public function updatedUangBayar()
+    public function updatedBayar()
     {
-        $uangBayar = is_numeric($this->uang_bayar) ? (float) $this->uang_bayar : 0;
+        $bayar = is_numeric($this->bayar) ? (float) $this->bayar : 0;
         $total = is_numeric($this->total) ? (float) $this->total : 0;
-        $this->uang_kembali = $uangBayar - $total;
+        $this->kembali = $bayar - $total;
     }
 
     public function hitungTotal()
@@ -219,7 +235,7 @@ class KasirTransaksi extends Component
                 $this->total += ($barang->harga_jual * $jumlah);
             }
         }
-        $this->updatedUangBayar();
+        $this->updatedBayar();
     }
 
     public function simpanTransaksi()
@@ -234,8 +250,8 @@ class KasirTransaksi extends Component
                 'nama' => 'required',
                 'no_hp' => 'required',
                 'jasa' => 'required|array|min:1',
-                'kapster' => 'required',
-                'uang_bayar' => 'required|numeric|min:' . $this->total,
+                'kapster_id' => 'required',
+                'bayar' => 'required|numeric' . ($this->metode_pembayaran === 'cash' ? '|min:' . $this->total : ''),
             ]);
 
             // Generate invoice/nota hanya saat simpan jika ini transaksi baru
@@ -260,10 +276,11 @@ class KasirTransaksi extends Component
                     'invoice' => $this->invoice,
                     'nama' => $this->nama,
                     'no_hp' => $this->no_hp,
-                    'kapster_id' => $this->kapster,
+                    'kapster_id' => $this->kapster_id,
                     'total_harga' => $this->total,
-                    'uang_bayar' => $this->uang_bayar,
-                    'uang_kembali' => $this->uang_kembali,
+                    'uang_bayar' => $this->bayar,
+                    'uang_kembali' => $this->kembali,
+                    'metode_pembayaran' => $this->metode_pembayaran,
                     'kasir_id' => Auth::id(),
                     'tanggal' => now()->toDateString(),
                     'status' => 'selesai',
@@ -284,10 +301,11 @@ class KasirTransaksi extends Component
                     'nama' => $this->nama,
                     'no_hp' => $this->no_hp,
                     'jasa_id' => is_array($this->jasa) && count($this->jasa) === 1 ? $this->jasa[0] : null,
-                    'kapster_id' => $this->kapster,
+                    'kapster_id' => $this->kapster_id,
                     'total_harga' => $this->total,
-                    'uang_bayar' => $this->uang_bayar,
-                    'uang_kembali' => $this->uang_kembali,
+                    'uang_bayar' => $this->bayar,
+                    'uang_kembali' => $this->kembali,
+                    'metode_pembayaran' => $this->metode_pembayaran,
                     'kasir_id' => Auth::id(),
                     'tanggal' => now()->toDateString(),
                     'jumlah' => 1,
@@ -315,6 +333,8 @@ class KasirTransaksi extends Component
             $this->kirimStrukWa($transaksi);
             $this->dispatch('swal-success', ['message' => 'Transaksi berhasil disimpan & Stok dikurangi!']);
             $this->resetForm();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->dispatch('swal-error', ['message' => 'Transaksi gagal: ' . $e->getMessage()]);
         }
@@ -327,9 +347,10 @@ class KasirTransaksi extends Component
         $this->nama = '';
         $this->no_hp = '';
         $this->jasa = [];
-        $this->kapster = '';
-        $this->uang_bayar = 0;
-        $this->uang_kembali = 0;
+        $this->kapster_id = '';
+        $this->bayar = 0;
+        $this->kembali = 0;
+        $this->metode_pembayaran = 'cash';
         $this->total = 0;
         $this->status = null;
         $this->barangSelected = [];
@@ -362,26 +383,19 @@ class KasirTransaksi extends Component
     public function kirimStrukWa($transaksi)
     {
         try {
-            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
-            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
-
             $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
             $alamat = \App\Models\Setting::where('key', 'alamat')->value('value') ?? '';
             $telepon = \App\Models\Setting::where('key', 'telepon')->value('value') ?? '';
 
             $pesan = "*FAKTUR ELEKTRONIK TRANSAKSI*\n";
             $pesan .= "*" . strtoupper($namaUsaha) . "*\n";
-            if ($alamat)
-                $pesan .= $alamat . "\n";
-            if ($telepon)
-                $pesan .= $telepon . "\n\n";
+            if ($alamat) $pesan .= $alamat . "\n";
+            if ($telepon) $pesan .= $telepon . "\n\n";
 
             $pesan .= "Nomor Nota :\n";
             $pesan .= $transaksi->invoice . "\n\n";
-
             $pesan .= "Pelanggan Yth :\n";
             $pesan .= strtoupper($transaksi->nama) . "\n\n";
-
             $pesan .= "Tanggal : " . $transaksi->created_at->format('d/m/Y H:i') . "\n";
             $pesan .= "Kapster : " . ($transaksi->kapster->nama ?? '-') . "\n";
             $pesan .= "======================\n";
@@ -406,20 +420,52 @@ class KasirTransaksi extends Component
             $pesan .= "Detail biaya :\n";
             $pesan .= "Total tagihan : Rp" . number_format($transaksi->total_harga, 0, ',', '.') . "\n";
             $pesan .= "Grand total : Rp" . number_format($transaksi->total_harga, 0, ',', '.') . "\n\n";
-
             $pesan .= "Pembayaran:\n";
             $pesan .= "Uang Bayar : Rp" . number_format($transaksi->uang_bayar, 0, ',', '.') . "\n";
             $pesan .= "Kembali : Rp" . number_format($transaksi->uang_kembali, 0, ',', '.') . "\n\n";
-
             $pesan .= "Status: " . ($transaksi->uang_bayar >= $transaksi->total_harga ? "Lunas" : "Belum lunas") . "\n";
-
             $pesan .= "\n=================\n";
             $pesan .= "Kritik, saran dan layanan hubungi: \n" . $telepon . "\n\n";
             $pesan .= " https://poseidonbarbershop.my.id \n";
             $pesan .= "Terima kasih\n";
 
+            $this->sendWaMessage($transaksi->no_hp, $pesan);
+        } catch (\Exception $e) {
+            \Log::error('Gagal kirim struk WA: ' . $e->getMessage());
+        }
+    }
+
+    public function kirimPengingatWa($id)
+    {
+        try {
+            $transaksi = Transaksi::findOrFail($id);
+            $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
+            
+            $pesan = "*PENGINGAT BOOKING - " . strtoupper($namaUsaha) . "*\n\n";
+            $pesan .= "Halo Kak *" . $transaksi->nama . "*,\n";
+            $pesan .= "Kami ingin mengingatkan jadwal booking Kakak pada:\n\n";
+            $pesan .= "📅 Tanggal: *" . \Carbon\Carbon::parse($transaksi->tanggal)->format('d/m/Y') . "*\n";
+            $pesan .= "⏰ Jam: *" . $transaksi->waktu . "*\n";
+            $pesan .= "✂️ Layanan: *" . ($transaksi->jasa->pluck('nama')->implode(', ') ?: '-') . "*\n";
+            $pesan .= "💇‍♂️ Barber: *" . ($transaksi->kapster->nama ?? 'Bebas') . "*\n\n";
+            $pesan .= "Mohon datang 10 menit sebelum jadwal ya Kak. Terima kasih! 🙏\n";
+            $pesan .= " https://poseidonbarbershop.my.id ";
+
+            $this->sendWaMessage($transaksi->no_hp, $pesan);
+            $transaksi->update(['reminded_at' => now()]);
+            $this->dispatch('swal-success', ['message' => 'Pengingat WA berhasil dikirim!']);
+        } catch (\Exception $e) {
+            $this->dispatch('swal-error', ['message' => 'Gagal kirim pengingat: ' . $e->getMessage()]);
+        }
+    }
+
+    private function sendWaMessage($no_hp, $pesan)
+    {
+        try {
+            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
+            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
+
             // Format nomor hp
-            $no_hp = $transaksi->no_hp;
             if (str_starts_with($no_hp, '0')) {
                 $no_hp = '62' . substr($no_hp, 1);
             } elseif (str_starts_with($no_hp, '+')) {
@@ -429,11 +475,11 @@ class KasirTransaksi extends Component
             Http::withHeaders([
                 'x-api-key' => $apiKey
             ])->post($baseUrl . '/api/send-message', [
-                        'number' => $no_hp,
-                        'message' => $pesan,
-                    ]);
+                'number' => $no_hp,
+                'message' => $pesan,
+            ]);
         } catch (\Exception $e) {
-            \Log::error('Gagal kirim struk WA: ' . $e->getMessage());
+            \Log::error('WA API Error: ' . $e->getMessage());
         }
     }
 
@@ -481,10 +527,10 @@ class KasirTransaksi extends Component
     {
         $listMember = Member::select('nama', 'nomor_wa')->orderBy('nama')->get();
         $today = now()->toDateString();
-        // Booking selain hari ini juga tampil (Item 6) & Urut DESC berdasarkan jam (Item 7)
+        // Booking selain hari ini juga tampil (Item 6) & Urut ASC berdasarkan jam (Item 7 - Improved for priority)
         $transaksiBooking = Transaksi::where('status', 'menunggu')
             ->where('tanggal', '>=', $today)
-            ->orderBy('tanggal', 'desc')
+            ->orderBy('tanggal', 'asc')
             ->orderBy('waktu', 'desc')
             ->get();
         $transaksiProses = Transaksi::where('status', 'proses')

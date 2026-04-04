@@ -6,170 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} </title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon"
         href="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : asset('logo-icon.png') }}"
         type="image/x-icon">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap');
 
-        :root {
-            --primary: #000000;
-            --accent: #FFD700;
-            --secondary: #8B4513;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .font-display {
-            font-family: 'Bebas Neue', cursive;
-        }
-
-        .font-serif {
-            font-family: 'Playfair Display', serif;
-        }
-
-        .parallax {
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .gradient-overlay {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.7) 100%);
-        }
-
-        .text-shadow {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .hover-lift {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .scroll-smooth {
-            scroll-behavior: smooth;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fadeInUp {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .coffee-steam {
-            animation: steam 3s ease-out infinite;
-        }
-
-        @keyframes steam {
-            0% {
-                transform: translateY(0) scaleX(1);
-                opacity: 0.5;
-            }
-
-            50% {
-                transform: translateY(-20px) scaleX(1.1);
-                opacity: 0.3;
-            }
-
-            100% {
-                transform: translateY(-40px) scaleX(1.2);
-                opacity: 0;
-            }
-        }
-
-        .scissor-animation {
-            animation: scissor-cut 2s ease-in-out infinite;
-        }
-
-        @keyframes scissor-cut {
-
-            0%,
-            100% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(-10deg);
-            }
-
-            75% {
-                transform: rotate(10deg);
-            }
-        }
-
-        .razor-animation {
-            animation: razor-move 3s ease-in-out infinite;
-        }
-
-        @keyframes razor-move {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            50% {
-                transform: translateX(10px);
-            }
-        }
-
-        .gold-gradient {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-
-        .card-hover:hover {
-            border-color: var(--accent);
-        }
-
-        .logo-animation {
-            animation: logo-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes logo-pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
-        }
-    </style>
 
     @stack('styles')
     @livewireStyles
@@ -178,12 +20,15 @@
 
 <body class="bg-gray-50 scroll-smooth">
 
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-accent z-[60] transition-all duration-150" style="width: 0%"></div>
+
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full bg-black/95 backdrop-blur-md z-50 transition-all duration-300" id="navbar">
+    <nav class="fixed top-0 w-full bg-black/90 backdrop-blur-lg z-50 transition-all duration-500 border-b border-white/5" id="navbar">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-2 md:space-x-3">
-                    <img src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
+                    <img loading="lazy" decoding="async" src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
                         alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo"
                         class="h-8 md:h-10 w-auto logo-animation">
                     <!-- <span
@@ -199,14 +44,14 @@
                     <a href="#gallery" class="text-gray-300 hover:text-accent transition-colors font-medium">Galeri</a>
                     <a href="#pricing" class="text-gray-300 hover:text-accent transition-colors font-medium">Harga</a>
                     <a href="#contact" class="text-gray-300 hover:text-accent transition-colors font-medium">Kontak</a>
-                    <button id="theme-toggle" class="text-gray-300 hover:text-accent transition-colors ml-4 focus:outline-none">
+                    <button id="theme-toggle" onclick="toggleTheme()" class="text-gray-300 hover:text-accent transition-colors ml-4 focus:outline-none">
                         <i class="fas fa-sun hidden dark:block"></i>
                         <i class="fas fa-moon block dark:hidden"></i>
                     </button>
                 </div>
 
                 <div class="flex items-center space-x-4 md:hidden">
-                    <button id="theme-toggle-mobile" class="text-gray-300 hover:text-accent transition-colors focus:outline-none">
+                    <button id="theme-toggle-mobile" onclick="toggleTheme()" class="text-gray-300 hover:text-accent transition-colors focus:outline-none">
                         <i class="fas fa-sun hidden dark:block"></i>
                         <i class="fas fa-moon block dark:hidden"></i>
                     </button>
@@ -218,15 +63,15 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="hidden md:hidden bg-black/95">
-            <div class="px-4 py-4 space-y-3">
-                <a href="#home" class="block text-gray-300 hover:text-accent transition-colors">Beranda</a>
-                <a href="#services" class="block text-gray-300 hover:text-accent transition-colors">Layanan</a>
-                <a href="#about" class="block text-gray-300 hover:text-accent transition-colors">Tentang</a>
-                <a href="#barbers" class="block text-gray-300 hover:text-accent transition-colors">Barber</a>
-                <a href="#gallery" class="block text-gray-300 hover:text-accent transition-colors">Galeri</a>
-                <a href="#pricing" class="block text-gray-300 hover:text-accent transition-colors">Harga</a>
-                <a href="#contact" class="block text-gray-300 hover:text-accent transition-colors">Kontak</a>
+        <div id="mobileMenu" class="hidden md:hidden bg-black/95 border-t border-white/10 animate-fadeInUp">
+            <div class="px-4 py-6 space-y-4">
+                <a href="#home" class="block text-gray-300 hover:text-accent transition-colors text-lg font-medium">Beranda</a>
+                <a href="#services" class="block text-gray-300 hover:text-accent transition-colors text-lg font-medium">Layanan</a>
+                <a href="#about" class="block text-gray-300 hover:text-accent transition-colors text-lg font-medium">Tentang</a>
+                <a href="#barbers" class="block text-gray-300 hover:text-accent transition-colors text-lg font-medium">Barber</a>
+                <a href="#gallery" class="block text-gray-300 hover:text-accent transition-colors text-lg font-medium">Galeri</a>
+                <a href="#pricing" class="block text-gray-300 hover:text-accent transition-colors text-lg font-medium">Harga</a>
+                <a href="#contact" class="block text-gray-300 hover:text-accent transition-colors text-lg font-medium">Kontak</a>
             </div>
         </div>
     </nav>
@@ -234,13 +79,13 @@
     <!-- Hero Section -->
     <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0">
-            <img src="{{ asset('background.jpeg') }}" alt="Hero" class="w-full h-full object-cover">
+            <img loading="lazy" decoding="async" src="{{ asset('background.jpeg') }}" alt="Hero" class="w-full h-full object-cover">
             <div class="absolute inset-0 gradient-overlay"></div>
         </div>
 
         <div class="relative z-10 text-center text-white px-4 animate-fadeInUp">
             <div class="mb-6 md:mb-8 text-center flex justify-center items-center">
-                <img src="{{ asset('/') }}logoposeidonputih.png"
+                <img loading="lazy" decoding="async" src="{{ asset('/') }}logoposeidonputih.png"
                     alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo"
                     class="h-32 sm:h-40 md:h-64 lg:h-80 w-auto mx-auto mb-4 md:mb-6 logo-animation">
             </div>
@@ -280,7 +125,7 @@
                 <div class="md:col-span-2">
                     <div class="bg-black rounded-2xl p-4 md:p-8 hover-lift">
                         <div class="text-center mb-6 md:mb-8">
-                            <img src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
+                            <img loading="lazy" decoding="async" src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
                                 alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo"
                                 class="h-12 md:h-16 w-auto mx-auto mb-4">
                             <h3 class="font-display text-3xl md:text-4xl font-black text-white mb-2">BARBER SERVICES
@@ -290,11 +135,11 @@
                         <div class="grid md:grid-cols-2 gap-3 md:gap-4">
                             @foreach($jasa as $item)
                                 <div
-                                    class="bg-gray-900 rounded-xl p-4 md:p-5 card-hover border-2 border-transparent hover:border-white">
+                                    class="bg-gray-900 rounded-xl p-4 md:p-5 card-hover border-2 border-transparent hover:border-white animate-fadeInUp">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center">
                                             @if($item->foto)
-                                                <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama }}"
+                                                <img loading="lazy" decoding="async" src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->nama }}"
                                                     class="h-8 w-8 md:h-10 md:w-10 rounded-full mr-3 md:mr-4 object-cover">
                                             @else
                                                 <i class="fas fa-scissors text-white text-xl md:text-2xl mr-3 md:mr-4"></i>
@@ -331,13 +176,17 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 @forelse($barangs ?? [] as $barang)
                     <div class="bg-white rounded-2xl overflow-hidden shadow-md hover-lift border border-gray-100">
-                        <div class="aspect-square relative">
+                        <div class="aspect-square relative flex items-center justify-center bg-gray-100">
                             @if($barang->foto)
-                                <img src="{{ asset('storage/' . $barang->foto) }}" alt="{{ $barang->nama }}"
+                                <img loading="lazy" decoding="async" src="{{ asset('storage/' . $barang->foto) }}" alt="{{ $barang->nama }}"
                                     class="w-full h-full object-cover">
                             @else
-                                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
-                                    <i class="fas fa-box text-4xl text-gray-400"></i>
+                                <i class="fas fa-box text-4xl text-gray-300"></i>
+                            @endif
+                            
+                            @if($barang->stok < 5)
+                                <div class="absolute top-2 right-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg animate-pulse">
+                                    STOK TERBATAS: {{ $barang->stok }}
                                 </div>
                             @endif
                         </div>
@@ -373,7 +222,7 @@
         <div class="container mx-auto px-4">
             <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div class="relative order-2 md:order-1">
-                    <img src="https://picsum.photos/seed/afabout/600/500" alt="About"
+                    <img loading="lazy" decoding="async" src="https://picsum.photos/seed/afabout/600/500" alt="About"
                         class="rounded-2xl shadow-2xl w-full h-auto">
                     <div
                         class="absolute -bottom-6 -right-6 bg-accent text-black rounded-xl p-4 shadow-xl hidden md:block">
@@ -414,7 +263,7 @@
                     <div class="bg-gray-50 rounded-2xl overflow-hidden shadow-lg hover-lift">
                         <div class="aspect-[4/5] relative">
                             @if($kapster->foto)
-                                <img src="{{ asset('storage/' . $kapster->foto) }}" alt="{{ $kapster->nama }}"
+                                <img loading="lazy" decoding="async" src="{{ asset('storage/' . $kapster->foto) }}" alt="{{ $kapster->nama }}"
                                     class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -451,7 +300,7 @@
                 @foreach ($galleries as $gallery)
                     <div class="relative overflow-hidden rounded-lg group cursor-pointer aspect-square">
                         @if ($gallery->type == 'image')
-                            <img src="{{ asset('storage/' . $gallery->file) }}" alt="{{ $gallery->title }}"
+                            <img loading="lazy" decoding="async" src="{{ asset('storage/' . $gallery->file) }}" alt="{{ $gallery->title }}"
                                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                             <div
                                 class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
@@ -503,7 +352,7 @@
                         barber-nya profesional dan teliti."
                     </p>
                     <div class="flex items-center">
-                        <img src="https://picsum.photos/seed/afuser1/50/50" alt="User"
+                        <img loading="lazy" decoding="async" src="https://picsum.photos/seed/afuser1/50/50" alt="User"
                             class="w-12 h-12 rounded-full mr-3">
                         <div>
                             <div class="text-white font-semibold">Rizky Hidayat</div>
@@ -525,7 +374,7 @@
                         grooming di sini!"
                     </p>
                     <div class="flex items-center">
-                        <img src="https://picsum.photos/seed/afuser2/50/50" alt="User"
+                        <img loading="lazy" decoding="async" src="https://picsum.photos/seed/afuser2/50/50" alt="User"
                             class="w-12 h-12 rounded-full mr-3">
                         <div>
                             <div class="text-white font-semibold">Ahmad Fauzi</div>
@@ -547,7 +396,7 @@
                         konsisten, worth every penny!"
                     </p>
                     <div class="flex items-center">
-                        <img src="https://picsum.photos/seed/afuser3/50/50" alt="User"
+                        <img loading="lazy" decoding="async" src="https://picsum.photos/seed/afuser3/50/50" alt="User"
                             class="w-12 h-12 rounded-full mr-3">
                         <div>
                             <div class="text-white font-semibold">Budi Santoso</div>
@@ -681,7 +530,7 @@
         <div class="container mx-auto px-4">
             <div class="text-center">
                 <div class="flex items-center justify-center space-x-3 mb-4">
-                    <img src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
+                    <img loading="lazy" decoding="async" src="{{ isset($settings['logo']) && $settings['logo'] ? asset('storage/' . $settings['logo']) : 'https://z-cdn-media.chatglm.cn/files/af61646a-a1b8-42c2-8d3e-3d2ce670e9fa_LOGO_ABUABU.png?auth_key=1792272266-dc52cff157bc494aaa1cd27248585981-0-491798425db74ef70d988a044a386614' }}"
                         alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo" class="h-10 w-auto">
                     <span
                         class="text-white font-display text-3xl font-black tracking-wider">{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }}</span>
@@ -832,7 +681,7 @@
             if (isPdf) {
                 content.innerHTML = `<iframe src="${url}" class="w-full h-[70vh]" frameborder="0"></iframe>`;
             } else {
-                content.innerHTML = `<img src="${url}" class="max-w-full max-h-[70vh] object-contain" alt="Sertifikat">`;
+                content.innerHTML = `<img loading="lazy" decoding="async" src="${url}" class="max-w-full max-h-[70vh] object-contain" alt="Sertifikat">`;
             }
 
             modal.classList.remove('hidden');
@@ -855,6 +704,14 @@
         }
 
         // Animate on Scroll
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scroll-progress").style.width = scrolled + "%";
+        });
+
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'

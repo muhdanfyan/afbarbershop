@@ -5,6 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display Antrian - Barbershop Queue System</title>
+    <!-- Theme Detection Script -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+        })();
+        
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -14,14 +26,24 @@
             --primary-gold: #D4AF37;
             --dark-gold: #B8941F;
             --light-gold: #F4E5C2;
+            --bg-dark: #f8f9fa;
+            --bg-secondary: #e9ecef;
+            --bg-card: #ffffff;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --accent-red: #dc3545;
+            --accent-green: #28a745;
+            --accent-blue: #007bff;
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        html.dark {
             --bg-dark: #0a0a0a;
             --bg-secondary: #1a1a1a;
             --bg-card: #252525;
             --text-primary: #ffffff;
             --text-secondary: #a0a0a0;
-            --accent-red: #dc3545;
-            --accent-green: #28a745;
-            --accent-blue: #007bff;
+            --border-color: rgba(212, 175, 55, 0.3);
         }
 
         * {
@@ -32,11 +54,12 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a1a 100%);
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* Animated Background */
@@ -145,12 +168,17 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--border-color);
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        
+        html.dark .current-serving {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         .current-serving::before {
@@ -248,8 +276,12 @@
             background: var(--bg-card);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        html.dark .center-panel {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         .panel-title {
@@ -404,10 +436,14 @@
             background: var(--bg-card);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             flex: 1;
             display: flex;
             flex-direction: column;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        html.dark .queue-section {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         .queue-list {
@@ -784,6 +820,9 @@
         <button class="control-btn" onclick="refreshData()" title="Refresh">
             <i class="fas fa-sync-alt"></i>
         </button>
+        <button class="control-btn" onclick="toggleTheme()" title="Toggle Tema">
+            <i class="fas fa-moon dark-hidden"></i>
+        </button>
         <button class="control-btn" onclick="toggleFullscreen()" title="Fullscreen">
             <i class="fas fa-expand"></i>
         </button>
@@ -809,13 +848,12 @@
             type="audio/wav">
     </audio>
 
-    <!-- YouTube Playlist Embed -->
-    <div class="youtube-container" style="position: fixed; bottom: 20px; left: 20px; width: 300px; height: 170px; z-index: 1000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid var(--primary-gold);">
-        <iframe width="100%" height="100%" 
-                src="https://www.youtube.com/embed/videoseries?list={{ $settings['youtube_playlist_id'] ?? 'PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG' }}&autoplay=1&mute=1&loop=1" 
-                title="YouTube video player" frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen></iframe>
+    <!-- Spotify Playlist Embed (Replaces YouTube for Premium Vibes) -->
+    <div class="spotify-container" style="position: fixed; bottom: 20px; left: 20px; width: 320px; height: 160px; z-index: 1000; border-radius: 12px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.7); border: 2px solid var(--primary-gold); transition: all 0.3s ease;">
+        <iframe style="border-radius:12px" 
+                src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8Ueb99id36R?utm_source=generator&theme=0" 
+                width="100%" height="160" frameBorder="0" allowfullscreen="" 
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
 
     <script>

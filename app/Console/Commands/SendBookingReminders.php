@@ -9,39 +9,45 @@ use Carbon\Carbon;
 
 class SendBookingReminders extends Command
 {
-    protected $signature = 'wa:remind';
-    protected $description = 'Send WhatsApp reminders for bookings in 15, 10, and 5 minutes.';
+    protected $signature = 'app:send-reminders';
+    protected $description = 'Send WhatsApp reminders for upcoming bookings that haven\'t been reminded yet.';
 
     public function handle()
     {
         $now = now();
-        $intervals = [15, 10, 5];
+        // Get bookings for today, status 'menunggu', that haven't been reminded, 
+        // and are scheduled for the next 2 hours.
+        $bookings = Transaksi::where('tanggal', $now->toDateString())
+            ->where('status', 'menunggu')
+            ->whereNull('reminded_at')
+            ->where('waktu', '>=', $now->format('H:i'))
+            ->where('waktu', '<=', $now->copy()->addHours(2)->format('H:i'))
+            ->get();
 
-        foreach ($intervals as $minutes) {
-            $targetTime = $now->copy()->addMinutes($minutes)->format('H:i');
-            
-            $bookings = Transaksi::where('tanggal', $now->toDateString())
-                ->where('status', 'menunggu')
-                ->where('waktu', $targetTime)
-                ->get();
+        $this->info("Found " . $bookings->count() . " bookings to remind.");
 
-            foreach ($bookings as $booking) {
-                $this->sendWhatsAppReminder($booking, $minutes);
+        foreach ($bookings as $booking) {
+            if ($this->sendWhatsAppReminder($booking)) {
+                $booking->update(['reminded_at' => now()]);
+                $this->info("Reminder sent to " . $booking->nama);
             }
         }
     }
 
-    private function sendWhatsAppReminder($booking, $minutes)
+    private function sendWhatsAppReminder($booking)
     {
         $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
         $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
+        $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
 
-        $message = "*PENGINGAT BOOKING*\n\n";
-        $message .= "Halo " . $booking->nama . ",\n";
-        $message .= "Ini adalah pengingat bahwa jadwal booking Anda di *AF Barbershop* adalah dalam *" . $minutes . " menit* lagi pada pukul *" . $booking->waktu . "*.\n\n";
-        $message .= "Kapster: " . ($booking->kapster->nama ?? 'Bebas') . "\n";
-        $message .= "Mohon datang tepat waktu ya. Terima kasih!\n\n";
-        $message .= "https://poseidonbarbershop.my.id";
+        $message = "*PENGINGAT JADWAL BOOKING - " . strtoupper($namaUsaha) . "*\n\n";
+        $message .= "Halo Kak *" . $booking->nama . "*,\n";
+        $message .= "Kami ingin mengingatkan jadwal booking Kakak pada:\n\n";
+        $message .= "⏰ Jam: *" . $booking->waktu . "*\n";
+        $message .= "✂️ Layanan: *" . ($booking->jasa->pluck('nama')->implode(', ') ?: '-') . "*\n";
+        $message .= "💇‍♂️ Barber: *" . ($booking->kapster->nama ?? 'Bebas') . "*\n\n";
+        $message .= "Mohon datang 10 menit sebelum jadwal ya Kak. Terima kasih! 🙏\n";
+        $message .= " https://poseidonbarbershop.my.id ";
 
         $no_hp = $booking->no_hp;
         if (str_starts_with($no_hp, '0')) {
@@ -51,15 +57,16 @@ class SendBookingReminders extends Command
         }
 
         try {
-            Http::withHeaders(['x-api-key' => $apiKey])
+            $response = Http::withHeaders(['x-api-key' => $apiKey])
                 ->post($baseUrl . '/api/send-message', [
                     'number' => $no_hp,
                     'message' => $message,
                 ]);
             
-            $this->info("Reminder sent to " . $booking->nama . " for " . $minutes . " minutes.");
+            return $response->successful();
         } catch (\Exception $e) {
-            $this->error("Failed to send reminder: " . $e->getMessage());
+            $this->error("Failed to send reminder to {$booking->nama}: " . $e->getMessage());
+            return false;
         }
     }
 }

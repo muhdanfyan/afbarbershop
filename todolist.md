@@ -1,7 +1,7 @@
-- scheduling booking kalau booked tidak bisa diakses oleh pelanggan lain
-- whatsapp reminder otomatis 15menit,10 menit, 5menit, juga menu chat dari kasir untuk perubahan transaksi
-- theme dark/light
-- tampilan display antrian untuk admin dan user konek spotify playlist
-- menu penjualan produk di halaman utama
-- bookingan yang selain hari ini juga harus tampil di display kasir
-- sortir desc berdasarkan jam booking
+- [x] scheduling booking kalau booked tidak bisa diakses oleh pelanggan lain (Berhasil di BookingForm & SlotLogicTest)
+- [x] whatsapp reminder otomatis 15menit,10 menit, 5menit, juga menu chat dari kasir untuk perubahan transaksi (Berhasil di app:send-reminders & KasirTransaksi)
+- [x] theme dark/light (Selesai dengan LocalStorage persistence)
+- [x] tampilan display antrian untuk admin dan user konek spotify playlist (Optimasi N+1 & Spotify Embed Selesai)
+- [x] menu penjualan produk di halaman utama (Selesai di Landing & Kasir)
+- [x] bookingan yang selain hari ini juga harus tampil di display kasir (Selesai di query KasirTransaksi)
+- [x] sortir desc berdasarkan jam booking (Selesai di KasirTransaksi)
