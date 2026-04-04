@@ -3,26 +3,56 @@
 @section('title', 'Dashboard')
 
 @section('content')
+    <style>
+        .stat-card {
+            border-radius: 16px !important;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08) !important;
+        }
+        .stat-icon-wrapper {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .table-premium th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #e2e8f0 !important;
+        }
+        .table-premium td {
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+    </style>
     <!-- partial -->
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="row">
-                <div class="col-sm-12 mb-4 mb-xl-0">
-                    <h4 class="font-weight-bold text-dark">Hi {{ auth()->user()->name }}, selamat datang!</h4>
-                    <p class="font-weight-normal mb-2 text-muted">{{ date('F j, Y') }}</p>
+                <div class="col-sm-12 mb-4 mb-xl-0 border-bottom pb-3">
+                    <h4 class="font-weight-bold text-dark" style="font-family: 'Montserrat', sans-serif;">Hi {{ auth()->user()->name }}, selamat datang!</h4>
+                    <p class="font-weight-normal mb-0 text-muted" style="font-size: 0.85rem;">{{ date('l, d F Y') }}</p>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card stat-card border-0 h-100">
                         <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="bg-light-primary rounded-circle p-3">
-                                    <i class="mdi mdi-account-multiple fa-2x"></i>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="bg-light-primary stat-icon-wrapper rounded-circle">
+                                    <i class="mdi mdi-account-multiple text-primary" style="font-size: 1.8rem;"></i>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.7rem;">Jumlah User</p>
-                                    <h3 class="mb-0 font-weight-bold">{{ $jumlahUser }}</h3>
+                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Jumlah User</p>
+                                    <h3 class="mb-0 font-weight-bold text-dark">{{ $jumlahUser }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -31,13 +61,13 @@
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card stat-card border-0 h-100">
                         <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="bg-light-success rounded-circle p-3">
-                                    <i class="mdi mdi-account-star fa-2x"></i>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="bg-light-success stat-icon-wrapper rounded-circle">
+                                    <i class="mdi mdi-account-star text-success" style="font-size: 1.8rem;"></i>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.7rem;">Jumlah Kapster</p>
-                                    <h3 class="mb-0 font-weight-bold">{{ $jumlahKapster }}</h3>
+                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Jumlah Kapster</p>
+                                    <h3 class="mb-0 font-weight-bold text-dark">{{ $jumlahKapster }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -46,13 +76,13 @@
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card stat-card border-0 h-100">
                         <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="bg-light-info rounded-circle p-3">
-                                    <i class="mdi mdi-calendar-today fa-2x"></i>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="bg-light-info stat-icon-wrapper rounded-circle">
+                                    <i class="mdi mdi-calendar-today text-info" style="font-size: 1.8rem;"></i>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.7rem;">Booking Hari Ini</p>
-                                    <h3 class="mb-0 font-weight-bold">{{ $jumlahBookingHariIni }}</h3>
+                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Booking Hari Ini</p>
+                                    <h3 class="mb-0 font-weight-bold text-dark">{{ $jumlahBookingHariIni }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -61,13 +91,13 @@
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card stat-card border-0 h-100">
                         <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="bg-light-danger rounded-circle p-3">
-                                    <i class="mdi mdi-cash-multiple fa-2x"></i>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="bg-light-danger stat-icon-wrapper rounded-circle">
+                                    <i class="mdi mdi-cash-multiple text-danger" style="font-size: 1.8rem;"></i>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.7rem;">Pendapatan Hari Ini</p>
-                                    <h3 class="mb-0 font-weight-bold">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</h3>
+                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Pendapatan Hari Ini</p>
+                                    <h3 class="mb-0 font-weight-bold text-dark">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</h3>
                                 </div>
                             </div>
                         </div>
@@ -78,13 +108,13 @@
                 <div class="col-xl-4 col-md-6 mb-4">
                     <div class="card stat-card border-0 h-100">
                         <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-light-primary rounded-circle p-3 mr-3">
-                                    <i class="mdi mdi-cash-register fa-2x"></i>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-light-primary stat-icon-wrapper rounded-circle mr-3">
+                                    <i class="mdi mdi-cash-register text-primary" style="font-size: 1.8rem;"></i>
                                 </div>
                                 <div>
-                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.7rem;">Total Omzet</p>
-                                    <h4 class="mb-0 font-weight-bold">Rp {{ number_format($totalOmzet, 0, ',', '.') }}</h4>
+                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Total Omzet</p>
+                                    <h4 class="mb-0 font-weight-bold text-dark">Rp {{ number_format($totalOmzet, 0, ',', '.') }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -93,13 +123,13 @@
                 <div class="col-xl-4 col-md-6 mb-4">
                     <div class="card stat-card border-0 h-100">
                         <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-light-info rounded-circle p-3 mr-3">
-                                    <i class="mdi mdi-account-star fa-2x"></i>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-light-info stat-icon-wrapper rounded-circle mr-3">
+                                    <i class="mdi mdi-account-star text-info" style="font-size: 1.8rem;"></i>
                                 </div>
                                 <div>
-                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.7rem;">Fee Kapster (40%)</p>
-                                    <h4 class="mb-0 font-weight-bold">Rp {{ number_format($totalFeeKapster, 0, ',', '.') }}</h4>
+                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Fee Kapster (40%)</p>
+                                    <h4 class="mb-0 font-weight-bold text-dark">Rp {{ number_format($totalFeeKapster, 0, ',', '.') }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -108,13 +138,13 @@
                 <div class="col-xl-4 col-md-6 mb-4">
                     <div class="card stat-card border-0 h-100">
                         <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="bg-light-warning rounded-circle p-3 mr-3">
-                                    <i class="mdi mdi-briefcase-account fa-2x"></i>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-light-warning stat-icon-wrapper rounded-circle mr-3">
+                                    <i class="mdi mdi-briefcase-account text-warning" style="font-size: 1.8rem;"></i>
                                 </div>
                                 <div>
-                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.7rem;">Manajemen (60%)</p>
-                                    <h4 class="mb-0 font-weight-bold">Rp {{ number_format($penghasilanManajemen, 0, ',', '.') }}</h4>
+                                    <p class="text-muted mb-1 text-uppercase font-weight-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">Manajemen (60%)</p>
+                                    <h4 class="mb-0 font-weight-bold text-dark">Rp {{ number_format($penghasilanManajemen, 0, ',', '.') }}</h4>
                                 </div>
                             </div>
                         </div>

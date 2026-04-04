@@ -55,29 +55,30 @@
         }
         .sidebar .nav .nav-item .nav-link {
             color: #d1d5db !important;
-            padding: 0.45rem 1.25rem !important;
-            margin: 0.1rem 1rem !important;
-            border-radius: 10px;
+            padding: 0.65rem 1.25rem !important;
+            margin: 0.25rem 1.25rem !important;
+            border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             align-items: center;
         }
         .sidebar .nav .nav-item.active > .nav-link, 
         .sidebar .nav .nav-item .nav-link:hover {
-            background: linear-gradient(135deg, #d4af37, #b8972e) !important; /* Signature Gold */
-            color: #000 !important;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            transform: translateX(4px);
+            background: linear-gradient(135deg, #d4af37, #c5a028) !important; /* Signature Gold Gradient */
+            color: #111827 !important; /* Deep Navy contrast */
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+            transform: translateX(5px);
         }
         .sidebar .nav .nav-item .nav-link i.menu-icon {
             color: inherit !important;
-            font-size: 1.15rem;
-            margin-right: 0.8rem;
+            font-size: 1.25rem;
+            margin-right: 1rem;
         }
         .sidebar .nav .nav-item .nav-link .menu-title {
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.85rem;
             font-family: 'Montserrat', sans-serif;
             color: inherit !important;
+            letter-spacing: 0.3px;
         }
         
         /* Navbar to Match Sidebar */
