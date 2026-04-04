@@ -256,23 +256,23 @@
             background-size: 200% auto;
             color: #000;
             font-weight: 900;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             letter-spacing: 2px;
-            padding: 1.25rem 1rem;
-            border-radius: 16px;
+            padding: 1rem 0.5rem;
+            border-radius: 12px;
             border: 2px solid #fff;
             width: 100%;
             text-transform: uppercase;
-            box-shadow: 0 15px 30px rgba(255, 152, 0, 0.4), inset 0 2px 5px rgba(255,255,255,0.5);
+            box-shadow: 0 10px 20px rgba(255, 152, 0, 0.4), inset 0 2px 5px rgba(255,255,255,0.5);
             transition: all 0.3s cubic-bezier(.25,.8,.25,1);
             animation: gradientShine 3s linear infinite, ctaPulse 2s ease-in-out infinite;
             text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .dark .btn-gold-premium {
             border: 2px solid #000;
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3), inset 0 2px 5px rgba(255,255,255,0.2);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3), inset 0 2px 5px rgba(255,255,255,0.2);
             color: #111;
         }
 
@@ -320,14 +320,19 @@
             </h5>
         </div>
 
-        <div class="d-flex align-items-center gap-4">
+        <div class="d-flex align-items-center gap-2">
+            <!-- Fullscreen Toggle -->
+            <button onclick="toggleFullscreen(this)" class="btn p-2 rounded-circle border-0 text-secondary hover:text-accent transition-colors" title="Toggle Fullscreen">
+                <i class="fas fa-expand"></i>
+            </button>
+
             <!-- Theme Toggle -->
             <button onclick="toggleTheme()" class="btn p-2 rounded-circle border-0 text-secondary hover:text-accent transition-colors" title="Toggle Theme">
                 <i class="fas fa-moon dark:hidden"></i>
                 <i class="fas fa-sun hidden dark:inline text-warning"></i>
             </button>
 
-            <div class="text-end">
+            <div class="text-end ms-3">
                 <span class="text-secondary ultra-small fw-bold text-uppercase d-block mb-0">TOTAL</span>
                 <span class="h3 mb-0 fw-bold text-accent font-display">
                     Rp {{ is_numeric($total) ? number_format($total, 0, ',', '.') : 0 }}
@@ -517,27 +522,27 @@
                 <div class="mt-auto">
                     @if(count($jasa) > 0 || count($barangSelected) > 0 || $status === 'selesai')
                         @if($status !== 'selesai')
-                            <div class="mb-3">
-                                <label class="ultra-small text-secondary fw-bold text-uppercase mb-2 d-block"><i class="fas fa-wallet me-1"></i> Metode Pembayaran</label>
+                            <div class="mb-2">
+                                <label class="ultra-small text-secondary fw-bold text-uppercase mb-1 d-block"><i class="fas fa-wallet me-1"></i> Metode Pembayaran</label>
                                 <div class="d-flex gap-2">
-                                    <div class="payment-method-btn {{ $metode_pembayaran === 'cash' ? 'active' : '' }}" wire:click="$set('metode_pembayaran', 'cash')">
-                                        <i class="fas fa-money-bill-wave d-block mb-1 fs-5"></i> Tunai (Cash)
+                                    <div class="payment-method-btn py-2 {{ $metode_pembayaran === 'cash' ? 'active' : '' }}" wire:click="$set('metode_pembayaran', 'cash')">
+                                        <i class="fas fa-money-bill-wave d-block mb-1 fs-6"></i> Tunai (Cash)
                                     </div>
-                                    <div class="payment-method-btn {{ $metode_pembayaran === 'transfer' ? 'active' : '' }}" wire:click="$set('metode_pembayaran', 'transfer')">
-                                        <i class="fas fa-qrcode d-block mb-1 fs-5"></i> Transfer QRIS
+                                    <div class="payment-method-btn py-2 {{ $metode_pembayaran === 'transfer' ? 'active' : '' }}" wire:click="$set('metode_pembayaran', 'transfer')">
+                                        <i class="fas fa-qrcode d-block mb-1 fs-6"></i> Transfer QRIS
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="payment-controls animate__animated animate__fadeInUp">
                                 @if($metode_pembayaran === 'cash')
-                                    <div class="mb-2 position-relative">
-                                        <label class="ultra-small text-secondary fw-bold text-uppercase position-absolute top-0 start-0 pt-2 z-1">Nominal Uang</label>
-                                        <input type="number" wire:model.live="bayar" class="form-control huge-input w-100 placeholder-glow" placeholder="0">
+                                    <div class="mb-1 position-relative">
+                                        <label class="ultra-small text-secondary fw-bold text-uppercase position-absolute top-0 start-0 pt-1 z-1">Nominal Uang</label>
+                                        <input type="number" wire:model.live="bayar" class="form-control huge-input w-100 placeholder-glow" style="font-size: 1.8rem !important;" placeholder="0">
                                     </div>
-                                    <div class="mb-4 d-flex justify-content-between align-items-center p-2 rounded-3" style="background: rgba(212,175,55,0.05); border: 1px solid var(--border-color);">
+                                    <div class="mb-2 d-flex justify-content-between align-items-center p-2 rounded-3" style="background: rgba(212,175,55,0.05); border: 1px solid var(--border-color);">
                                         <span class="ultra-small text-secondary fw-bold text-uppercase mb-0"><i class="fas fa-exchange-alt me-1"></i> Kembalian</span>
-                                        <span class="fw-bold {{ $kembali < 0 ? 'text-danger' : 'text-success' }}" style="font-size: 1.35rem; font-family: var(--font-display);">
+                                        <span class="fw-bold {{ $kembali < 0 ? 'text-danger' : 'text-success' }}" style="font-size: 1.25rem; font-family: var(--font-display);">
                                             Rp{{ number_format($kembali, 0, ',', '.') }}
                                         </span>
                                     </div>
@@ -548,17 +553,17 @@
                                 </button>
                             </div>
                         @else
-                            <div class="alert alert-success text-center py-3 mb-3 ultra-small fw-bold animate__animated animate__bounceIn" style="border-radius: 12px; font-size: 0.9rem;">
-                                <i class="fas fa-check-double fa-2x d-block mb-2 text-success"></i>
-                                TRANSAKSI BERHASIL LUNAS DASHBOARD
+                            <div class="alert alert-success text-center py-2 mb-2 ultra-small fw-bold animate__animated animate__bounceIn" style="border-radius: 12px; font-size: 0.8rem;">
+                                <i class="fas fa-check-double fa-2x d-block mb-1 text-success"></i>
+                                LUNAS DASHBOARD
                             </div>
                             <div class="d-flex gap-2">
-                                <button onclick="window.print()" class="btn btn-outline-secondary w-50 py-3" style="border-radius: 12px; font-weight: bold;"><i class="fas fa-print me-1"></i> CETAK STRUK</button>
-                                <button wire:click="resetForm" class="btn btn-gold-premium w-50" style="padding: 0.8rem 1rem;"><i class="fas fa-plus me-1"></i> BARU</button>
+                                <button onclick="window.print()" class="btn btn-outline-secondary w-50 py-2" style="border-radius: 12px; font-weight: bold;"><i class="fas fa-print me-1"></i> CETAK</button>
+                                <button wire:click="resetForm" class="btn btn-gold-premium w-50" style="padding: 0.5rem 1rem; margin-top: 0;"><i class="fas fa-plus me-1"></i> BARU</button>
                             </div>
                         @endif
                     @else
-                        <div class="text-center py-5 text-muted animate__animated animate__fadeIn" style="border: 2px dashed var(--border-color); border-radius: 16px;">
+                        <div class="text-center py-4 text-muted animate__animated animate__fadeIn" style="border: 2px dashed var(--border-color); border-radius: 16px;">
                             <i class="fas fa-shopping-basket fa-3x mb-3 opacity-25 text-accent"></i>
                             <p class="ultra-small fw-bold text-uppercase mb-0" style="letter-spacing: 1px;">Belum Ada Layanan</p>
                             <span style="font-size: 0.65rem;">Pilih jasa atau produk di sebelah kiri</span>
@@ -572,6 +577,18 @@
 
 @push('scripts')
     <script>
+        function toggleFullscreen(btn) {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                btn.querySelector('i').className = 'fas fa-compress';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    btn.querySelector('i').className = 'fas fa-expand';
+                }
+            }
+        }
+
         document.addEventListener('livewire:init', function () {
             Livewire.on('swal-success', (e) => {
                 Swal.fire({ icon: 'success', title: 'Berhasil!', text: e.message, timer: 1500, showConfirmButton: false, background: 'var(--bg-secondary)', color: 'var(--text-primary)' });
