@@ -13,14 +13,14 @@
             <i class="mdi mdi-menu" style="font-size: 1.8rem;"></i>
         </button>
         <div class="search-wrapper d-none d-md-block mr-auto ml-1">
-            <div class="input-group" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 5px 15px;">
+            <div class="input-group" style="background: rgba(255,255,255,0.05); border: none; border-radius: 12px; padding: 5px 15px;">
                 <i class="mdi mdi-magnify text-muted mr-2" style="font-size: 1.2rem;"></i>
-                <input type="text" class="form-control border-0 bg-transparent p-0 text-white" placeholder="Search..." style="height: 30px; font-size: 0.85rem;">
+                <input type="text" class="form-control border-0 bg-transparent p-0 text-white" placeholder="Search..." style="height: 30px; font-size: 0.85rem; box-shadow: none;">
             </div>
         </div>
         <ul class="navbar-nav navbar-nav-right">
             <li class="nav-item nav-profile dropdown">
-                <a class="nav-link dropdown-toggle d-flex align-items-center bg-dark text-white rounded-pill px-3 py-2 border border-secondary" href="#" data-toggle="dropdown" id="profileDropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center bg-dark text-white rounded-pill px-3 py-2 border-0" href="#" data-toggle="dropdown" id="profileDropdown" style="box-shadow: none;">
                     <img src="{{ auth()->user()->foto ? asset('storage/'.auth()->user()->foto) : 'https://ui-avatars.com/api/?name='.urlencode(auth()->user()->name) }}" alt="profile" class="rounded-circle mr-2" style="width: 30px; height: 30px;"/>
                     <span class="nav-profile-name small font-weight-bold">My Account</span>
                     <i class="mdi mdi-chevron-down ml-1"></i>
