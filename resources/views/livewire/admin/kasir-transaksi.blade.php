@@ -252,22 +252,44 @@
         .huge-input::placeholder { color: var(--border-color); }
 
         .btn-gold-premium {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+            background: linear-gradient(45deg, #FFC107, #FF9800, #FFC107);
+            background-size: 200% auto;
             color: #000;
             font-weight: 900;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
+            font-size: 1.25rem;
+            letter-spacing: 2px;
             padding: 1.25rem 1rem;
-            border-radius: 14px;
-            border: none;
+            border-radius: 16px;
+            border: 2px solid #fff;
             width: 100%;
             text-transform: uppercase;
-            box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.5);
-            transition: all 0.3s ease;
+            box-shadow: 0 15px 30px rgba(255, 152, 0, 0.4), inset 0 2px 5px rgba(255,255,255,0.5);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            animation: gradientShine 3s linear infinite, ctaPulse 2s ease-in-out infinite;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
+            margin-top: 10px;
         }
+
+        .dark .btn-gold-premium {
+            border: 2px solid #000;
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3), inset 0 2px 5px rgba(255,255,255,0.2);
+            color: #111;
+        }
+
         .btn-gold-premium:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px -5px rgba(212, 175, 55, 0.7);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 152, 0, 0.6);
+            background-position: right center;
+        }
+
+        @keyframes gradientShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        @keyframes ctaPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .ultra-small { font-size: 0.65rem; }
