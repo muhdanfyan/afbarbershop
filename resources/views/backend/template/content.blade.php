@@ -94,6 +94,20 @@
         body, .page-body-wrapper {
             background: #f8fafc !important; /* Soft premium gray/white for content */
         }
+        
+        /* Icon-only sidebar handling */
+        .sidebar-icon-only .sidebar .nav .nav-item .nav-link .menu-title,
+        .sidebar-icon-only .sidebar .nav .nav-category {
+            display: none !important;
+        }
+        .sidebar-icon-only .sidebar .nav .nav-item .nav-link {
+            justify-content: center !important;
+            padding: 0.8rem !important;
+        }
+        .sidebar-icon-only .sidebar .nav .nav-item .nav-link i.menu-icon {
+            margin-right: 0 !important;
+            font-size: 1.5rem !important;
+        }
     </style>
 </head>
 
