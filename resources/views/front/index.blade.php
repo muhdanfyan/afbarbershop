@@ -570,11 +570,66 @@
         </div>
     </footer>
 
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/{{ $settings['telepon'] ?? '6285220210003' }}" target="_blank"
-        class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110 z-40">
-        <i class="fab fa-whatsapp text-3xl"></i>
-    </a>
+    <!-- WhatsApp Floating Button & Widget -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- Chat Widget -->
+        <div id="whatsapp-widget" class="hidden flex-col bg-white dark:bg-gray-900 w-[320px] md:w-[350px] rounded-2xl shadow-2xl overflow-hidden mb-4 animate-slide-up border border-gray-100 dark:border-white/10">
+            <!-- Header -->
+            <div class="p-4 flex items-center justify-between text-white" style="background-color: #25d366;">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
+                            <i class="fas fa-user-tie text-xl"></i>
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-[#25d366] rounded-full"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm leading-tight">AF Barbershop Support</h4>
+                        <div class="flex items-center space-x-1">
+                            <span class="text-[10px] opacity-90">Online</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="toggleWhatsappChat()" class="hover:bg-white/20 p-1.5 rounded-full transition-colors">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            
+            <!-- Messages Area -->
+            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 space-y-3 min-h-[80px]">
+                <div class="bg-white dark:bg-gray-800 p-3 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-800 dark:text-gray-200 inline-block border border-gray-100 dark:border-white/5">
+                    Halo! 👋<br>Ada yang bisa kami bantu? Silakan isi data di bawah untuk memulai chat di WhatsApp.
+                </div>
+            </div>
+
+            <!-- Form Area -->
+            <div class="p-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-white/10">
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 mb-1 block">Nama Lengkap</label>
+                        <input type="text" id="wa-name" placeholder="Contoh: Budi Santoso" 
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-transparent focus:ring-2 focus:ring-green-500 focus:outline-none text-sm text-gray-900 dark:text-white transition-all shadow-inner">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 mb-1 block">Pesan (Opsional)</label>
+                        <textarea id="wa-message" rows="2" placeholder="Mau tanya tentang apa?" 
+                            class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-transparent focus:ring-2 focus:ring-green-500 focus:outline-none text-sm text-gray-900 dark:text-white transition-all shadow-inner"></textarea>
+                    </div>
+                    <button onclick="sendWhatsapp()" 
+                        class="w-full bg-[#25d366] hover:bg-[#128c7e] text-white font-black py-3 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-green-500/30 transform hover:scale-[1.02] active:scale-95">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                        <span>MULAI CHAT SEKARANG</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Button -->
+        <button onclick="toggleWhatsappChat()"
+            class="bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110">
+            <i class="fab fa-whatsapp text-3xl"></i>
+        </button>
+    </div>
 
     <!-- Success Modal -->
     <div id="successModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 transition-all duration-500">
@@ -844,6 +899,37 @@
                 document.getElementById('mobileMenu').classList.add('hidden');
             });
         });
+
+        // WhatsApp Form Logic
+        function toggleWhatsappChat() {
+            const widget = document.getElementById('whatsapp-widget');
+            if (widget.classList.contains('hidden')) {
+                widget.classList.remove('hidden');
+                widget.classList.add('flex');
+            } else {
+                widget.classList.add('hidden');
+                widget.classList.remove('flex');
+            }
+        }
+
+        async function sendWhatsapp() {
+            const name = document.getElementById('wa-name').value;
+            const message = document.getElementById('wa-message').value;
+            const phone = '{{ $settings['telepon'] ?? '6285220210003' }}';
+
+            if (!name) {
+                alert('Silakan masukkan nama Anda.');
+                return;
+            }
+
+            const cleanPhone = phone.replace(/[^0-9]/g, '');
+            const text = `Halo AF Barbershop, saya ${name}. ${message}`;
+            const encodedText = encodeURIComponent(text);
+            const url = `https://wa.me/${cleanPhone}?text=${encodedText}`;
+
+            window.open(url, '_blank');
+            toggleWhatsappChat();
+        }
 
         // Set minimum date for booking (today)
         const dateInput = document.querySelector('input[type="date"]');
