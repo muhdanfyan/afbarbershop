@@ -47,18 +47,14 @@
             z-index: 1010;
         }
         .page-body-wrapper { 
-            height: 100vh;
-            max-height: 100vh;
+            min-height: 100vh;
             display: flex; 
             flex-direction: row;
             background: #f8fafc;
-            overflow: hidden;
         }
         .main-panel {
             flex: 1;
-            height: 100vh;
-            max-height: 100vh;
-            overflow-y: auto;
+            min-height: 100vh;
             background: #f8fafc;
             padding-left: 0;
             transition: all 0.3s ease;
@@ -130,10 +126,19 @@
         }
         
         .content-wrapper {
-            padding: 1rem 1.5rem !important;
+            padding: 1.5rem !important;
             width: 100% !important;
             max-width: 100% !important;
             flex-grow: 1;
+        }
+        @media (max-width: 991px) {
+            .container-scroller, .page-body-wrapper, .main-panel {
+                height: auto !important;
+                max-height: none !important;
+            }
+            .content-wrapper {
+                padding: 1rem !important;
+            }
         }
 
         .card {

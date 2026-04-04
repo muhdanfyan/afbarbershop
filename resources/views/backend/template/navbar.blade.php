@@ -187,8 +187,8 @@
         const savedSidebar = localStorage.getItem('sidebarMinimized');
         const isMobile = window.innerWidth < 992;
 
-        // 1. Initial State: Force minimized on mobile OR if previously saved as minimized
-        if (isMobile || savedSidebar === 'minimized') {
+        // 1. Initial State: Only force minimized on desktop if previously saved as minimized
+        if (!isMobile && savedSidebar === 'minimized') {
             body.classList.add('sidebar-icon-only');
         }
 

@@ -37,7 +37,7 @@ body {
 
 /* Overhaul Sidebar - Ultra Elegant & Premium */
 .sidebar {
-    width: 260px !important;
+    width: 260px;
     background: #1a1a2e !important; /* Premium Midnight Blue */
     min-height: 100vh;
     border-right: none;

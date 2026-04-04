@@ -79,7 +79,7 @@
     </div>
 
     <div class="row mb-1">
-        <div class="col-xl-3 col-md-6 col-6 mb-2">
+        <div class="col-xl-3 col-md-6 col-12 mb-2">
             <div class="card stat-card border-0 h-100 overflow-hidden" style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -94,7 +94,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6 col-6 mb-2">
+        <div class="col-xl-3 col-md-6 col-12 mb-2">
             <div class="card stat-card border-0 h-100 overflow-hidden" style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -109,7 +109,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6 col-6 mb-2">
+        <div class="col-xl-3 col-md-6 col-12 mb-2">
             <div class="card stat-card border-0 h-100 overflow-hidden" style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -124,7 +124,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6 col-6 mb-2">
+        <div class="col-xl-3 col-md-6 col-12 mb-2">
             <div class="card stat-card border-0 h-100 overflow-hidden" style="background: linear-gradient(to bottom right, #ffffff, #f8fafc);">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center justify-content-between mb-2">
