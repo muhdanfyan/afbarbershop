@@ -184,35 +184,97 @@
             background: var(--bg-secondary);
         }
 
-        /* --- Receipt (Fixed High Precision) --- */
-        .receipt-section {
-            background: white;
-            color: #1a1a1a;
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Montserrat', sans-serif;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            font-size: 0.85rem;
+        /* --- Sidebar Premium Enhancements --- */
+        .premium-sidebar {
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 15px 50px -10px rgba(212, 175, 55, 0.2);
+            position: relative;
         }
 
-        .receipt-table th { font-size: 0.65rem; color: #64748b; }
-        .receipt-table td { padding: 0.4rem 0; border-bottom: 1px solid #f1f5f9; }
+        .dark .premium-sidebar {
+            box-shadow: 0 15px 50px -10px rgba(212, 175, 55, 0.15);
+        }
 
-        .btn-gold {
-            background: var(--accent-primary);
+        .receipt-ticket {
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: inset 0 0 0 1px var(--border-color), 0 10px 20px -5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .dark .receipt-ticket {
+            background: linear-gradient(135deg, #1f1f1f, #0a0a0a);
+            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2), 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .receipt-table th { font-size: 0.65rem; color: var(--text-secondary); border-bottom: 1px dashed var(--border-color); padding-bottom: 0.5rem; }
+        .receipt-table td { padding: 0.6rem 0; border-bottom: 1px dashed var(--border-color); color: var(--text-primary); }
+        .receipt-table tr:last-child td { border-bottom: none; }
+
+        .payment-method-btn {
+            flex: 1;
+            padding: 0.75rem 0.5rem;
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+        .payment-method-btn:hover { border-color: var(--accent-primary); }
+        .payment-method-btn.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .huge-input {
+            font-size: 2.2rem !important;
+            font-family: var(--font-display) !important;
+            color: var(--accent-primary) !important;
+            border: none !important;
+            border-bottom: 2px dashed var(--border-color) !important;
+            background: transparent !important;
+            border-radius: 0 !important;
+            padding: 0.5rem 0 !important;
+            box-shadow: none !important;
+            text-align: right;
+            transition: border-color 0.3s ease;
+        }
+        .huge-input:focus { border-bottom-color: var(--accent-primary) !important; outline: none; }
+        .huge-input::placeholder { color: var(--border-color); }
+
+        .btn-gold-premium {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
             color: #000;
-            font-weight: 800;
-            padding: 0.6rem 1rem;
-            border-radius: 6px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            padding: 1.25rem 1rem;
+            border-radius: 14px;
             border: none;
             width: 100%;
-            font-size: 0.9rem;
+            text-transform: uppercase;
+            box-shadow: 0 10px 25px -5px rgba(212, 175, 55, 0.5);
+            transition: all 0.3s ease;
+        }
+        .btn-gold-premium:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px -5px rgba(212, 175, 55, 0.7);
         }
 
         .ultra-small { font-size: 0.65rem; }
         .text-accent { color: var(--accent-primary) !important; }
     </style>
-    </style>
+    <!-- Add animate.css if not present -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 @endpush
 
 <!-- ... sisanya dari kode HTML dan PHP Anda tetap sama ... -->
@@ -386,37 +448,46 @@
         </section>
 
         <!-- 3. SUMMARY (RIGHT) -->
-        <aside class="panel">
-            <div class="panel-header">
-                <i class="fas fa-file-invoice-dollar"></i> Ringkasan
+        <aside class="panel premium-sidebar">
+            <div class="panel-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-file-invoice-dollar me-2"></i> RINGKASAN</span>
+                @if(count($jasa) > 0 || count($barangSelected) > 0)
+                    <span class="badge bg-warning text-dark border-0 animate__animated animate__pulse animate__infinite">AKTIF</span>
+                @endif
             </div>
-            <div class="panel-body d-flex flex-column" style="overflow: hidden; height: calc(100% - 50px);">
-                <div class="receipt-section flex-grow-1 shadow-sm mb-3">
-                    <div class="text-center border-bottom pb-2 mb-2">
-                        <div class="h5 fw-bold text-accent mb-0" style="font-family: monospace;">#{{ $invoice ?: 'DRAFT' }}</div>
-                        <h6 class="fw-bold mb-0 text-dark" style="font-family: var(--font-heading);">{{ $nama_usaha }}</h6>
-                        <span class="ultra-small text-muted">{{ date('d/m/Y | H:i') }}</span>
+            <div class="panel-body d-flex flex-column" style="overflow:-moz-hidden-unscrollable; height: calc(100% - 50px);">
+                <div class="receipt-ticket flex-grow-1 d-flex flex-column mb-3">
+                    <div class="text-center pb-3 mb-3" style="border-bottom: 2px dashed var(--border-color);">
+                        <div class="h5 fw-bold text-accent mb-0" style="font-family: var(--font-display); letter-spacing: 1px;">#{{ $invoice ?: 'DRAFT-' . date('Ymd') }}</div>
+                        <h6 class="fw-bold mb-1 mt-2 text-primary" style="font-family: var(--font-heading); font-size: 1.1rem;">{{ $nama_usaha }}</h6>
+                        <span class="ultra-small text-secondary"><i class="far fa-clock me-1"></i>{{ date('d-M-Y | H:i') }}</span>
                     </div>
 
-                    <div class="receipt-items" style="max-height: 250px; overflow-y: auto;">
+                    <div class="receipt-items flex-grow-1" style="max-height: 250px; overflow-y: auto; scrollbar-width: none;">
                         <table class="receipt-table w-100">
                             <thead>
-                                <tr><th class="text-start">Item</th><th class="text-end">Total</th></tr>
+                                <tr><th class="text-start">ITEM DESCRIPTION</th><th class="text-end">PRICE</th></tr>
                             </thead>
                             <tbody>
                                 @foreach($selectedJasaItems as $item)
-                                    <tr wire:key="receipt-jasa-{{ $item->id }}"><td class="ultra-small">{{ $item->nama }}</td><td class="text-end ultra-small fw-bold">{{ number_format($item->harga, 0, ',', '.') }}</td></tr>
+                                    <tr wire:key="receipt-jasa-{{ $item->id }}">
+                                        <td class="ultra-small"><span class="d-block fw-bold" style="font-size: 0.75rem;">{{ $item->nama }}</span></td>
+                                        <td class="text-end ultra-small fw-bold" style="font-size: 0.8rem;">{{ number_format($item->harga, 0, ',', '.') }}</td>
+                                    </tr>
                                 @endforeach
                                 @foreach($selectedBarangItems as $item)
-                                    <tr wire:key="receipt-barang-{{ $item->id }}"><td class="ultra-small">{{ $item->nama }} (x{{ $jumlahBarang[$item->id] ?? 1 }})</td><td class="text-end ultra-small fw-bold">{{ number_format($item->harga_jual * ($jumlahBarang[$item->id] ?? 1), 0, ',', '.') }}</td></tr>
+                                    <tr wire:key="receipt-barang-{{ $item->id }}">
+                                        <td class="ultra-small"><span class="d-block fw-bold" style="font-size: 0.75rem;">{{ $item->nama }}</span><span class="text-secondary">x{{ $jumlahBarang[$item->id] ?? 1 }}</span></td>
+                                        <td class="text-end ultra-small fw-bold" style="font-size: 0.8rem;">{{ number_format($item->harga_jual * ($jumlahBarang[$item->id] ?? 1), 0, ',', '.') }}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="receipt-total d-flex justify-content-between align-items-center mt-3 pt-2">
-                        <span class="ultra-small fw-bold">TOTAL</span>
-                        <span class="text-accent h4 mb-0 fw-bold">Rp{{ number_format($total, 0, ',', '.') }}</span>
+                    <div class="receipt-total d-flex justify-content-between align-items-center mt-3 pt-3" style="border-top: 2px dashed var(--border-color);">
+                        <span class="text-secondary fw-bold text-uppercase" style="letter-spacing: 2px;">Total Bayar</span>
+                        <span class="text-accent h3 mb-0 fw-bold" style="font-family: var(--font-display);">Rp{{ number_format($total, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
@@ -424,45 +495,51 @@
                 <div class="mt-auto">
                     @if(count($jasa) > 0 || count($barangSelected) > 0 || $status === 'selesai')
                         @if($status !== 'selesai')
-                            <div class="mb-2 p-2 border rounded-3 bg-light dark:bg-black/20">
-                                <label class="ultra-small text-secondary fw-bold text-uppercase mb-1">Metode Pembayaran</label>
-                                <select wire:model.live="metode_pembayaran" class="form-select border-accent">
-                                    <option value="cash">Tunai (Cash)</option>
-                                    <option value="transfer">Transfer QRIS</option>
-                                </select>
+                            <div class="mb-3">
+                                <label class="ultra-small text-secondary fw-bold text-uppercase mb-2 d-block"><i class="fas fa-wallet me-1"></i> Metode Pembayaran</label>
+                                <div class="d-flex gap-2">
+                                    <div class="payment-method-btn {{ $metode_pembayaran === 'cash' ? 'active' : '' }}" wire:click="$set('metode_pembayaran', 'cash')">
+                                        <i class="fas fa-money-bill-wave d-block mb-1 fs-5"></i> Tunai (Cash)
+                                    </div>
+                                    <div class="payment-method-btn {{ $metode_pembayaran === 'transfer' ? 'active' : '' }}" wire:click="$set('metode_pembayaran', 'transfer')">
+                                        <i class="fas fa-qrcode d-block mb-1 fs-5"></i> Transfer QRIS
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="payment-controls animate__animated animate__fadeInUp">
                                 @if($metode_pembayaran === 'cash')
-                                    <div class="mb-2">
-                                        <label class="ultra-small text-secondary fw-bold text-uppercase mb-1 px-1">Uang Bayar</label>
-                                        <input type="number" wire:model.live="bayar" class="form-control h3 text-end fw-bold border-accent bg-transparent" placeholder="0">
+                                    <div class="mb-2 position-relative">
+                                        <label class="ultra-small text-secondary fw-bold text-uppercase position-absolute top-0 start-0 pt-2 z-1">Nominal Uang</label>
+                                        <input type="number" wire:model.live="bayar" class="form-control huge-input w-100 placeholder-glow" placeholder="0">
                                     </div>
-                                    <div class="mb-3 d-flex justify-content-between align-items-center px-1">
-                                        <span class="ultra-small text-secondary fw-bold text-uppercase">Kembalian</span>
-                                        <span class="fw-bold {{ $kembali < 0 ? 'text-danger' : 'text-success' }}" style="font-size: 1.25rem;">
+                                    <div class="mb-4 d-flex justify-content-between align-items-center p-2 rounded-3" style="background: rgba(212,175,55,0.05); border: 1px solid var(--border-color);">
+                                        <span class="ultra-small text-secondary fw-bold text-uppercase mb-0"><i class="fas fa-exchange-alt me-1"></i> Kembalian</span>
+                                        <span class="fw-bold {{ $kembali < 0 ? 'text-danger' : 'text-success' }}" style="font-size: 1.35rem; font-family: var(--font-display);">
                                             Rp{{ number_format($kembali, 0, ',', '.') }}
                                         </span>
                                     </div>
                                 @endif
 
-                                <button wire:click="simpanTransaksi" class="btn-gold py-3 shadow w-100 animate-pulse">
+                                <button wire:click="simpanTransaksi" class="btn-gold-premium animate__animated animate__pulse animate__infinite">
                                     <i class="fas fa-check-circle me-1"></i> SIMPAN & SELESAI
                                 </button>
                             </div>
                         @else
-                            <div class="alert alert-success text-center py-2 mb-2 ultra-small fw-bold animate__animated animate__bounceIn">
-                                <i class="fas fa-check-double me-1"></i> LUNAS via {{ strtoupper($metode_pembayaran) }}
+                            <div class="alert alert-success text-center py-3 mb-3 ultra-small fw-bold animate__animated animate__bounceIn" style="border-radius: 12px; font-size: 0.9rem;">
+                                <i class="fas fa-check-double fa-2x d-block mb-2 text-success"></i>
+                                TRANSAKSI BERHASIL LUNAS DASHBOARD
                             </div>
                             <div class="d-flex gap-2">
-                                <button onclick="window.print()" class="btn btn-outline-dark w-100 py-2"><i class="fas fa-print me-1"></i> Struk</button>
-                                <button wire:click="resetForm" class="btn btn-gold w-100 py-2">Transaksi Baru</button>
+                                <button onclick="window.print()" class="btn btn-outline-secondary w-50 py-3" style="border-radius: 12px; font-weight: bold;"><i class="fas fa-print me-1"></i> CETAK STRUK</button>
+                                <button wire:click="resetForm" class="btn btn-gold-premium w-50" style="padding: 0.8rem 1rem;"><i class="fas fa-plus me-1"></i> BARU</button>
                             </div>
                         @endif
                     @else
-                        <div class="text-center py-4 text-muted animate__animated animate__fadeIn">
-                            <i class="fas fa-shopping-basket fa-2x mb-2 opacity-50"></i>
-                            <p class="ultra-small fw-bold">Belum ada item dipilih</p>
+                        <div class="text-center py-5 text-muted animate__animated animate__fadeIn" style="border: 2px dashed var(--border-color); border-radius: 16px;">
+                            <i class="fas fa-shopping-basket fa-3x mb-3 opacity-25 text-accent"></i>
+                            <p class="ultra-small fw-bold text-uppercase mb-0" style="letter-spacing: 1px;">Belum Ada Layanan</p>
+                            <span style="font-size: 0.65rem;">Pilih jasa atau produk di sebelah kiri</span>
                         </div>
                     @endif
                 </div>
