@@ -62,7 +62,7 @@
     </style>
     <!-- partial -->
     <div class="row align-items-center mb-2 pt-0">
-        <div class="col-md-6 col-7">
+        <div class="col-md-6 col-12 mb-1 mb-md-0">
             <h4 class="font-weight-bold text-dark mb-0" style="font-family: 'Montserrat', sans-serif; letter-spacing: -0.5px; font-size: 1.1rem;">
                 Dashboard Overview
             </h4>
@@ -70,10 +70,10 @@
                 Halo <span class="font-weight-bold text-primary">{{ explode(' ', auth()->user()->name)[0] }}</span>
             </p>
         </div>
-        <div class="col-md-6 col-5 text-right">
+        <div class="col-md-6 col-12 text-md-right text-left">
             <div class="d-inline-flex align-items-center bg-white shadow-sm px-2 py-1 rounded-xl border border-gray-100">
                 <i class="mdi mdi-calendar-range text-primary mr-1" style="font-size: 0.8rem;"></i>
-                <span class="font-weight-bold text-dark" style="font-size: 0.75rem;">{{ date('d M') }}</span>
+                <span class="font-weight-bold text-dark" style="font-size: 0.75rem;">{{ date('D, d M Y') }}</span>
             </div>
         </div>
     </div>
