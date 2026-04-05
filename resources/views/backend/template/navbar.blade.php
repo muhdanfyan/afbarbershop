@@ -178,6 +178,18 @@
     body.admin-dark .border-gray-100 {
         border-color: #334155 !important;
     }
+    /* Mobile Top Nav Dark Mode */
+    body.admin-dark .mobile-top-nav-wrapper {
+        background: #0f172a !important;
+        border-color: #1e293b !important;
+    }
+    body.admin-dark .mobile-top-nav .nav-item-mobile {
+        color: #94a3b8 !important;
+    }
+    body.admin-dark .mobile-top-nav .nav-item-mobile.active {
+        background: rgba(67, 97, 238, 0.2) !important;
+        color: #818cf8 !important;
+    }
 </style>
 
 <script>
@@ -187,9 +199,13 @@
         const savedSidebar = localStorage.getItem('sidebarMinimized');
         const isMobile = window.innerWidth < 992;
 
-        // 1. Initial State: Only force minimized on desktop if previously saved as minimized
+        // 1. Initial State: Force minimized on desktop if previously saved as minimized
         if (!isMobile && savedSidebar === 'minimized') {
             body.classList.add('sidebar-icon-only');
+        }
+        // Force fully hidden on mobile (Handled by CSS d-none, but this for JS state)
+        if (isMobile) {
+            body.classList.remove('sidebar-icon-only');
         }
 
         // 2. Monitoring & Persistence

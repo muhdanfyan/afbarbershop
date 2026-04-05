@@ -73,17 +73,15 @@ body {
 }
 
 .sidebar .nav .nav-item .nav-link i {
-    font-size: 1.2rem;
-    margin-right: 15px;
-    width: 24px;
-    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
     color: #64748b;
     transition: all 0.3s ease;
 }
 
 .sidebar .nav .nav-item .nav-link .menu-title {
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
 .sidebar .nav .nav-item .nav-link:hover {
@@ -93,7 +91,6 @@ body {
 
 .sidebar .nav .nav-item .nav-link:hover i {
     color: var(--primary);
-    transform: translateX(3px);
 }
 
 .sidebar .nav .nav-item.active .nav-link {

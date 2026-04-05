@@ -84,30 +84,46 @@
         }
         .sidebar .nav .nav-item .nav-link {
             color: #d1d5db !important;
-            padding: 0.4rem 1.25rem !important;
-            margin: 0.1rem 1.25rem !important;
-            border-radius: 12px;
+            padding: 0.4rem 1.5rem !important;
+            margin: 0 !important;
+            border-radius: 0;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: row;
             align-items: center;
+            justify-content: flex-start;
+            text-align: left;
         }
         .sidebar .nav .nav-item.active > .nav-link, 
         .sidebar .nav .nav-item .nav-link:hover {
-            background: linear-gradient(135deg, #d4af37, #c5a028) !important; /* Signature Gold Gradient */
-            color: #111827 !important; /* Deep Navy contrast */
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
-            transform: translateX(5px);
+            background: linear-gradient(135deg, #d4af37, #c5a028) !important;
+            color: #111827 !important;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
         }
         .sidebar .nav .nav-item .nav-link i.menu-icon {
             color: inherit !important;
-            font-size: 1.15rem;
-            margin-right: 1rem;
+            font-size: 1.25rem;
+            margin-right: 12px;
+            margin-bottom: 0;
+            width: 25px;
+            text-align: center;
         }
         .sidebar .nav .nav-item .nav-link .menu-title {
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-family: 'Montserrat', sans-serif;
             color: inherit !important;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
+            display: inline-block;
+        }
+        .sidebar .nav .nav-category {
+            text-align: left;
+            padding-left: 1.5rem;
+            margin: 0.75rem 0 0.25rem 0;
+            font-size: 0.6rem;
+            opacity: 0.4;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         /* Navbar Layout Tuning */
@@ -266,6 +282,70 @@
             margin-right: 6px;
             font-size: 1.1rem;
         }
+
+        /* --- Mobile Top Navigation (Horizontal Scroll) --- */
+        .mobile-top-nav-wrapper {
+            background: #111827;
+            padding: 5px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 70px;
+            z-index: 1000;
+            width: 100%;
+            overflow: hidden;
+        }
+        .mobile-top-nav {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            padding: 5px 15px;
+            gap: 10px;
+        }
+        .mobile-top-nav::-webkit-scrollbar {
+            display: none;
+        }
+        .mobile-top-nav .nav-item-mobile {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 12px;
+            color: #94a3b8;
+            text-decoration: none;
+            min-width: 70px;
+            transition: all 0.2s;
+        }
+        .mobile-top-nav .nav-item-mobile.active {
+            background: rgba(212, 175, 55, 0.15);
+            color: #d4af37;
+        }
+        .mobile-top-nav .nav-item-mobile i {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+        .mobile-top-nav .nav-item-mobile span {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar {
+                display: none !important;
+            }
+            .page-body-wrapper {
+                flex-direction: column !important;
+            }
+            .container-scroller {
+                overflow-x: hidden !important;
+            }
+            body {
+                overflow-x: hidden !important;
+            }
+        }
     </style>
 </head>
 
@@ -280,6 +360,7 @@
             <!-- Main Content Area -->
             <div class="main-panel">
                 @include('backend.template.navbar')
+                @include('backend.template.mobile_menu')
                 
                 <div class="content-wrapper">
                     @yield('content')
