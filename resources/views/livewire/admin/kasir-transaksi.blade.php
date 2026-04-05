@@ -354,14 +354,38 @@
                         @php $estimasiPerOrang = 30; $bookingIds = collect($transaksiBooking)->sortBy('created_at')->pluck('id')->values(); @endphp
                         @forelse($transaksiBooking as $trx)
                             @php $antrian = $bookingIds->search($trx->id) !== false ? $bookingIds->search($trx->id) + 1 : 1; @endphp
-                            <div wire:key="booking-{{ $trx->id }}" class="list-group-item {{ $trxId == $trx->id ? 'active' : '' }}" wire:click="isiFormDariTransaksi({{ $trx->id }})" style="cursor:pointer;">
+                            <div wire:key="booking-{{ $trx->id }}" class="list-group-item {{ $trxId == $trx->id ? 'active' : '' }}" wire:click="isiFormDariTransaksi({{ $trx->id }})" style="cursor:pointer; position: relative;">
                                 <div class="d-flex justify-content-between align-items-start">
-                                    <div class="fw-bold text-truncate" style="max-width: 150px;">#{{ $antrian }} {{ $trx->nama }}</div>
-                                    <span class="badge bg-warning text-dark ultra-small">{{ $trx->status }}</span>
+                                    <div class="fw-bold text-truncate" style="max-width: 130px;">#{{ $antrian }} {{ $trx->nama }}</div>
+                                    <div class="d-flex gap-1 align-items-center">
+                                        @if($trx->reminded_at)
+                                            <i class="mdi mdi-check-all text-success ultra-small" title="Sudah diingatkan"></i>
+                                        @endif
+                                        <div class="dropdown no-arrow">
+                                            <button class="btn btn-link p-0 text-secondary" type="button" @click.stop="" id="remindDropdown{{ $trx->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-whatsapp {{ $trx->reminded_at ? 'text-success' : '' }}" style="font-size: 1rem;"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 animate__animated animate__fadeIn" aria-labelledby="remindDropdown{{ $trx->id }}" style="border-radius: 12px; font-size: 0.75rem;">
+                                                <li>
+                                                    <a class="dropdown-item py-2" href="#" wire:click.stop="kirimPengingatWa({{ $trx->id }})">
+                                                        <i class="mdi mdi-bell-ring-outline me-2 text-warning"></i> Kirim Pengingat Otomatis
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item py-2" target="_blank" href="https://wa.me/{{ str_starts_with($trx->no_hp, '0') ? '62' . substr($trx->no_hp, 1) : $trx->no_hp }}">
+                                                        <i class="mdi mdi-message-text-outline me-2 text-primary"></i> Chat Langsung (WA Web)
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-secondary ultra-small mt-1 d-flex gap-2">
-                                    <span><i class="fas fa-clock me-1"></i> {{ $trx->waktu }}</span>
-                                    <span><i class="fas fa-hourglass-half me-1"></i> {{ ($antrian - 1) * $estimasiPerOrang }}m</span>
+                                <div class="text-secondary ultra-small mt-1 d-flex justify-content-between align-items-center">
+                                    <div class="d-flex gap-2">
+                                        <span><i class="fas fa-clock me-1"></i> {{ $trx->waktu }}</span>
+                                        <span><i class="fas fa-hourglass-half me-1"></i> {{ ($antrian - 1) * $estimasiPerOrang }}m</span>
+                                    </div>
+                                    <span class="badge bg-warning text-dark" style="font-size: 0.6rem;">{{ $trx->status }}</span>
                                 </div>
                             </div>
                         @empty
@@ -419,13 +443,21 @@
                         <input type="text" wire:model.live="nama" list="memberList" class="form-control" placeholder="Nama..." {{ $status === 'selesai' ? 'disabled' : '' }}>
                         <datalist id="memberList">
                             @foreach($listMember as $m)
-                                <option wire:key="member-opt-{{ $loop->index }}" value="{{ $m->nama }}">
+                                <option wire:key="member-opt-{{ $m->id ?? $loop->index }}" value="{{ $m->nama }}">
                             @endforeach
                         </datalist>
                     </div>
                     <div class="col-4">
                         <label class="ultra-small fw-bold text-secondary text-uppercase mb-1">WA</label>
                         <input type="text" wire:model.live="no_hp" class="form-control" placeholder="08..." {{ $status === 'selesai' ? 'disabled' : '' }}>
+                    </div>
+                    <div class="col-6">
+                        <label class="ultra-small fw-bold text-secondary text-uppercase mb-1">Tanggal</label>
+                        <input type="date" wire:model.live="tanggal" class="form-control" {{ $status === 'selesai' ? 'disabled' : '' }}>
+                    </div>
+                    <div class="col-6">
+                        <label class="ultra-small fw-bold text-secondary text-uppercase mb-1">Waktu</label>
+                        <input type="time" wire:model.live="waktu" class="form-control" {{ $status === 'selesai' ? 'disabled' : '' }}>
                     </div>
                 </div>
 
@@ -452,6 +484,19 @@
                                  wire:click="{{ $status === 'selesai' ? '' : '$set(\'kapster_id\', ' . $k->id . ')' }}">
                                 <img src="{{ $k->foto ? asset('storage/' . $k->foto) : 'https://ui-avatars.com/api/?name='.urlencode($k->nama).'&background=333&color=fff' }}" alt="">
                                 <span class="staff-name">{{ $k->nama }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                <div class="mb-4">
+                    <label class="ultra-small fw-bold text-secondary text-uppercase mb-2 d-block border-bottom pb-1"><i class="fas fa-chair me-1"></i> Kursi (Seat)</label>
+                    <div class="staff-grid" style="grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));">
+                        @foreach($listKursi as $kursi)
+                            <div wire:key="kursi-card-{{ $kursi->id }}" class="staff-card {{ $kursi_id == $kursi->id ? 'selected' : '' }}" 
+                                 wire:click="{{ $status === 'selesai' ? '' : '$set(\'kursi_id\', ' . $kursi->id . ')' }}">
+                                <div class="bg-dark rounded-circle mb-2 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; border: 2px solid var(--border-color);">
+                                    <i class="fas fa-chair {{ $kursi_id == $kursi->id ? 'text-accent' : 'text-secondary' }}"></i>
+                                </div>
+                                <span class="staff-name">{{ $kursi->nama }}</span>
                             </div>
                         @endforeach
                     </div>

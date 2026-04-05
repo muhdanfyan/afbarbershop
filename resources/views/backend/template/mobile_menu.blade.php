@@ -16,6 +16,10 @@
             <i class="mdi mdi-account-star"></i>
             <span>Kapster</span>
         </a>
+        <a href="/admin/kursi" class="nav-item-mobile {{ Request::is('admin/kursi') ? 'active' : '' }}">
+            <i class="mdi mdi-chair-school text-warning"></i>
+            <span>Kursi</span>
+        </a>
         <a href="/admin/kasir" class="nav-item-mobile {{ Request::is('admin/kasir') ? 'active' : '' }}">
             <i class="mdi mdi-cash-register"></i>
             <span>Kasir</span>

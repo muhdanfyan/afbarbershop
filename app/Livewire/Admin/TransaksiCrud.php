@@ -19,6 +19,7 @@ class TransaksiCrud extends Component
     public $form = [
         'nama' => '',
         'kapster_id' => '',
+        'kursi_id' => '',
         'jasa' => [],
         'status' => 'menunggu',
         'catatan' => '',
@@ -32,13 +33,14 @@ class TransaksiCrud extends Component
     protected $rules = [
         'form.nama' => 'required',
         'form.kapster_id' => 'nullable|exists:kapster,id',
+        'form.kursi_id' => 'nullable|exists:kursis,id',
         'form.jasa' => 'required|array|min:1',
         'form.status' => 'required',
     ];
 
     public function render()
     {
-        $query = Transaksi::with(['jasa', 'kapster'])
+        $query = Transaksi::with(['jasa', 'kapster', 'kursi'])
             ->where('status', $this->status);
         if ($this->search) {
             $query->where('nama', 'like', '%' . $this->search . '%');
@@ -46,7 +48,8 @@ class TransaksiCrud extends Component
         $transaksis = $query->orderBy('created_at', 'desc')->paginate(10);
         $allJasa = Jasa::all();
         $allKapster = Kapster::all();
-        return view('livewire.admin.transaksi-crud', compact('transaksis', 'allJasa', 'allKapster'));
+        $allKursi = \App\Models\Kursi::all();
+        return view('livewire.admin.transaksi-crud', compact('transaksis', 'allJasa', 'allKapster', 'allKursi'));
     }
 
     public function showCreateForm()
@@ -62,6 +65,7 @@ class TransaksiCrud extends Component
         $this->form = [
             'nama' => $trx->nama,
             'kapster_id' => $trx->kapster_id,
+            'kursi_id' => $trx->kursi_id,
             'jasa' => $trx->jasa->pluck('id')->toArray(),
             'status' => $trx->status,
             'catatan' => $trx->catatan,
@@ -73,11 +77,28 @@ class TransaksiCrud extends Component
     public function save()
     {
         $this->validate();
+        
+        // Validation: Kursi availability
+        if ($this->form['kursi_id']) {
+            $trx_temp = Transaksi::find($this->editId);
+            $exists = Transaksi::where('kursi_id', $this->form['kursi_id'])
+                ->where('tanggal', $trx_temp ? $trx_temp->tanggal : now()->toDateString())
+                ->where('waktu', $trx_temp ? $trx_temp->waktu : now()->format('H:i'))
+                ->where('id', '!=', $this->editId)
+                ->where('status', '!=', 'batal')
+                ->exists();
+            if ($exists) {
+                session()->flash('error', 'Kursi sudah dipesan untuk waktu tersebut!');
+                return;
+            }
+        }
+
         if ($this->editId) {
             $trx = Transaksi::findOrFail($this->editId);
             $trx->update([
                 'nama' => $this->form['nama'],
                 'kapster_id' => $this->form['kapster_id'],
+                'kursi_id' => $this->form['kursi_id'],
                 'status' => $this->form['status'],
                 'catatan' => $this->form['catatan'],
             ]);
@@ -86,8 +107,11 @@ class TransaksiCrud extends Component
             $trx = Transaksi::create([
                 'nama' => $this->form['nama'],
                 'kapster_id' => $this->form['kapster_id'],
+                'kursi_id' => $this->form['kursi_id'],
                 'status' => $this->form['status'],
                 'catatan' => $this->form['catatan'],
+                'tanggal' => now()->toDateString(),
+                'waktu' => now()->format('H:i'),
             ]);
             $trx->jasa()->sync($this->form['jasa']);
         }
@@ -123,6 +147,7 @@ class TransaksiCrud extends Component
         $this->form = [
             'nama' => '',
             'kapster_id' => '',
+            'kursi_id' => '',
             'jasa' => [],
             'status' => 'menunggu',
             'catatan' => '',

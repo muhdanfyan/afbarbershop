@@ -4,11 +4,11 @@
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #6a11cb, #2575fc);">
-                    <i class="mdi mdi-shield-account text-white fs-4"></i>
+                    <i class="mdi mdi-account-lock-outline text-white fs-4"></i>
                 </div>
                 <div>
-                    <h4 class="font-weight-bold text-dark mb-0">Manajemen Akses User</h4>
-                    <p class="text-muted small mb-0">Kelola kredensial login, hak akses, dan profil tim AF Barbershop</p>
+                    <h4 class="font-weight-bold text-dark mb-0">Akses Pengguna</h4>
+                    <p class="text-muted small mb-0">Atur hak akses admin dan petugas operasional</p>
                 </div>
             </div>
             <button wire:click.prevent="showCreateForm" class="btn btn-premium-add px-4 py-2 shadow-sm animate__animated animate__pulse animate__infinite">

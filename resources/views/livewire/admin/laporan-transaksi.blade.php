@@ -3,12 +3,12 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #11998e, #38ef7d);">
-                    <i class="mdi mdi-finance text-white fs-4"></i>
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #FBAB7E, #F7CE68);">
+                    <i class="mdi mdi-chart-box-outline text-white fs-4"></i>
                 </div>
                 <div>
-                    <h4 class="font-weight-bold text-dark mb-0">Laporan & Analitik Transaksi</h4>
-                    <p class="text-muted small mb-0">Tinjau performa bisnis, bagi hasil kapster, dan histori pendapatan</p>
+                    <h4 class="font-weight-bold text-dark mb-0">Laporan Keuangan</h4>
+                    <p class="text-muted small mb-0">Rekapitulasi pendapatan, transaksi, dan performa bisnis</p>
                 </div>
             </div>
             <div class="d-flex gap-2">

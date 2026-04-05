@@ -19,9 +19,11 @@ class BookingForm extends Component
     public $waktu;
     public $selectedHour;
     public $barber;
+    public $kursi_id;
     public $catatan;
     public $jasaList = [];
     public $kapsterList = [];
+    public $kursiList = [];
     public $successMessage;
     public $estimasiTunggu = 0;
     public $showTimePicker = false;
@@ -32,6 +34,7 @@ class BookingForm extends Component
     {
         $this->jasaList = Jasa::all();
         $this->kapsterList = Kapster::where('status', 'bekerja')->get();
+        $this->kursiList = \App\Models\Kursi::where('status', 'aktif')->get();
         // Set default ke waktu sekarang dalam format date
         $this->tanggal = now()->toDateString();
         $this->loadAvailableSlots();
@@ -76,20 +79,30 @@ class BookingForm extends Component
             }
 
             // Check if booked
-            if ($kapster) {
+            if ($kapster || $this->kursi_id) {
                 $startTime = $start->copy()->subMinutes(29);
                 $endTime = $start->copy()->addMinutes(29);
-                $isBooked = Transaksi::where('kapster_id', $kapster->id)
-                    ->where('tanggal', $this->tanggal)
+                
+                $query = Transaksi::where('tanggal', $this->tanggal)
                     ->whereIn('status', ['menunggu', 'proses'])
-                    ->whereBetween('waktu', [$startTime->format('H:i'), $endTime->format('H:i')])
-                    ->exists();
-                if ($isBooked) {
+                    ->whereBetween('waktu', [$startTime->format('H:i'), $endTime->format('H:i')]);
+                
+                if ($kapster) {
+                    $query->where('kapster_id', $kapster->id);
+                }
+                
+                if ($this->kursi_id) {
+                    $query->where('kursi_id', $this->kursi_id);
+                }
+
+                if ($query->exists()) {
                     $status = 'booked';
                 }
             } else {
-                // If "Bebas" (no specific barber), check if ALL active barbers are booked
+                // If "Bebas" (no specific barber/chair), check if BOTH all barbers and all chairs are booked
                 $activeKapsterCount = Kapster::where('status', 'bekerja')->count();
+                $activeKursiCount = \App\Models\Kursi::where('status', 'aktif')->count();
+                
                 $startTime = $start->copy()->subMinutes(29);
                 $endTime = $start->copy()->addMinutes(29);
                 
@@ -100,7 +113,15 @@ class BookingForm extends Component
                     ->distinct('kapster_id')
                     ->count();
 
-                if ($activeKapsterCount > 0 && $bookedKapsterCount >= $activeKapsterCount) {
+                $bookedKursiCount = Transaksi::whereNotNull('kursi_id')
+                    ->where('tanggal', $this->tanggal)
+                    ->whereIn('status', ['menunggu', 'proses'])
+                    ->whereBetween('waktu', [$startTime->format('H:i'), $endTime->format('H:i')])
+                    ->distinct('kursi_id')
+                    ->count();
+
+                if (($activeKapsterCount > 0 && $bookedKapsterCount >= $activeKapsterCount) || 
+                    ($activeKursiCount > 0 && $bookedKursiCount >= $activeKursiCount)) {
                     $status = 'booked';
                 }
             }
@@ -115,6 +136,12 @@ class BookingForm extends Component
     }
 
     public function updatedBarber($value)
+    {
+        $this->loadAvailableSlots();
+        $this->hitungEstimasi();
+    }
+
+    public function updatedKursiId($value)
     {
         $this->loadAvailableSlots();
         $this->hitungEstimasi();
@@ -147,6 +174,7 @@ class BookingForm extends Component
             'tanggal' => 'required|date|after_or_equal:today',
             'waktu' => 'required|string',
             'barber' => 'nullable|string',
+            'kursi_id' => 'nullable|exists:kursis,id',
             'catatan' => 'nullable|string',
         ]);
 
@@ -178,6 +206,24 @@ class BookingForm extends Component
             }
         }
 
+        // Cek Double Booking Kursi
+        if ($this->kursi_id) {
+            $selectedTime = \Carbon\Carbon::parse($this->waktu);
+            $startTime = $selectedTime->copy()->subMinutes(29);
+            $endTime = $selectedTime->copy()->addMinutes(29);
+
+            $isBookedKursi = Transaksi::where('kursi_id', $this->kursi_id)
+                ->where('tanggal', $this->tanggal)
+                ->whereIn('status', ['menunggu', 'proses'])
+                ->whereBetween('waktu', [$startTime->format('H:i'), $endTime->format('H:i')])
+                ->exists();
+
+            if ($isBookedKursi) {
+                $this->addError('waktu', 'Maaf, kursi ini sudah dipesan di jam tersebut. Silakan pilih waktu lain.');
+                return;
+            }
+        }
+
         $member = Member::firstOrCreate(
             ['nomor_wa' => $this->no_hp],
             ['nama' => $this->nama, 'alamat' => null]
@@ -195,6 +241,7 @@ class BookingForm extends Component
             'status' => 'menunggu',
             'jasa_id' => $jasa ? $jasa->id : null,
             'kapster_id' => $kapster ? $kapster->id : null,
+            'kursi_id' => $this->kursi_id,
             'catatan' => $this->catatan,
         ]);
         if ($jasa) {

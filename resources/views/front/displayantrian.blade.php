@@ -1111,6 +1111,7 @@
                         <div class="kapster-card-status">
                             <span class="status-indicator ${kapster.status}"></span>
                             <span>${getStatusText(kapster.status, kapster.service)}</span>
+                            ${kapster.kursi ? `<span class="badge bg-dark-subtle text-warning ms-2 border border-warning-subtle" style="font-size: 0.7rem;">${kapster.kursi}</span>` : ''}
                         </div>
                     </div>
                     <div class="kapster-card-number">
@@ -1135,7 +1136,10 @@
                 const queueItem = document.createElement('div');
                 queueItem.className = 'queue-item';
                 queueItem.innerHTML = `
-                    <span class="queue-number">${queue.number}</span>
+                    <div class="d-flex align-items-center">
+                        <span class="queue-number">${queue.number}</span>
+                        <span class="badge bg-warning-subtle text-dark ms-3 border border-warning" style="font-size: 0.65rem;">${queue.kursi}</span>
+                    </div>
                     <div class="queue-details">
                         <div class="queue-service">${queue.service}</div>
                         <div class="queue-time">Pukul ${queue.time}</div>

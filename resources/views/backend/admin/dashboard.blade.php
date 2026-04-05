@@ -61,19 +61,22 @@
         }
     </style>
     <!-- partial -->
-    <div class="row align-items-center mb-2 pt-0">
-        <div class="col-md-6 col-12 mb-1 mb-md-0">
-            <h4 class="font-weight-bold text-dark mb-0" style="font-family: 'Montserrat', sans-serif; letter-spacing: -0.5px; font-size: 1.1rem;">
-                Dashboard Overview
-            </h4>
-            <p class="text-muted mb-0" style="font-size: 0.75rem;">
-                Halo <span class="font-weight-bold text-primary">{{ explode(' ', auth()->user()->name)[0] }}</span>
-            </p>
-        </div>
-        <div class="col-md-6 col-12 text-md-right text-left">
-            <div class="d-inline-flex align-items-center bg-white shadow-sm px-2 py-1 rounded-xl border border-gray-100">
-                <i class="mdi mdi-calendar-range text-primary mr-1" style="font-size: 0.8rem;"></i>
-                <span class="font-weight-bold text-dark" style="font-size: 0.75rem;">{{ date('D, d M Y') }}</span>
+    <div class="row mb-4 pt-0">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #1e3c72, #2a5298);">
+                    <i class="mdi mdi-view-dashboard-outline text-white fs-4"></i>
+                </div>
+                <div>
+                    <h4 class="font-weight-bold text-dark mb-0">Pusat Kontrol Utama</h4>
+                    <p class="text-muted small mb-0">Halo <span class="font-weight-bold text-primary">{{ explode(' ', auth()->user()->name)[0] }}</span>, monitor performa bisnis Anda hari ini</p>
+                </div>
+            </div>
+            <div class="d-none d-md-block">
+                <div class="d-inline-flex align-items-center bg-white shadow-sm px-3 py-2 rounded-pill border border-gray-100">
+                    <i class="mdi mdi-calendar-range text-primary me-2" style="font-size: 1rem;"></i>
+                    <span class="font-weight-bold text-dark" style="font-size: 0.85rem;">{{ date('d M Y') }}</span>
+                </div>
             </div>
         </div>
     </div>

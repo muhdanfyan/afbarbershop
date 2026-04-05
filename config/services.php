@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'wa_gateway' => [
+        'url' => env('WA_GATEWAY_URL', 'http://localhost:3001'),
+        'api_key' => env('WA_GATEWAY_API_KEY'),
+    ],
+
 ];

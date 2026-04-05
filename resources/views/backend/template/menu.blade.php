@@ -36,6 +36,12 @@
             <span class="menu-title">Kapster</span>
         </a>
     </li>
+    <li class="nav-item {{ Request::is('admin/kursi') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.kursi') }}">
+            <i class="mdi mdi-chair-school menu-icon text-warning"></i>
+            <span class="menu-title">Manajemen Kursi</span>
+        </a>
+    </li>
 
     <li class="nav-category">Operations</li>
     <li class="nav-item">

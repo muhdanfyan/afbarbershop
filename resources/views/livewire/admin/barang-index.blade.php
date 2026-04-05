@@ -3,8 +3,8 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #1e3c72, #2a5298);">
-                    <i class="mdi mdi-package-variant-closed text-white fs-4"></i>
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #2193b0, #6dd5ed);">
+                    <i class="mdi mdi-package-variant text-white fs-4"></i>
                 </div>
                 <div>
                     <h4 class="font-weight-bold text-dark mb-0">Stok & Inventaris Barang</h4>

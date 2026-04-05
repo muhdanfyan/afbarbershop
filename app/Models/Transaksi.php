@@ -30,6 +30,11 @@ class Transaksi extends Model
         return $this->belongsTo(Kapster::class, 'kapster_id');
     }
 
+    public function kursi()
+    {
+        return $this->belongsTo(Kursi::class, 'kursi_id');
+    }
+
     /**
      * Status values: menunggu, proses, selesai
      */

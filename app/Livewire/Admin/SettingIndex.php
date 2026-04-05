@@ -48,7 +48,8 @@ class SettingIndex extends Component
     {
         try {
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
-            $response = Http::get($baseUrl . '/');
+            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
+            $response = Http::withHeaders(['x-api-key' => $apiKey])->get($baseUrl . '/');
             if ($response->successful()) {
                 $data = $response->json();
                 $this->waStatus = $data['status'];
@@ -78,7 +79,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            $response = Http::get($baseUrl . '/api/qr');
+            $response = Http::withHeaders(['x-api-key' => $apiKey])->get($baseUrl . '/api/qr');
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -97,7 +98,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            Http::post($baseUrl . '/api/reconnect');
+            Http::withHeaders(['x-api-key' => $apiKey])->post($baseUrl . '/api/reconnect');
 
             $this->checkWaConnection();
         } catch (\Exception $e) {
@@ -111,7 +112,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            Http::post($baseUrl . '/api/logout');
+            Http::withHeaders(['x-api-key' => $apiKey])->post($baseUrl . '/api/logout');
 
             $this->qrImage = null;
             $this->checkWaConnection();
@@ -139,7 +140,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            $response = Http::post($baseUrl . '/api/send-message', [
+            $response = Http::withHeaders(['x-api-key' => $apiKey])->post($baseUrl . '/api/send-message', [
                         'number' => $number,
                         'message' => $this->testMessage,
                     ]);

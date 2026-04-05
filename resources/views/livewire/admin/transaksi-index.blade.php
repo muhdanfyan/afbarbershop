@@ -1,9 +1,14 @@
 <div>
-    <div class="row">
-        <div class="col-sm-12 mb-4 mb-xl-0 d-flex justify-content-between align-items-center">
-            <div>
-                <h4 class="font-weight-bold text-dark">Daftar Transaksi</h4>
-                <p class="font-weight-normal mb-2 text-muted">Kelola dan tinjau riwayat transaksi layanan</p>
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #ee0979, #ff6a00);">
+                    <i class="mdi mdi-history text-white fs-4"></i>
+                </div>
+                <div>
+                    <h4 class="font-weight-bold text-dark mb-0">Antrean & Transaksi</h4>
+                    <p class="text-muted small mb-0">Monitor layanan aktif dan kelola klaim transaksi hari ini</p>
+                </div>
             </div>
             <div class="d-flex gap-2">
                 <button wire:click.prevent="$set('status', 'menunggu')" 

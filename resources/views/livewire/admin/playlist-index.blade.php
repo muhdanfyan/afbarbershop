@@ -3,12 +3,12 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #FFD700, #B8860B);">
-                    <i class="mdi mdi-music-circle text-dark fs-4"></i>
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #ff0844, #ffb199);">
+                    <i class="mdi mdi-youtube-subscription text-white fs-4"></i>
                 </div>
                 <div>
-                    <h4 class="font-weight-bold text-dark mb-0">Playlist Studio AF (Spotify & YT)</h4>
-                    <p class="text-muted small mb-0">Media streaming konfigurasi untuk layar tampilan antrean</p>
+                    <h4 class="font-weight-bold text-dark mb-0">Studio Playlist</h4>
+                    <p class="text-muted small mb-0">Atur suasana musik dan video untuk kenyamanan pelanggan</p>
                 </div>
             </div>
             <button wire:click="create()" class="btn btn-premium-add px-4 py-2 shadow-sm animate__animated animate__pulse animate__infinite">

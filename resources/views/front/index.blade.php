@@ -20,14 +20,26 @@
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                document.documentElement.classList.add('dark');
+            if (savedTheme) {
+                // User has manually chosen a theme - respect it
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
             } else {
-                document.documentElement.classList.remove('dark');
+                // No saved preference - use time-based default
+                const hour = new Date().getHours();
+                const isNight = (hour >= 18 || hour < 6);
+                if (isNight) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
             }
         })();
     </script>
+
 
     @stack('styles')
     @livewireStyles
@@ -626,10 +638,22 @@
 
         <!-- Floating Button -->
         <button onclick="toggleWhatsappChat()"
-            class="bg-green-500 hover:bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110">
+            class="whatsapp-pulse bg-[#25d366] hover:bg-[#128c7e] text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all transform hover:scale-110 z-[60] relative">
             <i class="fab fa-whatsapp text-3xl"></i>
         </button>
     </div>
+
+    <style>
+        .whatsapp-pulse {
+            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            animation: whatsapp-pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+        }
+        @keyframes whatsapp-pulse {
+            to {
+                box-shadow: 0 0 0 30px rgba(37, 211, 102, 0);
+            }
+        }
+    </style>
 
     <!-- Success Modal -->
     <div id="successModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 transition-all duration-500">

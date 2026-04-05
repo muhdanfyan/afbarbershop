@@ -37,6 +37,7 @@
                 <div class="grid grid-cols-4 md:grid-cols-6 gap-2">
                     @foreach($availableSlots as $slot)
                         <button type="button" 
+                            wire:key="slot-{{ $slot['time'] }}"
                             wire:click="selectSlot('{{ $slot['time'] }}')"
                             @if($slot['status'] !== 'available') disabled @endif
                             class="py-2 text-xs md:text-sm rounded-lg border-2 transition-all shadow-sm
@@ -61,6 +62,7 @@
             <div class="service-grid grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                 @foreach($jasaList as $item)
                     <label
+                        wire:key="jasa-{{ $item->id }}"
                         class="relative service-card flex flex-col items-center cursor-pointer p-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl transition-all shadow-sm hover:border-accent dark:bg-gray-800/50 @if($layanan === $item->nama) border-accent ring-2 ring-accent bg-accent/5 @endif">
                         <input type="radio" wire:model.live="layanan" value="{{ $item->nama }}" class="sr-only" required>
                         @if($item->foto)
@@ -91,6 +93,7 @@
                 </label>
                 @foreach($kapsterList as $k)
                     <label
+                        wire:key="kapster-{{ $k->id }}"
                         class="relative staff-card flex flex-col items-center cursor-pointer p-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl transition-all shadow-sm hover:border-accent dark:bg-gray-800/50 @if($barber === $k->nama) border-accent ring-2 ring-accent bg-accent/5 @endif">
                         <input type="radio" wire:model.live="barber" value="{{ $k->nama }}" class="sr-only">
                         @if($k->foto)
@@ -116,6 +119,36 @@
                 </div>
             @endif
         </div>
+
+        <div>
+            <label class="block text-gray-700 dark:text-white font-bold mb-1 md:mb-2 text-sm md:text-base transition-colors">Nomor Kursi (Seat)</label>
+            <div class="staff-grid grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                <label
+                    wire:key="kursi-bebas"
+                    class="relative staff-card flex flex-col items-center cursor-pointer p-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl transition-all shadow-sm hover:border-accent dark:bg-gray-800/50 @if($kursi_id === '' || $kursi_id === null) border-accent ring-2 ring-accent bg-accent/5 @endif">
+                    <input type="radio" wire:model.live="kursi_id" value="" class="sr-only">
+                    <div class="w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 mb-2 border border-gray-200 dark:border-gray-600">
+                        <i class="fas fa-random text-xl {{ ($kursi_id === '' || $kursi_id === null) ? 'text-accent' : 'text-gray-400' }}"></i>
+                    </div>
+                    <span class="text-xs md:text-sm font-bold dark:text-white">Bebas</span>
+                    <p class="text-[10px] text-gray-500 text-center leading-tight mt-1">Pilih otomatis</p>
+                </label>
+                @foreach($kursiList as $k)
+                    <label
+                        wire:key="kursi-{{ $k->id }}"
+                        class="relative staff-card flex flex-col items-center cursor-pointer p-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl transition-all shadow-sm hover:border-accent dark:bg-gray-800/50 @if($kursi_id == $k->id) border-accent ring-2 ring-accent bg-accent/5 @endif">
+                        <input type="radio" wire:model.live="kursi_id" value="{{ $k->id }}" class="sr-only">
+                        <div class="w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 mb-2 border border-gray-200 dark:border-gray-600">
+                            <i class="fas fa-chair text-xl {{ $kursi_id == $k->id ? 'text-accent' : 'text-gray-400' }}"></i>
+                        </div>
+                        <span class="text-xs md:text-sm font-bold dark:text-white">{{ $k->nama }}</span>
+                        <p class="text-[10px] text-gray-500 text-center leading-tight mt-1">{{ $k->lokasi ?: 'Reguler' }}</p>
+                    </label>
+                @endforeach
+            </div>
+            @error('kursi_id') <span class="text-red-500 text-xs text-center block mt-2">{{ $message }}</span> @enderror
+        </div>
+
         <div>
             <label class="block text-gray-700 dark:text-white font-bold mb-1 md:mb-2 text-sm md:text-base transition-colors">Catatan Tambahan</label>
             <textarea wire:model="catatan" rows="2 md:3"

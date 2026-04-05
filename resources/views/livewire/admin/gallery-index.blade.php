@@ -3,12 +3,12 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #FF9966, #FF5E62);">
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #00b09b, #96c93d);">
                     <i class="mdi mdi-image-multiple text-white fs-4"></i>
                 </div>
                 <div>
-                    <h4 class="font-weight-bold text-dark mb-0">Visual Showcase Gallery</h4>
-                    <p class="text-muted small mb-0">Kelola portofolio visual, dokumentasi studio, dan konten media sosial</p>
+                    <h4 class="font-weight-bold text-dark mb-0">Galeri Studio</h4>
+                    <p class="text-muted small mb-0">Katalog visual hasil cukur dan suasana AF Barbershop</p>
                 </div>
             </div>
             <button wire:click.prevent="showForm" class="btn btn-premium-add px-4 py-2 shadow-sm animate__animated animate__pulse animate__infinite">

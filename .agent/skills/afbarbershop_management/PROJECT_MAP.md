@@ -1,6 +1,10 @@
-# AF Barbershop: MVC & Route Project Map
+Dokumen ini adalah acuan utama (Single Source of Truth) untuk pemetaan struktur MVC, Routing, dan Prosedur Testing sistem AF Barbershop. Proyek ini mengikuti skema **Everything Claude Code (ECC)**.
 
-Dokumen ini adalah acuan utama (Single Source of Truth) untuk pemetaan struktur MVC, Routing, dan Prosedur Testing sistem AF Barbershop.
+## 🛠️ ECC Schema & Rules
+Sistem ini dikelola menggunakan subagent spesialis dan aturan baku:
+- **Rules**: `.agent/rules/common/coding-style.md`, `.agent/rules/php/laravel.md`, `.agent/rules/php/testing.md`.
+- **Agents**: `planner`, `architect`, `code-reviewer` (Lihat `.agent/agents/`).
+- **Skills**: `browser-free-workflow`, `laravel-verification`, `booking-test`, `whatsapp-test`, `kasir-test`, `admin-crud-test` (Lihat `.agent/skills/`).
 
 ## 🗺️ Route Matrix
 Mapping URL ke komponen logic (Controller/Livewire).
@@ -51,8 +55,8 @@ Relasi antar basis data dan model Eloquent.
 
 ---
 
-## 🧪 Panduan Testing (5 Pilar Utama)
-Gunakan skenario ini sebagai acuan regresi.
+## 🧪 Panduan Testing (Browser-Free)
+Sesuai dengan `browser-free-workflow`, semua pengujian dilakukan via CLI. **Jangan gunakan Antigravity Browser Control kecuali diminta.**
 
 ### 1. Double Booking (Logic Check)
 - **Tes**: Booking Kapster X di jam 10:00. Coba booking kembali Kapster X di jam 10:15.

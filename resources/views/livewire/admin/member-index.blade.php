@@ -3,12 +3,12 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #FF512F, #DD2476);">
-                    <i class="mdi mdi-account-star text-white fs-4"></i>
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #8E2DE2, #4A00E0);">
+                    <i class="mdi mdi-card-account-details text-white fs-4"></i>
                 </div>
                 <div>
-                    <h4 class="font-weight-bold text-dark mb-0">Data Membership Pelanggan</h4>
-                    <p class="text-muted small mb-0">Kelola riwayat kunjungan dan status loyalitas member AF Barbershop</p>
+                    <h4 class="font-weight-bold text-dark mb-0">Manajemen Member</h4>
+                    <p class="text-muted small mb-0">Kelola database pelanggan setia dan poin reward</p>
                 </div>
             </div>
             <button wire:click.prevent="showCreateForm" class="btn btn-premium-add px-4 py-2 shadow-sm animate__animated animate__pulse animate__infinite">

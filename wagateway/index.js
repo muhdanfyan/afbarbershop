@@ -12,6 +12,7 @@ const QR = require("qrcode");
 const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
+const axios = require("axios");
 require("dotenv").config();
 
 const logger = P({ level: "info" });
@@ -102,12 +103,53 @@ async function connectToWhatsApp() {
         const body =
             msg.message.conversation || msg.message.extendedTextMessage?.text;
 
-        if (body === "ping") {
+        if (!body) return;
+
+        console.log(`Received message from ${remoteJid}: ${body}`);
+
+        // Simple Command Parser
+        if (body.toLowerCase() === "ping") {
             await sock.sendMessage(remoteJid, { text: "pong" });
+            return;
         }
+
+        if (body.startsWith(".")) {
+            const command = body.slice(1).toLowerCase().trim();
+            if (command === "help") {
+                await sock.sendMessage(remoteJid, {
+                    text: "*AF Barbershop Bot*\n\nGunakan perintah berikut:\n- *.status* : Cek status booking Anda\n- *.info* : Informasi alamat & jam buka\n- *.help* : Bantuan ini",
+                });
+                return;
+            }
+        }
+
+        // Forward to Laravel Webhook
+        forwardToLaravel(remoteJid, body);
     });
 
     return sock;
+}
+
+async function forwardToLaravel(remoteJid, body) {
+    const laravelUrl = process.env.WA_WEBHOOK_URL || "http://localhost:8000/api/wa-webhook";
+    const apiKey = process.env.API_KEY;
+
+    try {
+        await axios.post(
+            laravelUrl,
+            {
+                remoteJid: remoteJid,
+                body: body,
+            },
+            {
+                headers: {
+                    "X-API-Key": apiKey,
+                },
+            },
+        );
+    } catch (error) {
+        console.error("Failed to forward message to Laravel:", error.message);
+    }
 }
 
 app.get("/", (req, res) => {

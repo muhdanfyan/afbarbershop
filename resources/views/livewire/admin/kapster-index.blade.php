@@ -7,8 +7,8 @@
                     <i class="mdi mdi-account-star text-white fs-4"></i>
                 </div>
                 <div>
-                    <h4 class="font-weight-bold text-dark mb-0">Manajemen Kapster (Barberman)</h4>
-                    <p class="text-muted small mb-0">Kelola tim profesional, kualifikasi, dan ketersediaan mereka</p>
+                    <h4 class="font-weight-bold text-dark mb-0">Tim Professional</h4>
+                    <p class="text-muted small mb-0">Kelola kapster andalan untuk layanan terbaik</p>
                 </div>
             </div>
             <button wire:click.prevent="showCreateForm" class="btn btn-premium-add px-4 py-2 shadow-sm animate__animated animate__pulse animate__infinite">

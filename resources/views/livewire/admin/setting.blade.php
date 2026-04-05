@@ -28,12 +28,12 @@
         <!-- App Settings Column -->
         <div class="col-md-8">
             <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden;">
-                <div class="card-header bg-white border-0 p-4 pb-0">
-                    <h5 class="fw-bold text-dark"><i class="mdi mdi-store-outline text-primary me-2"></i>Identitas Usaha</h5>
+                <div class="card-header bg-white border-0 p-3 pb-0">
+                    <h6 class="fw-bold text-dark mb-0"><i class="mdi mdi-store-outline text-primary me-2"></i>Identitas Usaha</h6>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-3">
                     <form wire:submit.prevent="simpanSetting">
-                        <div class="row g-3 mb-4">
+                        <div class="row g-2 mb-2">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-uppercase text-muted">Nama Barbershop</label>
                                 <div class="input-group bg-light rounded-pill px-3 py-1 border shadow-inner">
@@ -50,7 +50,7 @@
                             </div>
                         </div>
 
-                        <div class="row g-3 mb-4">
+                        <div class="row g-2 mb-2">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-uppercase text-muted">Alamat Email</label>
                                 <div class="input-group bg-light rounded-pill px-3 py-1 border shadow-inner">
@@ -67,21 +67,21 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="form-label small fw-bold text-uppercase text-muted">Alamat Lengkap</label>
                             <div class="bg-light rounded-20 p-1 border shadow-inner">
                                 <textarea class="form-control border-0 bg-transparent px-3 py-2 fw-medium" wire:model.defer="alamat" rows="3"></textarea>
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="form-label small fw-bold text-uppercase text-muted">Slogan / Headline</label>
                             <div class="bg-light rounded-pill p-1 border shadow-inner">
                                 <input type="text" class="form-control border-0 bg-transparent px-3 py-2 fw-medium italic" wire:model.defer="slogan">
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="form-label small fw-bold text-uppercase text-muted">YouTube Playlist ID</label>
                             <div class="input-group bg-light rounded-pill px-3 py-1 border shadow-inner">
                                 <span class="input-group-text bg-transparent border-0 text-muted"><i class="mdi mdi-youtube"></i></span>
@@ -90,7 +90,7 @@
                             <p class="text-muted small mt-2 ms-2"><i class="mdi mdi-information-outline me-1"></i>Kode unik setelah <code>&list=</code> pada URL playlist untuk memutar video di display antrian.</p>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="form-label small fw-bold text-uppercase text-muted">Logo Barbershop</label>
                             <div class="d-flex align-items-center bg-light rounded-20 p-3 border shadow-inner">
                                 <div class="me-4 text-center">
@@ -117,8 +117,8 @@
                             </div>
                         </div>
 
-                        <div class="mt-5">
-                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-lg" style="background: linear-gradient(135deg, #FF512F, #DD2476); border: none;">
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-lg w-100" style="background: linear-gradient(135deg, #FF512F, #DD2476); border: none;">
                                 <i class="mdi mdi-content-save-check me-2"></i> Simpan Semua Perubahan
                             </button>
                         </div>
@@ -130,15 +130,15 @@
         <!-- WhatsApp Column -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">
-                <div class="bg-success p-4 text-white d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #11998e, #38ef7d) !important;">
+                <div class="bg-success p-3 text-white d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #11998e, #38ef7d) !important;">
                     <div>
-                        <h5 class="fw-bold mb-0">WhatsApp Gateway</h5>
-                        <p class="small mb-0 opacity-75">Integrasi Notifikasi & Broadcast</p>
+                        <h6 class="fw-bold mb-0">WhatsApp Gateway</h6>
+                        <p class="small mb-0 opacity-75" style="font-size: 0.7rem;">Integrasi Notifikasi</p>
                     </div>
-                    <i class="mdi mdi-whatsapp fs-1 opacity-50"></i>
+                    <i class="mdi mdi-whatsapp fs-3 opacity-50"></i>
                 </div>
-                <div class="card-body p-4">
-                    <div class="mb-4 text-center">
+                <div class="card-body p-3">
+                    <div class="mb-3 text-center">
                         <span class="small fw-bold text-muted text-uppercase d-block mb-2">Status Koneksi</span>
                         @if($waConnected)
                             <div class="badge bg-success-subtle text-success border border-success px-4 py-2 rounded-pill fs-6">
@@ -152,7 +152,7 @@
                         @endif
                     </div>
 
-                    <div class="bg-light rounded-20 p-3 border mb-4 shadow-inner text-center d-flex align-items-center justify-content-center" style="height: 250px;">
+                    <div class="bg-light rounded-20 p-2 border mb-3 shadow-inner text-center d-flex align-items-center justify-content-center" style="height: 180px;">
                         @if($waConnected)
                             <div class="animate__animated animate__pulse animate__infinite text-success">
                                 <i class="mdi mdi-shield-check-outline mdi-48px"></i>

@@ -3,8 +3,8 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #4b6cb7, #182848);">
-                    <i class="mdi mdi-book-open-variant text-white fs-4"></i>
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #F09819, #EDDE5D);">
+                    <i class="mdi mdi-cash-register text-white fs-4"></i>
                 </div>
                 <div>
                     <h4 class="font-weight-bold text-dark mb-0">Arsip Transaksi Lengkap</h4>
@@ -59,6 +59,7 @@
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Waktu & Invoice</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Pelanggan</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Layanan & Tim</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted">Kursi</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Pembayaran</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted text-center">Status</th>
                                     <th class="pe-4 py-3 text-uppercase small fw-bold text-muted text-end">Aksi</th>
@@ -85,6 +86,9 @@
                                                 @endforeach
                                             </div>
                                             <span class="text-muted small"><i class="mdi mdi-account-star-outline me-1"></i>{{ $trx->kapster->nama ?? 'No Kapster' }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-dark fw-bold">{{ $trx->kursi->nama ?? '-' }}</span>
                                         </td>
                                         <td>
                                             <span class="fw-bold text-success">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</span>
@@ -267,6 +271,16 @@
                                         @endforeach
                                     </select>
                                     @error('form.kapster_id') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label small fw-bold text-uppercase text-muted">Kursi (Seat)</label>
+                                    <select class="form-select shadow-sm border-0 bg-light" wire:model.defer="form.kursi_id">
+                                        <option value="">Pilih Kursi...</option>
+                                        @foreach($allKursi as $kursi)
+                                            <option value="{{ $kursi->id }}">{{ $kursi->nama }} ({{ $kursi->status }})</option>
+                                        @endforeach
+                                    </select>
+                                    @error('form.kursi_id') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label small fw-bold text-uppercase text-muted">Catatan Layanan</label>

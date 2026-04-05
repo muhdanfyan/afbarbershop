@@ -24,6 +24,10 @@ use App\Http\Controllers\Frontend\FrontDisplayAntrianController;
 
 
 
+use App\Http\Controllers\Api\WhatsAppWebhookController;
+
+Route::post('/api/wa-webhook', [\App\Http\Controllers\Api\WhatsAppWebhookController::class, 'handle']);
+
 Route::get('/', [FrontController::class, 'index'])->name('front.index');
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/member-logout', [FrontLoginController::class, 'logout'])->name('logout');
@@ -61,5 +65,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/kasir', \App\Livewire\Admin\KasirTransaksi::class)->name('admin.kasir.transaksi');
     Route::view('/admin/gallery', 'backend.admin.gallery')->name('admin.gallery');
     Route::view('/admin/playlist', 'backend.admin.playlist')->name('admin.playlist');
-
+    Route::view('/admin/kursi', 'backend.admin.kursi')->name('admin.kursi');
 });

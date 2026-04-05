@@ -3,8 +3,8 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #CF9E1C, #B8860B);">
-                    <i class="mdi mdi-cut-rhombus text-white fs-4"></i>
+                <div class="bg-premium p-3 rounded-circle me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #11998e, #38ef7d);">
+                    <i class="mdi mdi-content-cut text-white fs-4"></i>
                 </div>
                 <div>
                     <h4 class="font-weight-bold text-dark mb-0">Menu Layanan & Jasa</h4>

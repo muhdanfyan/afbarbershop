@@ -60,9 +60,25 @@ class KasirTransaksi extends Component
                 'uang_kembali' => $this->kembali,
                 'metode_pembayaran' => $this->metode_pembayaran,
                 'kasir_id' => Auth::id(),
-                'tanggal' => now()->toDateString(),
+                'tanggal' => $this->tanggal ?: now()->toDateString(),
+                'waktu' => $this->waktu ?: now()->format('H:i'),
+                'kursi_id' => $this->kursi_id,
                 'status' => $newStatus,
             ];
+
+            // Validation: Kursi availability
+            if ($this->kursi_id) {
+                $exists = Transaksi::where('kursi_id', $this->kursi_id)
+                    ->where('tanggal', $this->tanggal)
+                    ->where('waktu', $this->waktu)
+                    ->where('id', '!=', $this->trxId)
+                    ->where('status', '!=', 'batal')
+                    ->exists();
+                if ($exists) {
+                    $this->dispatch('swal-error', ['message' => 'Kursi sudah dipesan untuk waktu tersebut!']);
+                    return;
+                }
+            }
 
             if ($this->trxId) {
                 $transaksi = Transaksi::findOrFail($this->trxId);
@@ -103,6 +119,9 @@ class KasirTransaksi extends Component
         $this->metode_pembayaran = $trx->metode_pembayaran ?: 'cash';
         $this->total = $trx->total_harga;
         $this->status = $trx->status;
+        $this->kursi_id = $trx->kursi_id;
+        $this->tanggal = $trx->tanggal;
+        $this->waktu = $trx->waktu;
         $this->barangSelected = $trx->barangs->pluck('id')->toArray();
         $this->jumlahBarang = [];
         foreach($trx->barangs as $b) {
@@ -126,10 +145,14 @@ class KasirTransaksi extends Component
     public $status;
     public $barangSelected = [];
     public $jumlahBarang = []; // [id => jumlah]
+    public $kursi_id;
+    public $tanggal;
+    public $waktu;
 
     public function mount()
     {
-        // Invoice tidak di-generate di sini lagi
+        $this->tanggal = now()->toDateString();
+        $this->waktu = now()->format('H:i');
     }
 
     public function generateInvoice()
@@ -283,6 +306,9 @@ class KasirTransaksi extends Component
         $this->metode_pembayaran = 'cash';
         $this->total = 0;
         $this->status = null;
+        $this->kursi_id = null;
+        $this->tanggal = now()->toDateString();
+        $this->waktu = now()->format('H:i');
         $this->barangSelected = [];
         $this->jumlahBarang = [];
         $this->showRandomInvoice = false;
@@ -479,6 +505,7 @@ class KasirTransaksi extends Component
             'listBarang' => Barang::where('stok', '>', 0)->get(),
             'selectedBarangItems' => Barang::whereIn('id', collect($this->barangSelected)->map(fn($id) => (int) $id)->toArray())->get(),
             'listKapster' => Kapster::where('status', 'bekerja')->get(),
+            'listKursi' => \App\Models\Kursi::where('status', 'aktif')->get(),
             'listMember' => $listMember,
             'transaksiBooking' => $transaksiBooking,
             'transaksiProses' => $transaksiProses,

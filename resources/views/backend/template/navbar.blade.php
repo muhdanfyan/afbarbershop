@@ -256,10 +256,18 @@
     // Apply saved admin theme on load
     (function () {
         const saved = localStorage.getItem('adminTheme');
-        const isDark = saved === 'dark';
+        let isDark;
+        if (saved) {
+            isDark = saved === 'dark';
+        } else {
+            // Time-based default: dark at night (18:00-06:00)
+            const hour = new Date().getHours();
+            isDark = (hour >= 18 || hour < 6);
+        }
         if (isDark) document.body.classList.add('admin-dark');
         document.addEventListener('DOMContentLoaded', function () {
             updateAdminThemeIcons(isDark);
         });
     })();
+
 </script>

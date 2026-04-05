@@ -27,7 +27,7 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden;
+            overflow-x: hidden !important;
         }
         .nav-link {
             border: none;
