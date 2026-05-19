@@ -18,6 +18,7 @@ class SettingIndex extends Component
     public $email;
     public $jam_buka;
     public $slogan;
+    public $youtube_playlist_id;
     public $logo;
     public $logo_lama;
 
@@ -36,6 +37,7 @@ class SettingIndex extends Component
         $this->email = Setting::where('key', 'email')->value('value') ?? '';
         $this->jam_buka = Setting::where('key', 'jam_buka')->value('value') ?? '';
         $this->slogan = Setting::where('key', 'slogan')->value('value') ?? '';
+        $this->youtube_playlist_id = Setting::where('key', 'youtube_playlist_id')->value('value') ?? 'PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG';
         $this->logo = Setting::where('key', 'logo')->value('value') ?? null;
         $this->logo_lama = $this->logo;
 
@@ -76,9 +78,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            $response = Http::withHeaders([
-                'x-api-key' => $apiKey
-            ])->get($baseUrl . '/api/qr');
+            $response = Http::get($baseUrl . '/api/qr');
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -97,9 +97,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            Http::withHeaders([
-                'x-api-key' => $apiKey
-            ])->post($baseUrl . '/api/reconnect');
+            Http::post($baseUrl . '/api/reconnect');
 
             $this->checkWaConnection();
         } catch (\Exception $e) {
@@ -113,9 +111,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            Http::withHeaders([
-                'x-api-key' => $apiKey
-            ])->post($baseUrl . '/api/logout');
+            Http::post($baseUrl . '/api/logout');
 
             $this->qrImage = null;
             $this->checkWaConnection();
@@ -143,9 +139,7 @@ class SettingIndex extends Component
             $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
             $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
 
-            $response = Http::withHeaders([
-                'x-api-key' => $apiKey
-            ])->post($baseUrl . '/api/send-message', [
+            $response = Http::post($baseUrl . '/api/send-message', [
                         'number' => $number,
                         'message' => $this->testMessage,
                     ]);
@@ -181,6 +175,7 @@ class SettingIndex extends Component
             'email' => $this->email,
             'jam_buka' => $this->jam_buka,
             'slogan' => $this->slogan,
+            'youtube_playlist_id' => $this->youtube_playlist_id,
         ];
         // Handle upload logo
         $logoPath = $this->logo_lama;

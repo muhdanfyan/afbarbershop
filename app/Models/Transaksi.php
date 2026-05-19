@@ -20,6 +20,11 @@ class Transaksi extends Model
         return $this->belongsToMany(Jasa::class, 'jasa_transaksi', 'transaksi_id', 'jasa_id');
     }
 
+    public function barangs()
+    {
+        return $this->belongsToMany(Barang::class, 'transaksi_barang', 'transaksi_id', 'barang_id')->withPivot('jumlah');
+    }
+
     public function kapster()
     {
         return $this->belongsTo(Kapster::class, 'kapster_id');

@@ -23,18 +23,37 @@
         </div>
         <div class="grid md:grid-cols-2 gap-4 md:gap-6">
             <div class="col-span-full">
-                <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Pilih Tanggal & Waktu
-                    Booking</label>
+                <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Pilih Tanggal Booking</label>
                 <div class="relative">
-                    <input type="datetime-local" wire:model.live="waktu_lengkap" required
-                        min="{{ now()->format('Y-m-d\TH:i') }}"
+                    <input type="date" wire:model.live="tanggal" required
+                        min="{{ now()->toDateString() }}"
                         class="w-full px-4 py-2 md:py-3 rounded-lg border-2 border-gray-300 focus:border-accent focus:outline-none transition-colors text-sm md:text-base bg-white appearance-none">
-                    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none pr-10">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
                 </div>
-                @error('waktu_lengkap') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                @error('waktu') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                @error('tanggal') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            </div>
+            
+            <div class="col-span-full">
+                <label class="block text-gray-700 font-bold mb-1 md:mb-2 text-sm md:text-base">Pilih Jam (Slot 30 Menit)</label>
+                <div class="grid grid-cols-4 md:grid-cols-6 gap-2">
+                    @foreach($availableSlots as $slot)
+                        <button type="button" 
+                            wire:click="selectSlot('{{ $slot['time'] }}')"
+                            @if($slot['status'] !== 'available') disabled @endif
+                            class="py-2 text-xs md:text-sm rounded-lg border-2 transition-all 
+                                {{ $waktu === $slot['time'] ? 'border-accent bg-accent text-black font-bold' : '' }}
+                                {{ $slot['status'] === 'available' ? 'border-gray-200 hover:border-accent' : '' }}
+                                {{ $slot['status'] === 'booked' ? 'bg-red-100 border-red-200 text-red-400 cursor-not-allowed' : '' }}
+                                {{ $slot['status'] === 'past' ? 'bg-gray-100 border-gray-200 text-gray-300 cursor-not-allowed' : '' }}
+                            ">
+                            {{ $slot['time'] }}
+                            @if($slot['status'] === 'booked')
+                                <div class="text-[8px] leading-tight">Terisi</div>
+                            @endif
+                        </button>
+                    @endforeach
+                </div>
+                <input type="hidden" wire:model="waktu">
+                @error('waktu') <span class="text-red-500 text-xs mt-2 block">{{ $message }}</span> @enderror
             </div>
         </div>
         <div>

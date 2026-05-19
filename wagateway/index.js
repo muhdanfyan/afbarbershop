@@ -28,12 +28,9 @@ const apiKey = process.env.API_KEY;
 
 // Middleware to check API Key
 const apiKeyMiddleware = (req, res, next) => {
-    const providedKey = req.headers["x-api-key"] || req.query.api_key;
-    if (providedKey !== apiKey) {
-        return res.status(401).json({
-            status: "error",
-            message: "Unauthorized: Invalid API Key",
-        });
+    const providedKey = req.headers["x-api-key"] || req.query.apiKey;
+    if (apiKey && providedKey !== apiKey) {
+        return res.status(401).json({ status: "error", message: "Unauthorized: Invalid API Key" });
     }
     next();
 };

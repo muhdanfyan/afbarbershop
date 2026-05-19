@@ -809,121 +809,104 @@
             type="audio/wav">
     </audio>
 
+    <!-- YouTube Playlist Embed -->
+    <div class="youtube-container" style="position: fixed; bottom: 20px; left: 20px; width: 300px; height: 170px; z-index: 1000; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid var(--primary-gold);">
+        <iframe width="100%" height="100%" 
+                src="https://www.youtube.com/embed/videoseries?list={{ $settings['youtube_playlist_id'] ?? 'PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG' }}&autoplay=1&mute=1&loop=1" 
+                title="YouTube video player" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen></iframe>
+    </div>
+
     <script>
-        // Mock Database - Simulating API call
-        const kapstersDatabase = [
-            {
-                id: 1,
-                name: "Andi Pratama",
-                avatar: "https://picsum.photos/seed/andi/100/100",
-                status: "serving",
-                currentQueue: "B015",
-                service: "Haircut & Styling",
-                specialty: "Classic Cut"
-            },
-            {
-                id: 2,
-                name: "Budi Santoso",
-                avatar: "https://picsum.photos/seed/budi/100/100",
-                status: "serving",
-                currentQueue: "B014",
-                service: "Beard Trim",
-                specialty: "Beard Design"
-            },
-            {
-                id: 3,
-                name: "Rizki Ahmad",
-                avatar: "https://picsum.photos/seed/rizki/100/100",
-                status: "serving",
-                currentQueue: "B013",
-                service: "Hair Coloring",
-                specialty: "Color Specialist"
-            },
-            {
-                id: 4,
-                name: "Fajar Nugroho",
-                avatar: "https://picsum.photos/seed/fajar/100/100",
-                status: "available",
-                currentQueue: null,
-                service: null,
-                specialty: "Modern Style"
-            },
-            {
-                id: 5,
-                name: "Eko Prasetyo",
-                avatar: "https://picsum.photos/seed/eko/100/100",
-                status: "busy",
-                currentQueue: null,
-                service: "Break Time",
-                specialty: "Kids Cut"
-            }
-        ];
-
-        const services = [
-            "Haircut & Styling",
-            "Beard Trim",
-            "Hair Coloring",
-            "Hair Treatment",
-            "Shave & Facial",
-            "Kids Haircut"
-        ];
-
-        let currentQueueNumber = 15;
-        let currentKapsterIndex = 0;
+        let currentQueueNumber = 0;
         let queueData = [];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function () {
-            loadKapstersFromDatabase();
-            initializeQueueList();
+            refreshData();
             updateDateTime();
             setInterval(updateDateTime, 1000);
-
-            // Simulate real-time updates
-            setInterval(simulateDatabaseUpdate, 10000);
+            
+            // Poll for real-time updates every 5 seconds
+            setInterval(refreshData, 5000);
         });
 
-        // Load Kapsters from Database
-        function loadKapstersFromDatabase() {
-            const kapstersGrid = document.getElementById('kapstersGrid');
-            kapstersGrid.innerHTML = '<div class="loading-spinner"></div>';
-
-            // Simulate API delay
-            setTimeout(() => {
-                kapstersGrid.innerHTML = '';
-                kapstersDatabase.forEach((kapster, index) => {
-                    const kapsterCard = createKapsterCard(kapster, index);
-                    kapstersGrid.appendChild(kapsterCard);
-                });
-
-                // Set first serving kapster as current
-                const servingKapster = kapstersDatabase.find(k => k.status === 'serving');
+        // Load Data from API
+        async function refreshData() {
+            try {
+                const response = await fetch('/api/queue-data');
+                const data = await response.json();
+                
+                renderKapsters(data.kapsters);
+                renderQueueList(data.queue);
+                updateStats(data);
+                
+                // If there's a serving kapster, update the main serving display
+                const servingKapster = data.kapsters.find(k => k.status === 'serving');
                 if (servingKapster) {
                     updateCurrentServing(servingKapster);
                 }
-            }, 1000);
+            } catch (error) {
+                console.error('Failed to fetch queue data:', error);
+            }
         }
 
-        // Create Kapster Card
-        function createKapsterCard(kapster, index) {
-            const card = document.createElement('div');
-            card.className = `kapster-card ${kapster.status === 'serving' ? 'active' : ''}`;
-            card.innerHTML = `
-                <img src="${kapster.avatar}" alt="${kapster.name}" class="kapster-card-img">
-                <div class="kapster-card-info">
-                    <div class="kapster-card-name">${kapster.name}</div>
-                    <div class="kapster-card-status">
-                        <span class="status-indicator ${kapster.status}"></span>
-                        <span>${getStatusText(kapster.status, kapster.service)}</span>
+        // Render Kapsters
+        function renderKapsters(kapsters) {
+            const kapstersGrid = document.getElementById('kapstersGrid');
+            kapstersGrid.innerHTML = '';
+            
+            kapsters.forEach((kapster) => {
+                const card = document.createElement('div');
+                card.className = `kapster-card ${kapster.status === 'serving' ? 'active' : ''}`;
+                card.innerHTML = `
+                    <img src="${kapster.avatar}" alt="${kapster.name}" class="kapster-card-img">
+                    <div class="kapster-card-info">
+                        <div class="kapster-card-name">${kapster.name}</div>
+                        <div class="kapster-card-status">
+                            <span class="status-indicator ${kapster.status}"></span>
+                            <span>${getStatusText(kapster.status, kapster.service)}</span>
+                        </div>
                     </div>
-                </div>
-                <div class="kapster-card-number">
-                    ${kapster.currentQueue || '-'}
-                </div>
-            `;
+                    <div class="kapster-card-number">
+                        ${kapster.currentQueue || '-'}
+                    </div>
+                `;
+                kapstersGrid.appendChild(card);
+            });
+        }
 
-            card.onclick = () => selectKapster(kapster, index);
-            return card;
+        // Render Queue List
+        function renderQueueList(queues) {
+            const queueList = document.getElementById('queueList');
+            queueList.innerHTML = '';
+
+            if (queues.length === 0) {
+                queueList.innerHTML = '<div class="text-center py-4 opacity-50 small">Tidak ada antrian</div>';
+                return;
+            }
+
+            queues.forEach((queue) => {
+                const queueItem = document.createElement('div');
+                queueItem.className = 'queue-item';
+                queueItem.innerHTML = `
+                    <span class="queue-number">${queue.number}</span>
+                    <div class="queue-details">
+                        <div class="queue-service">${queue.service}</div>
+                        <div class="queue-time">Pukul ${queue.time}</div>
+                    </div>
+                `;
+                queueList.appendChild(queueItem);
+            });
+        }
+
+        // Update Stats
+        function updateStats(data) {
+            document.getElementById('totalWaiting').textContent = data.totalWaiting;
+            document.getElementById('servedToday').textContent = data.servedToday;
+            document.getElementById('activeKapsters').textContent = data.activeKapsters;
+            document.getElementById('avgWait').textContent = data.totalWaiting * 30; // 30 min per person
         }
 
         // Get Status Text
@@ -933,14 +916,6 @@
                 case 'available': return 'Tersedia';
                 case 'busy': return 'Sibuk';
                 default: return 'Offline';
-            }
-        }
-
-        // Select Kapster
-        function selectKapster(kapster, index) {
-            if (kapster.status === 'available') {
-                currentKapsterIndex = index;
-                showNotification('Kapster Dipilih', `${kapster.name} siap melayani`);
             }
         }
 
@@ -955,101 +930,6 @@
             currentKapsterName.textContent = kapster.name;
             currentKapsterAvatar.src = kapster.avatar;
             currentService.textContent = kapster.service || 'Menunggu';
-        }
-
-        // Initialize Queue List
-        function initializeQueueList() {
-            queueData = [];
-            for (let i = 1; i <= 8; i++) {
-                queueData.push({
-                    number: `B${String(currentQueueNumber + i).padStart(3, '0')}`,
-                    service: services[Math.floor(Math.random() * services.length)],
-                    time: i * 5
-                });
-            }
-            renderQueueList();
-        }
-
-        // Render Queue List
-        function renderQueueList() {
-            const queueList = document.getElementById('queueList');
-            queueList.innerHTML = '';
-
-            queueData.forEach((queue, index) => {
-                const queueItem = document.createElement('div');
-                queueItem.className = 'queue-item';
-                queueItem.innerHTML = `
-                    <span class="queue-number">${queue.number}</span>
-                    <div class="queue-details">
-                        <div class="queue-service">${queue.service}</div>
-                        <div class="queue-time">Est. ${queue.time} menit</div>
-                    </div>
-                `;
-                queueList.appendChild(queueItem);
-            });
-        }
-
-        // Next Queue
-        function nextQueue() {
-            // Find available kapster
-            const availableKapster = kapstersDatabase.find(k => k.status === 'available');
-            if (!availableKapster) {
-                showNotification('Tidak Ada Kapster', 'Semua kapster sedang sibuk');
-                return;
-            }
-
-            // Update queue number
-            currentQueueNumber++;
-            const newQueueNumber = `B${String(currentQueueNumber).padStart(3, '0')}`;
-
-            // Update kapster status
-            availableKapster.status = 'serving';
-            availableKapster.currentQueue = newQueueNumber;
-            availableKapster.service = queueData[0].service;
-
-            // Remove first queue and add new
-            queueData.shift();
-            queueData.push({
-                number: `B${String(currentQueueNumber + 8).padStart(3, '0')}`,
-                service: services[Math.floor(Math.random() * services.length)],
-                time: 40
-            });
-
-            // Update displays
-            updateCurrentServing(availableKapster);
-            loadKapstersFromDatabase();
-            renderQueueList();
-            updateStatistics();
-
-            // Show notification and play sound
-            showNotification('Antrian Berikutnya', `Nomor ${newQueueNumber} dengan ${availableKapster.name}`);
-            playSound();
-        }
-
-        // Update Statistics
-        function updateStatistics() {
-            const totalWaiting = document.getElementById('totalWaiting');
-            const servedToday = document.getElementById('servedToday');
-
-            totalWaiting.textContent = Math.max(0, parseInt(totalWaiting.textContent) - 1);
-            servedToday.textContent = parseInt(servedToday.textContent) + 1;
-        }
-
-        // Simulate Database Update
-        function simulateDatabaseUpdate() {
-            // Randomly update kapster status
-            const randomKapster = kapstersDatabase[Math.floor(Math.random() * kapstersDatabase.length)];
-            const statuses = ['available', 'busy', 'serving'];
-
-            if (randomKapster.status !== 'serving') {
-                randomKapster.status = statuses[Math.floor(Math.random() * 2)];
-                loadKapstersFromDatabase();
-            }
-
-            // Update random statistics
-            const avgWait = document.getElementById('avgWait');
-            const currentWait = parseInt(avgWait.textContent);
-            avgWait.textContent = Math.max(5, currentWait + Math.floor(Math.random() * 5) - 2);
         }
 
         // Update Date and Time
@@ -1067,49 +947,9 @@
             document.getElementById('date').textContent = dateString;
         }
 
-        // Play Sound
-        function playSound() {
-            const audio = document.getElementById('queueSound');
-            const soundWave = document.getElementById('soundWave');
-
-            soundWave.style.display = 'inline-flex';
-            audio.play().catch(e => console.log('Audio play failed:', e));
-
-            setTimeout(() => {
-                soundWave.style.display = 'none';
-            }, 3000);
-        }
-
-        // Show Notification
-        function showNotification(title, message) {
-            const toast = document.getElementById('notificationToast');
-            const messageEl = document.getElementById('notificationMessage');
-
-            document.querySelector('.notification-title').textContent = title;
-            messageEl.textContent = message;
-
-            toast.classList.add('show');
-
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 5000);
-        }
-
-        // Refresh Data
-        function refreshData() {
-            const btn = event.target.closest('.control-btn');
-            const icon = btn.querySelector('i');
-            icon.style.animation = 'spin 1s linear';
-
-            // Reload data from database
-            loadKapstersFromDatabase();
-            renderQueueList();
-
-            setTimeout(() => {
-                icon.style.animation = '';
-                showNotification('Data Diperbarui', 'Semua data telah diperbarui dari database');
-            }, 1000);
-        }
+        // No-ops for controls that were mock before
+        function playSound() {}
+        function nextQueue() {}
 
         // Toggle Fullscreen
         function toggleFullscreen() {

@@ -1,13 +1,12 @@
 <?php
 use App\Models\Transaksi;
-
-Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-
+use App\Http\Controllers\BookingController;
 use App\Livewire\User\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FrontController;
-use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
+
+Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
 use App\Http\Controllers\Backend\LoginController;
 use App\Http\Controllers\Admin\AdminJasaController;
 use App\Http\Controllers\Admin\AdminKasirController;
@@ -30,6 +29,7 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::get('/member-logout', [FrontLoginController::class, 'logout'])->name('logout');
 Route::get('/member-login', [FrontLoginController::class, 'index'])->name('member.login');
 Route::get('/display-antrian', [FrontDisplayAntrianController::class, 'index'])->name('front.displayantrian');
+Route::get('/api/queue-data', [FrontDisplayAntrianController::class, 'getQueueData'])->name('api.queue.data');
 
 
 

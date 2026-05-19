@@ -19,8 +19,9 @@
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ asset('/') }}tem_admin/template/css/style.css">
+    <link rel="stylesheet" href="{{ asset('/') }}css/modern-dashboard.css">
     <!-- endinject -->
-    <link rel="shortcut icon" href="{{ asset('/') }}tem_admin/template/images/favicon.png" />
+    <link rel="shortcut icon" href="{{ asset('logo-icon.png') }}" />
     <style>
         .nav-link {
             border: none;
@@ -35,29 +36,8 @@
 
         <div class="container-fluid page-body-wrapper">
             <!-- partial:partials/_sidebar.html -->
-            <nav class="sidebar sidebar-offcanvas" id="sidebar" style="background-color:grey !important;">
-                <div class="user-profile">
-                    <div class="user-image">
-                        @php
-                            $foto = auth()->user()->foto ?? null;
-                        @endphp
-                        @if ($foto)
-                            <img src="{{ asset('storage/' . $foto) }}" class="img-thumbnail rounded-circle" width="60">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}"
-                                class="img-thumbnail rounded-circle" width="60">
-                        @endif
-                    </div>
-                    <div class="user-name">
-                        {{ auth()->user()->name }}
-                    </div>
-                    <div class="user-designation">
-                        Admin
-                    </div>
-                </div>
-
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
                 @include('backend.template.menu')
-
             </nav>
             @yield('content')
         </div>

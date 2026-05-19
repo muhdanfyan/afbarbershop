@@ -23,6 +23,10 @@
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
+                    <button onclick="toggleTheme()" class="inline-block px-3 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors mr-2">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
                     @auth
                         <a
                             href="{{ url('/dashboard') }}"

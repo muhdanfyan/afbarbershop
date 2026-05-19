@@ -25,14 +25,16 @@ class BookingForm extends Component
     public $successMessage;
     public $estimasiTunggu = 0;
     public $showTimePicker = false;
+    public $availableSlots = [];
+    public $workingHours = ['09:00', '21:00'];
 
     public function mount()
     {
         $this->jasaList = Jasa::all();
         $this->kapsterList = Kapster::where('status', 'bekerja')->get();
-        // Set default ke waktu sekarang dalam format datetime-local
-        $this->waktu_lengkap = now()->format('Y-m-d\TH:i');
-        $this->updatedWaktuLengkap($this->waktu_lengkap);
+        // Set default ke waktu sekarang dalam format date
+        $this->tanggal = now()->toDateString();
+        $this->loadAvailableSlots();
     }
 
     public function updatedWaktuLengkap($value)
@@ -41,12 +43,64 @@ class BookingForm extends Component
             $dt = \Illuminate\Support\Carbon::parse($value);
             $this->tanggal = $dt->toDateString();
             $this->waktu = $dt->format('H:i');
+            $this->loadAvailableSlots(); // Update slots when date changes
             $this->hitungEstimasi();
         }
     }
 
+    public function updatedTanggal($value)
+    {
+        $this->loadAvailableSlots();
+        $this->hitungEstimasi();
+    }
+
+    public function selectSlot($time)
+    {
+        $this->waktu = $time;
+    }
+
+    public function loadAvailableSlots()
+    {
+        $slots = [];
+        $start = \Carbon\Carbon::parse($this->workingHours[0]);
+        $end = \Carbon\Carbon::parse($this->workingHours[1]);
+        $kapster = $this->barber ? Kapster::where('nama', $this->barber)->first() : null;
+
+        while ($start->lessThan($end)) {
+            $timeStr = $start->format('H:i');
+            $status = 'available';
+
+            // Check if past (if today)
+            if ($this->tanggal == now()->toDateString() && $start->lt(now())) {
+                $status = 'past';
+            }
+
+            // Check if booked
+            if ($kapster) {
+                $startTime = $start->copy()->subMinutes(29);
+                $endTime = $start->copy()->addMinutes(29);
+                $isBooked = Transaksi::where('kapster_id', $kapster->id)
+                    ->where('tanggal', $this->tanggal)
+                    ->whereIn('status', ['menunggu', 'proses'])
+                    ->whereBetween('waktu', [$startTime->format('H:i'), $endTime->format('H:i')])
+                    ->exists();
+                if ($isBooked) {
+                    $status = 'booked';
+                }
+            }
+
+            $slots[] = [
+                'time' => $timeStr,
+                'status' => $status
+            ];
+            $start->addMinutes(30);
+        }
+        $this->availableSlots = $slots;
+    }
+
     public function updatedBarber($value)
     {
+        $this->loadAvailableSlots();
         $this->hitungEstimasi();
     }
 
@@ -85,6 +139,25 @@ class BookingForm extends Component
             $waktuSekarang = now()->format('H:i');
             if ($this->waktu < $waktuSekarang) {
                 $this->addError('waktu', 'Waktu tidak boleh kurang dari jam sekarang.');
+                return;
+            }
+        }
+
+        // Cek Double Booking (Slot 30 Menit)
+        $kapster = $this->barber ? Kapster::where('nama', $this->barber)->first() : null;
+        if ($kapster) {
+            $selectedTime = \Carbon\Carbon::parse($this->waktu);
+            $startTime = $selectedTime->copy()->subMinutes(29);
+            $endTime = $selectedTime->copy()->addMinutes(29);
+
+            $isBooked = Transaksi::where('kapster_id', $kapster->id)
+                ->where('tanggal', $this->tanggal)
+                ->whereIn('status', ['menunggu', 'proses'])
+                ->whereBetween('waktu', [$startTime->format('H:i'), $endTime->format('H:i')])
+                ->exists();
+
+            if ($isBooked) {
+                $this->addError('waktu', 'Maaf, jadwal untuk kapster ini sudah terisi di jam tersebut. Silakan pilih waktu lain.');
                 return;
             }
         }

@@ -8,6 +8,7 @@ use App\Models\Jasa;
 use App\Models\Kapster;
 use App\Models\Setting;
 use App\Models\Gallery;
+use App\Models\Barang;
 
 class FrontController extends Controller
 {
@@ -17,6 +18,7 @@ class FrontController extends Controller
         $settings = Setting::pluck('value', 'key');
         $galleries = Gallery::latest()->get();
         $kapsters = Kapster::where('status', 'bekerja')->get();
-        return view('front.index', compact('jasa', 'settings', 'galleries', 'kapsters'));
+        $barangs = Barang::where('stok', '>', 0)->get();
+        return view('front.index', compact('jasa', 'settings', 'galleries', 'kapsters', 'barangs'));
     }
 }
