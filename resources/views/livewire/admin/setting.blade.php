@@ -117,9 +117,79 @@
                             </div>
                         </div>
 
+                        <hr class="my-4 opacity-25">
+
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="fw-bold text-dark mb-0"><i class="mdi mdi-whatsapp text-success me-2"></i>Master Template WhatsApp</h6>
+                            <span class="badge bg-light text-muted border rounded-pill fw-normal">Dikelola via Pop-up</span>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <!-- Template 1: Konfirmasi -->
+                            <div class="col-md-4 col-6">
+                                <div class="card border border-light shadow-sm text-center p-3 h-100 hover-shadow transition-all" style="border-radius: 18px; cursor: pointer;" wire:click="editTemplate('wa_tpl_confirmation', 'Konfirmasi Booking', 'mdi-calendar-check')">
+                                    <div class="mx-auto mb-2 d-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle" style="width: 45px; height: 45px;">
+                                        <i class="mdi mdi-calendar-check fs-4"></i>
+                                    </div>
+                                    <h6 class="small fw-bold mb-1">Konfirmasi</h6>
+                                    <span class="text-muted d-block" style="font-size: 0.65rem;">Pesanan Baru</span>
+                                </div>
+                            </div>
+                            <!-- Template 2: Reminder -->
+                            <div class="col-md-4 col-6">
+                                <div class="card border border-light shadow-sm text-center p-3 h-100 hover-shadow transition-all" style="border-radius: 18px; cursor: pointer;" wire:click="editTemplate('wa_tpl_reminder', 'Pengingat Jadwal', 'mdi-bell-ring')">
+                                    <div class="mx-auto mb-2 d-flex align-items-center justify-content-center bg-warning-subtle text-warning rounded-circle" style="width: 45px; height: 45px;">
+                                        <i class="mdi mdi-bell-ring fs-4"></i>
+                                    </div>
+                                    <h6 class="small fw-bold mb-1">Pengingat</h6>
+                                    <span class="text-muted d-block" style="font-size: 0.65rem;">Antrian Dekat</span>
+                                </div>
+                            </div>
+                            <!-- Template 3: Receipt -->
+                            <div class="col-md-4 col-6">
+                                <div class="card border border-light shadow-sm text-center p-3 h-100 hover-shadow transition-all" style="border-radius: 18px; cursor: pointer;" wire:click="editTemplate('wa_tpl_receipt', 'Struk Pembayaran', 'mdi-file-document-outline')">
+                                    <div class="mx-auto mb-2 d-flex align-items-center justify-content-center bg-info-subtle text-info rounded-circle" style="width: 45px; height: 45px;">
+                                        <i class="mdi mdi-file-document-outline fs-4"></i>
+                                    </div>
+                                    <h6 class="small fw-bold mb-1">Struk</h6>
+                                    <span class="text-muted d-block" style="font-size: 0.65rem;">Nota Digital</span>
+                                </div>
+                            </div>
+                            <!-- Template 4: Welcome -->
+                            <div class="col-md-4 col-6">
+                                <div class="card border border-light shadow-sm text-center p-3 h-100 hover-shadow transition-all" style="border-radius: 18px; cursor: pointer;" wire:click="editTemplate('wa_tpl_welcome', 'Welcome Member', 'mdi-account-star-outline')">
+                                    <div class="mx-auto mb-2 d-flex align-items-center justify-content-center bg-success-subtle text-success rounded-circle" style="width: 45px; height: 45px;">
+                                        <i class="mdi mdi-account-star-outline fs-4"></i>
+                                    </div>
+                                    <h6 class="small fw-bold mb-1">Welcome</h6>
+                                    <span class="text-muted d-block" style="font-size: 0.65rem;">Pendaftaran Member</span>
+                                </div>
+                            </div>
+                            <!-- Template 5: Rating -->
+                            <div class="col-md-4 col-6">
+                                <div class="card border border-light shadow-sm text-center p-3 h-100 hover-shadow transition-all" style="border-radius: 18px; cursor: pointer;" wire:click="editTemplate('wa_tpl_rating', 'Rating & Review', 'mdi-star-circle-outline')">
+                                    <div class="mx-auto mb-2 d-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle" style="width: 45px; height: 45px;">
+                                        <i class="mdi mdi-star-circle-outline fs-4"></i>
+                                    </div>
+                                    <h6 class="small fw-bold mb-1">Rating</h6>
+                                    <span class="text-muted d-block" style="font-size: 0.65rem;">Ulasan Selesai</span>
+                                </div>
+                            </div>
+                            <!-- Template 6: Reactivation -->
+                            <div class="col-md-4 col-6">
+                                <div class="card border border-light shadow-sm text-center p-3 h-100 hover-shadow transition-all" style="border-radius: 18px; cursor: pointer;" wire:click="editTemplate('wa_tpl_reactivation', 'Re-aktivasi (Kangen)', 'mdi-heart-flash')">
+                                    <div class="mx-auto mb-2 d-flex align-items-center justify-content-center bg-secondary-subtle text-secondary rounded-circle" style="width: 45px; height: 45px;">
+                                        <i class="mdi mdi-heart-flash fs-4"></i>
+                                    </div>
+                                    <h6 class="small fw-bold mb-1">Re-aktivasi</h6>
+                                    <span class="text-muted d-block" style="font-size: 0.65rem;">Kunjungan Lama</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-lg w-100" style="background: linear-gradient(135deg, #FF512F, #DD2476); border: none;">
-                                <i class="mdi mdi-content-save-check me-2"></i> Simpan Semua Perubahan
+                                <i class="mdi mdi-content-save-check me-2"></i> Simpan Semua Konfigurasi
                             </button>
                         </div>
                     </form>
@@ -163,10 +233,17 @@
                             <div class="p-2 bg-white rounded shadow-sm">
                                 <img src="{{ $qrImage }}" class="img-fluid" style="max-height: 210px;">
                             </div>
+                        @elseif($waStatus == 'Gateway Offline' || $waStatus == 'Error connecting to Gateway')
+                            <div class="text-danger opacity-75">
+                                <i class="mdi mdi-server-off mdi-48px"></i>
+                                <p class="small fw-bold mt-2 mb-0">Gateway Offline</p>
+                                <span style="font-size: 0.65rem;">Jalankan: <code>npm run dev</code> di folder wagateway</span>
+                            </div>
                         @else
                             <div class="text-muted opacity-50">
                                 <i class="mdi mdi-qrcode-scan mdi-48px"></i>
                                 <p class="small mt-2 mb-0">QR Code Siap Digunakan</p>
+                                <span class="small">Klik tombol di bawah</span>
                             </div>
                         @endif
                     </div>
@@ -207,51 +284,124 @@
     </div>
 
     <!-- Modal Tes Kirim Pesan -->
-    <div class="modal fade animate__animated animate__fadeIn" id="TesKirimPesanModal" tabindex="-1" role="dialog" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
-                <div class="modal-header border-0 p-4 pb-0">
-                    <div class="bg-info-subtle p-2 rounded-circle me-3">
-                        <i class="mdi mdi-whatsapp text-info fs-3"></i>
+    <div class="modal fade animate__animated animate__fadeIn animate__faster" id="TesKirimPesanModal" tabindex="-1" role="dialog" wire:ignore.self style="z-index: 1050;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 440px;">
+            <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                            <i class="mdi mdi-whatsapp fs-5" style="color: #d97706;"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-0">Test Gateway WA</h6>
                     </div>
-                    <h5 class="modal-title font-weight-bold text-dark">Test Gateway</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" data-dismiss="modal" aria-label="Close">
+                        <i class="mdi mdi-close fs-4"></i>
+                    </button>
                 </div>
-                <div class="modal-body p-4">
+
+                <div class="modal-body p-0">
                     @if (session()->has('success_wa'))
-                        <div class="alert alert-success border-0 shadow-sm rounded-15 mb-3">
+                        <div class="alert alert-success border-0 rounded-3 mb-3 small fw-medium" style="background-color: #f0fdf4; color: #166534;">
                             <i class="mdi mdi-check-circle me-1"></i> {{ session('success_wa') }}
                         </div>
                     @elseif (session()->has('error_wa'))
-                        <div class="alert alert-danger border-0 shadow-sm rounded-15 mb-3">
+                        <div class="alert alert-danger border-0 rounded-3 mb-3 small fw-medium" style="background-color: #fef2f2; color: #991b1b;">
                             <i class="mdi mdi-alert-circle me-1"></i> {{ session('error_wa') }}
                         </div>
                     @endif
 
                     <div class="mb-3">
-                        <label class="form-label small fw-bold text-muted text-uppercase">Nomor WhatsApp Tujuan</label>
-                        <input type="text" wire:model="testNumber" class="form-control bg-light border-0 rounded-pill shadow-inner px-3" placeholder="Contoh: 62812xxx">
+                        <label class="small fw-bold d-block mb-1" style="color: #475569;">Nomor WhatsApp Tujuan</label>
+                        <input type="text" wire:model="testNumber" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" placeholder="Contoh: 62812xxx">
+                        <div class="text-muted mt-1" style="font-size: 0.75rem;">Gunakan kode negara (62)</div>
                     </div>
-                    <div class="mb-0">
-                        <label class="form-label small fw-bold text-muted text-uppercase">Isi Pesan Test</label>
-                        <textarea wire:model.defer="testMessage" class="form-control bg-light border-0 rounded-20 shadow-inner px-3 py-2" rows="3" placeholder="Halo, ini test dari sistem..."></textarea>
+                    <div class="mb-4">
+                        <label class="small fw-bold d-block mb-1" style="color: #475569;">Isi Pesan Test</label>
+                        <textarea wire:model.defer="testMessage" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" rows="3" placeholder="Halo, ini test dari sistem..."></textarea>
                     </div>
-                </div>
-                <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-dismiss="modal">Tutup</button>
-                    <button type="button" wire:click="testSendWa" class="btn btn-info text-white rounded-pill px-4 fw-bold shadow-sm" wire:loading.attr="disabled">
-                        <span wire:loading.remove><i class="mdi mdi-send me-1"></i> Kirim Sekarang</span>
-                        <span wire:loading><span class="spinner-border spinner-border-sm me-1"></span> Mengirim...</span>
-                    </button>
+
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm d-flex align-items-center justify-content-center" style="font-size: 0.95rem; background-color: #0f172a; color: #f8fafc;" wire:click="testSendWa" wire:loading.attr="disabled">
+                            <span wire:loading.remove><i class="mdi mdi-send me-2"></i> Kirim Sekarang</span>
+                            <span wire:loading><span class="spinner-border spinner-border-sm me-2"></span> Mengirim...</span>
+                        </button>
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a; font-size: 0.95rem;" data-dismiss="modal">
+                            Batalkan
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal Edit Template WA -->
+    <div class="modal fade animate__animated animate__fadeIn animate__faster" id="WAEditTemplateModal" tabindex="-1" role="dialog" wire:ignore.self style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 550px;">
+            <div class="modal-content border-0 p-4 shadow-lg" style="border-radius: 24px;">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center bg-light border" style="width: 50px; height: 50px;">
+                            <i class="mdi {{ $editingTplIcon }} fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark mb-0">{{ $editingTplTitle }}</h5>
+                            <p class="small text-muted mb-0">Ubah teks pesan WhatsApp otomatis</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close shadow-none" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-0">
+                    <div class="alert alert-info border-0 rounded-15 shadow-sm small py-2 px-3 mb-4" style="background: #f0f7ff; color: #004a99; border: 1px solid #cce3ff !important;">
+                        <i class="mdi mdi-information-outline me-1"></i> <strong>Panduan Kode:</strong><br>
+                        <div class="mt-1 opacity-75">
+                            {NAMA}, {JAM}, {TANGGAL}, {LAYANAN}, {BARBER}, {INVOICE}, {POIN}, {LEVEL}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Isi Pesan WhatsApp</label>
+                        <div class="bg-light rounded-20 p-1 border shadow-inner">
+                            @if($editingTplKey == 'wa_tpl_confirmation')
+                                <textarea class="form-control border-0 bg-transparent px-3 py-2 small" wire:model.defer="wa_tpl_confirmation" rows="10" placeholder="Tulis pesan konfirmasi di sini..."></textarea>
+                            @elseif($editingTplKey == 'wa_tpl_reminder')
+                                <textarea class="form-control border-0 bg-transparent px-3 py-2 small" wire:model.defer="wa_tpl_reminder" rows="10" placeholder="Tulis pesan pengingat di sini..."></textarea>
+                            @elseif($editingTplKey == 'wa_tpl_receipt')
+                                <textarea class="form-control border-0 bg-transparent px-3 py-2 small" wire:model.defer="wa_tpl_receipt" rows="10" placeholder="Tulis penutup struk digital di sini..."></textarea>
+                            @elseif($editingTplKey == 'wa_tpl_welcome')
+                                <textarea class="form-control border-0 bg-transparent px-3 py-2 small" wire:model.defer="wa_tpl_welcome" rows="10" placeholder="Tulis pesan selamat datang member di sini..."></textarea>
+                            @elseif($editingTplKey == 'wa_tpl_rating')
+                                <textarea class="form-control border-0 bg-transparent px-3 py-2 small" wire:model.defer="wa_tpl_rating" rows="10" placeholder="Tulis permintaan rating di sini..."></textarea>
+                            @elseif($editingTplKey == 'wa_tpl_reactivation')
+                                <textarea class="form-control border-0 bg-transparent px-3 py-2 small" wire:model.defer="wa_tpl_reactivation" rows="10" placeholder="Tulis pesan re-aktivasi di sini..."></textarea>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="button" class="btn btn-primary rounded-pill py-2 fw-bold shadow-sm" style="background: linear-gradient(135deg, #11998e, #38ef7d); border: none;" wire:click="simpanSetting" data-dismiss="modal">
+                            <i class="mdi mdi-content-save-check me-1"></i> Simpan Perubahan Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('livewire:init', () => {
+           Livewire.on('open-wa-modal', (event) => {
+               $('#WAEditTemplateModal').modal('show');
+           });
+        });
+    </script>
 
     <style>
         .rounded-20 { border-radius: 20px !important; }
         .shadow-inner { box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05) !important; }
         .rounded-15 { border-radius: 15px !important; }
         .italic { font-style: italic; }
+        .transition-all { transition: all 0.3s ease; }
+        .hover-shadow:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
     </style>
 </div>

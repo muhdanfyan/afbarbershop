@@ -75,9 +75,7 @@
                                         </td>
                                         <td>
                                             <span class="fw-bold text-dark fs-6">{{ $trx->nama }}</span>
-                                            @if($trx->member_id)
-                                                <span class="badge bg-primary-subtle text-primary border border-primary small rounded-pill ms-1" style="font-size: 0.65rem;">MEMBER</span>
-                                            @endif
+
                                         </td>
                                         <td>
                                             <div class="mb-1">
@@ -150,83 +148,81 @@
 
     <!-- Detail Modal -->
     @if(isset($detailId) && $detailId)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-receipt text-primary fs-3"></i>
-                        </div>
-                        <h5 class="modal-title font-weight-bold text-dark">Rician Transaksi</h5>
-                        <button type="button" class="btn-close" wire:click="$set('detailId', null)"></button>
-                    </div>
-                    @php
-                        $detailTrx = \App\Models\Transaksi::with(['jasa', 'kapster', 'member'])->find($detailId);
-                    @endphp
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    @php $detailTrx = \App\Models\Transaksi::with(['jasa', 'kapster', 'kursi'])->find($detailId); @endphp
                     @if($detailTrx)
-                        <div class="modal-body p-4 pt-2">
-                            <div class="card bg-light border-0 mb-4" style="border-radius: 15px;">
-                                <div class="card-body p-3 text-center">
-                                    <h6 class="text-muted text-uppercase small fw-bold mb-1">Nomor Invoice</h6>
-                                    <h4 class="text-primary fw-bold mb-0">{{ $detailTrx->invoice ?? 'INV-' . str_pad($detailTrx->id, 5, '0', STR_PAD_LEFT) }}</h4>
-                                    <hr class="my-3 opacity-10">
-                                    <div class="row">
-                                        <div class="col-6 border-end">
-                                            <span class="text-muted small d-block">Operator</span>
-                                            <span class="fw-bold text-dark">{{ $detailTrx->kapster->nama ?? '-' }}</span>
-                                        </div>
-                                        <div class="col-6">
-                                            <span class="text-muted small d-block">Tanggal</span>
-                                            <span class="fw-bold text-dark">{{ $detailTrx->created_at->format('d/m/Y') }}</span>
-                                        </div>
-                                    </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                                    <i class="mdi mdi-receipt-text-outline fs-5" style="color: #d97706;"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0">Rincian Transaksi</h6>
+                                    <p class="small fw-semibold mb-0" style="color: #64748b;">{{ $detailTrx->invoice ?? 'INV-' . str_pad($detailTrx->id, 5, '0', STR_PAD_LEFT) }}</p>
                                 </div>
                             </div>
+                            <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" wire:click="$set('detailId', null)">
+                                <i class="mdi mdi-close fs-4"></i>
+                            </button>
+                        </div>
 
-                            <div class="mb-4">
-                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">Item Layanan</h6>
+                        <div class="mb-4">
+                            <label class="small fw-bold d-block mb-2" style="color: #475569;">Informasi Umum</label>
+                            <div class="d-flex flex-column gap-2 px-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small fw-semibold" style="color: #64748b;">Waktu Transaksi</span>
+                                    <span class="small fw-bold" style="color: #0f172a;">{{ $detailTrx->created_at->format('d/m/Y H:i') }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="small fw-semibold" style="color: #64748b;">Operator Kapster</span>
+                                    <span class="small fw-bold" style="color: #0f172a;">{{ $detailTrx->kapster->nama ?? '-' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small fw-bold d-block mb-2" style="color: #475569;">Rincian Item</label>
+                            <div class="p-3 border rounded-3" style="background-color: #f8fafc;">
                                 @foreach($detailTrx->jasa as $j)
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-primary p-1 rounded me-2" style="width: 8px; height: 8px;"></div>
-                                            <span class="text-dark">{{ $j->nama }}</span>
-                                        </div>
-                                        <span class="fw-bold">Rp {{ number_format($j->harga, 0, ',', '.') }}</span>
+                                    <div class="d-flex justify-content-between align-items-center mb-2 {{ $loop->last ? 'mb-0' : '' }}">
+                                        <span class="small fw-bold" style="color: #0f172a;">{{ $j->nama }}</span>
+                                        <span class="small fw-bold" style="color: #0f172a;">Rp {{ number_format($j->harga, 0, ',', '.') }}</span>
                                     </div>
                                 @endforeach
                             </div>
+                        </div>
 
-                            <div class="p-3 bg-secondary-subtle rounded-lg mb-4" style="background: #f8f9fa;">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Total Tagihan:</span>
-                                    <span class="fw-bold text-dark">Rp {{ number_format($detailTrx->total_harga, 0, ',', '.') }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted">Dibayarkan:</span>
-                                    <span class="fw-bold text-success">Rp {{ number_format($detailTrx->uang_bayar, 0, ',', '.') }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-muted">Kembalian:</span>
-                                    <span class="fw-bold text-info">Rp {{ number_format($detailTrx->uang_kembali, 0, ',', '.') }}</span>
-                                </div>
+                        <div class="mb-4 px-1">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-semibold" style="color: #64748b;">Ringkasan Total</span>
+                                <span class="fw-bold" style="color: #0f172a;">Rp {{ number_format($detailTrx->total_harga, 0, ',', '.') }}</span>
                             </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small fw-semibold" style="color: #64748b;">Jumlah Dibayar</span>
+                                <span class="small fw-bold" style="color: #0f172a;">Rp {{ number_format($detailTrx->uang_bayar, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center pt-2 mt-2 border-top">
+                                <span class="small fw-bold" style="color: #475569;">Uang Kembalian</span>
+                                <span class="small fw-bold" style="color: #0f172a;">Rp {{ number_format($detailTrx->uang_kembali, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
 
-                            @if($detailTrx->catatan)
-                                <div class="mb-0">
-                                    <h6 class="small fw-bold text-muted text-uppercase mb-2">Catatan Transaksi</h6>
-                                    <div class="p-3 bg-light rounded italic text-muted" style="border-left: 4px solid #dee2e6;">
-                                        "{{ $detailTrx->catatan }}"
-                                    </div>
-                                </div>
-                            @endif
+                        @if($detailTrx->catatan)
+                            <div class="mb-4">
+                                <label class="small fw-bold d-block mb-1" style="color: #475569;">Catatan Pelanggan</label>
+                                <p class="small fw-medium mb-0 p-3 rounded-3 border" style="background-color: #f8fafc; color: #334155;">{{ $detailTrx->catatan }}</p>
+                            </div>
+                        @endif
+
+                        <div class="mt-4 pt-2">
+                            <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="$set('detailId', null)">
+                                Selesai
+                            </button>
                         </div>
                     @endif
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm" wire:click="$set('detailId', null)">
-                            <i class="mdi mdi-close-circle-outline me-1"></i> Tutup Informasi
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -234,65 +230,73 @@
 
     <!-- Form Modal (Edit) -->
     @if ($showForm)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-pencil-box-multiple text-primary fs-3"></i>
-                        </div>
-                        <h5 class="modal-title font-weight-bold text-dark">Edit Data Transaksi</h5>
-                        <button type="button" class="btn-close" wire:click="$set('showForm', false)"></button>
-                    </div>
-                    <form wire:submit.prevent="save">
-                        <div class="modal-body p-4">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Nama Pelanggan</label>
-                                    <input type="text" class="form-control shadow-sm border-0 bg-light" wire:model.defer="form.nama">
-                                    @error('form.nama') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Status Pesanan</label>
-                                    <select class="form-select shadow-sm border-0 bg-light fw-bold" wire:model.defer="form.status">
-                                        <option value="menunggu">Menunggu</option>
-                                        <option value="proses">Proses</option>
-                                        <option value="selesai">Selesai</option>
-                                    </select>
-                                    @error('form.status') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Tim Kapster</label>
-                                    <select class="form-select shadow-sm border-0 bg-light" wire:model.defer="form.kapster_id">
-                                        <option value="">Pilih Kapster...</option>
-                                        @foreach($allKapster as $kapster)
-                                            <option value="{{ $kapster->id }}">{{ $kapster->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('form.kapster_id') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Kursi (Seat)</label>
-                                    <select class="form-select shadow-sm border-0 bg-light" wire:model.defer="form.kursi_id">
-                                        <option value="">Pilih Kursi...</option>
-                                        @foreach($allKursi as $kursi)
-                                            <option value="{{ $kursi->id }}">{{ $kursi->nama }} ({{ $kursi->status }})</option>
-                                        @endforeach
-                                    </select>
-                                    @error('form.kursi_id') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Catatan Layanan</label>
-                                    <textarea class="form-control shadow-sm border-0 bg-light" wire:model.defer="form.catatan" rows="3"></textarea>
-                                </div>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                                <i class="mdi mdi-pencil-outline fs-5" style="color: #d97706;"></i>
                             </div>
+                            <h6 class="fw-bold text-dark mb-0">Perbarui Transaksi</h6>
                         </div>
-                        <div class="modal-footer border-0 p-4 pt-0">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="$set('showForm', false)">Batal</button>
-                            <button type="submit" class="btn btn-primary px-5 rounded-pill fw-bold shadow-sm" wire:loading.attr="disabled" style="background: linear-gradient(135deg, #4b6cb7, #182848); border: none;">
-                                <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-1"></span>
-                                <i class="mdi mdi-content-save-check me-1"></i> Simpan Perubahan
+                        <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" wire:click="$set('showForm', false)">
+                            <i class="mdi mdi-close fs-4"></i>
+                        </button>
+                    </div>
+
+                    <form wire:submit.prevent="save">
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Nama Pelanggan</label>
+                            <input type="text" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="form.nama" placeholder="Ketik nama di sini...">
+                            @error('form.nama') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Status</label>
+                            <select class="form-select rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="form.status">
+                                <option value="menunggu">Menunggu</option>
+                                <option value="proses">Proses</option>
+                                <option value="selesai">Selesai</option>
+                            </select>
+                            @error('form.status') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Kapster</label>
+                            <select class="form-select rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="form.kapster_id">
+                                <option value="">Pilih Kapster</option>
+                                @foreach($allKapster as $kapster)
+                                    <option value="{{ $kapster->id }}">{{ $kapster->nama }}</option>
+                                @endforeach
+                            </select>
+                            @error('form.kapster_id') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Kursi</label>
+                            <select class="form-select rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="form.kursi_id">
+                                <option value="">Pilih Kursi</option>
+                                @foreach($allKursi as $kursi)
+                                    <option value="{{ $kursi->id }}">{{ $kursi->nama }} ({{ $kursi->status }})</option>
+                                @endforeach
+                            </select>
+                            @error('form.kursi_id') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Catatan Tambahan</label>
+                            <textarea class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="form.catatan" rows="3" placeholder="Opsional..."></textarea>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 mt-4 pt-2">
+                            <button type="submit" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:loading.attr="disabled">
+                                <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-2"></span>
+                                Simpan Perubahan
+                            </button>
+                            <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="$set('showForm', false)">
+                                Batalkan
                             </button>
                         </div>
                     </form>
@@ -303,25 +307,30 @@
 
     <!-- Delete Modal -->
     @if($confirmingDelete)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-body p-5 text-center">
-                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
-                            <i class="mdi mdi-credit-card-remove-outline text-danger mdi-48px"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="text-center mb-4 pt-2">
+                        <div class="mb-3">
+                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 56px; height: 56px; background-color: #f1f5f9;">
+                                <i class="mdi mdi-delete-outline" style="font-size: 28px; color: #0f172a;"></i>
+                            </div>
                         </div>
-                        <h4 class="font-weight-bold text-dark mb-2">Hapus Arsip Transaksi?</h4>
-                        <p class="text-muted mb-4">Invoice "<strong>{{ $deleteNama }}</strong>" akan dihapus secara permanen. Tindakan ini akan memengaruhi laporan keuangan.</p>
-                        
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
-                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="hapus"
-                                wire:loading.attr="disabled" wire:target="hapus">
-                                <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-1"></span>
-                                Ya, Hapus Sekarang
-                            </button>
-                        </div>
+                        <h6 class="fw-bold mb-2" style="color: #0f172a;">Hapus Transaksi?</h6>
+                        <p class="small mb-0 lh-base px-2 fw-medium" style="color: #475569;">
+                            Tindakan ini akan menghapus data transaksi <strong>"{{ $deleteNama }}"</strong>. Aksi ini tidak dapat dibatalkan.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="cancelDelete">
+                            Batalkan
+                        </button>
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="hapus" wire:loading.attr="disabled" wire:target="hapus">
+                            <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-2"></span>
+                            Ya, Hapus Data
+                        </button>
                     </div>
                 </div>
             </div>
@@ -333,9 +342,17 @@
             transition: all 0.3s ease;
         }
         .table-hover tbody tr:hover {
-            background-color: #f5f8ff !important;
-            transform: scale(1.002);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            background-color: #f8fafc !important;
+            transform: translateY(-1px);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1) !important;
+            border-color: #2563eb !important;
+        }
+        
+        .form-control, .form-select {
+            border: 1px solid #e5e7eb;
         }
     </style>
 </div>

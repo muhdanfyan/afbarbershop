@@ -149,31 +149,33 @@
 
     <!-- Modal Form (Tambah/Edit) -->
     @if($isModalOpen)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-television-guide text-warning fs-3"></i>
-                        </div>
-                        <h5 class="modal-title font-weight-bold text-dark">{{ $playlist_id ? 'Perbarui Konten Studio' : 'Konfigurasi Konten Baru' }}</h5>
-                        <button type="button" class="btn-close" wire:click="closeModal()"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-uppercase text-muted">Nama Tampilan Studio</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-format-title text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0" wire:model="judul" placeholder="Cth: Barber Music Night">
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 440px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                                <i class="mdi mdi-television-guide fs-5" style="color: #d97706;"></i>
                             </div>
-                            @error('judul') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                            <h6 class="fw-bold text-dark mb-0">{{ $playlist_id ? 'Perbarui Konten Studio' : 'Konfigurasi Konten Baru' }}</h6>
+                        </div>
+                        <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" wire:click="closeModal()">
+                            <i class="mdi mdi-close fs-4"></i>
+                        </button>
+                    </div>
+
+                    <form wire:submit.prevent="store">
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Nama Konten Studio</label>
+                            <input type="text" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="judul" placeholder="Cth: Barber Music Night">
+                            @error('judul') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
                         </div>
                         
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Tipe Konten Media</label>
-                                <select class="form-select" wire:model="jenis">
+                        <div class="row g-2 mb-3">
+                            <div class="col-8">
+                                <label class="small fw-bold d-block mb-1" style="color: #475569;">Tipe Konten Media</label>
+                                <select class="form-select rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model="jenis">
                                     <optgroup label="YouTube">
                                         <option value="youtube_video">Single Video</option>
                                         <option value="youtube_playlist">Playlist Link</option>
@@ -183,39 +185,48 @@
                                         <option value="spotify_track">Spotify Track</option>
                                     </optgroup>
                                 </select>
-                                @error('jenis') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                                @error('jenis') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Urutan</label>
-                                <input type="number" class="form-control" wire:model="urutan">
-                                @error('urutan') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                            <div class="col-4">
+                                <label class="small fw-bold d-block mb-1" style="color: #475569;">Urutan</label>
+                                <input type="number" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium text-center" style="background-color: #f8fafc;" wire:model="urutan">
+                                @error('urutan') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
                             </div>
                         </div>
 
                         <div class="mb-2">
-                            <label class="form-label small fw-bold text-uppercase text-muted">Media Content URL / ID</label>
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Media Content URL / ID</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-white border-end-0"><i class="mdi {{ str_contains($jenis, 'spotify') ? 'mdi-spotify text-success' : 'mdi-youtube text-danger' }}"></i></span>
-                                <input type="text" class="form-control border-start-0" wire:model="url_id" placeholder="Copy-paste URL dari browser">
+                                <span class="input-group-text bg-light fw-bold border-end-0 shadow-none"><i class="mdi {{ str_contains($jenis, 'spotify') ? 'mdi-spotify' : 'mdi-youtube' }} text-muted"></i></span>
+                                <input type="text" class="form-control rounded-end-3 py-2 border-start-0 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.lazy="url_id" placeholder="Paste URL dari browser">
                             </div>
-                            <div class="mt-2 text-center p-3 rounded bg-light border border-dashed">
-                                @if(str_contains($jenis, 'spotify'))
-                                    <span class="text-muted small">Target: <strong>Spotify {{ str_replace('spotify_', '', $jenis) }}</strong></span>
-                                @else
-                                    <span class="text-muted small">Preview: <strong>https://youtube.com/{{ $jenis == 'youtube_playlist' ? 'playlist?list=' : 'watch?v=' }}{{ $url_id ?: '...' }}</strong></span>
-                                @endif
-                            </div>
-                            @error('url_id') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                            @error('url_id') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                            
+                            @if($url_id)
+                                <div class="mt-3 text-center p-3 rounded-3" style="background-color: #f8fafc; border: 1px dashed #cbd5e1;">
+                                    @if(str_contains($jenis, 'spotify'))
+                                        <div class="text-dark small fw-medium">
+                                            <i class="mdi mdi-check-circle text-success me-1"></i> Format Spotify Terdeteksi
+                                        </div>
+                                    @else
+                                        <div class="text-dark small fw-medium text-truncate px-2">
+                                            <i class="mdi mdi-link-variant text-muted me-1"></i> youtube.com/{{ $jenis == 'youtube_playlist' ? 'playlist?list=' : 'watch?v=' }}{{ $url_id ?: '...' }}
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
-                    </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="closeModal()">Batal</button>
-                        <button type="button" class="btn btn-premium-add text-dark px-4 rounded-pill fw-bold shadow-sm" wire:click="store()"
-                            wire:loading.attr="disabled" wire:target="store">
-                            <span wire:loading wire:target="store" class="spinner-border spinner-border-sm me-1"></span>
-                            <i class="mdi mdi-content-save-check me-1"></i> Aktifkan Konten
-                        </button>
-                    </div>
+
+                        <div class="d-flex flex-column gap-2 mt-4 pt-2">
+                            <button type="submit" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="font-size: 0.95rem; background-color: #0f172a; color: #f8fafc;" wire:loading.attr="disabled" wire:target="store">
+                                <span wire:loading wire:target="store" class="spinner-border spinner-border-sm me-2"></span>
+                                Aktifkan Konten
+                            </button>
+                            <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a; font-size: 0.95rem;" wire:click="closeModal()">
+                                Batalkan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -223,25 +234,30 @@
 
     <!-- Modal Konfirmasi Hapus -->
     @if($showDeleteModal)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-body p-5 text-center">
-                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
-                            <i class="mdi mdi-delete-variant text-danger mdi-48px"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="text-center mb-4 pt-2">
+                        <div class="mb-3">
+                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 56px; height: 56px; background-color: #f1f5f9;">
+                                <i class="mdi mdi-delete-variant" style="font-size: 28px; color: #0f172a;"></i>
+                            </div>
                         </div>
-                        <h4 class="font-weight-bold text-dark mb-2">Lepas Konten Studio?</h4>
-                        <p class="text-muted mb-4">Konten "<strong>{{ $deleteNama }}</strong>" akan dihapus secara permanen dari daftar putar.</p>
-                        
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
-                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="delete({{ $deleteId }})"
-                                wire:loading.attr="disabled" wire:target="delete">
-                                <span wire:loading wire:target="delete" class="spinner-border spinner-border-sm me-1"></span>
-                                Ya, Hapus Sekarang
-                            </button>
-                        </div>
+                        <h6 class="fw-bold mb-2" style="color: #0f172a;">Lepas Konten Studio?</h6>
+                        <p class="small mb-0 lh-base px-2 fw-medium" style="color: #475569;">
+                            Konten <strong>"{{ $deleteNama }}"</strong> akan dihapus permanen dari daftar putar.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="cancelDelete">
+                            Batalkan
+                        </button>
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="delete({{ $deleteId }})" wire:loading.attr="disabled" wire:target="delete">
+                            <span wire:loading wire:target="delete" class="spinner-border spinner-border-sm me-2"></span>
+                            Ya, Hapus Sekarang
+                        </button>
                     </div>
                 </div>
             </div>

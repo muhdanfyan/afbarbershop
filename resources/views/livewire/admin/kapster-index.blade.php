@@ -146,95 +146,120 @@
 
     <!-- Modal Form (Tambah/Edit) -->
     @if ($showForm)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-account-plus text-success fs-3"></i>
-                        </div>
-                        <h5 class="modal-title font-weight-bold text-dark">{{ $kapsterIdEdit ? 'Sempurnakan Profil Tim' : 'Registrasi Tim Profesional' }}</h5>
-                        <button type="button" class="btn-close" wire:click.prevent="batal"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="row g-4">
-                            <div class="col-md-3 text-center border-end">
-                                <label class="form-label small fw-bold text-uppercase text-muted d-block">Pas Foto Profile</label>
-                                <div class="position-relative d-inline-block p-1 border rounded-circle bg-white shadow-sm mb-3">
-                                    @if ($foto)
-                                        <img src="{{ $foto->temporaryUrl() }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                                    @elseif ($foto_lama)
-                                        <img src="{{ asset('storage/' . $foto_lama) }}" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                                    @else
-                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 150px; height: 150px;">
-                                            <i class="mdi mdi-account mdi-48px text-muted"></i>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="mb-3 px-3">
-                                    <input type="file" class="form-control form-control-sm" wire:model="foto" accept="image/*">
-                                    @error('foto') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                                
-                                <label class="form-label small fw-bold text-uppercase text-muted d-block mt-4 text-start ms-3">Unggah Lisensi / Sertifikat</label>
-                                <div class="px-3">
-                                    <div class="bg-light p-3 rounded text-center border border-dashed">
-                                        <input type="file" class="form-control form-control-sm mb-2" wire:model="sertifikat">
-                                        @if ($sertifikat_lama)
-                                            <p class="small text-info mb-0"><i class="mdi mdi-file-check me-1"></i>Sertifikat tersimpan</p>
-                                        @endif
-                                    </div>
-                                    @error('sertifikat') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(8px); background-color: rgba(15, 23, 42, 0.5);"></div>
+        <div class="modal d-block animate__animated animate__zoomIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 850px;">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden;">
+                    <!-- Modal Header -->
+                    <div class="modal-header border-0 p-4 pb-0 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary-subtle p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: #f1f5f9;">
+                                <i class="mdi mdi-account-star fs-3 text-dark"></i>
                             </div>
-                            <div class="col-md-9">
-                                <div class="row g-3">
-                                    <div class="col-md-7">
-                                        <label class="form-label small fw-bold text-uppercase text-muted">Nama Lengkap Profesional</label>
-                                        <input type="text" class="form-control shadow-sm border-0 bg-light" wire:model.defer="nama" placeholder="Masukkan nama lengkap barber...">
-                                        @error('nama') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label class="form-label small fw-bold text-uppercase text-muted">Status Kepegawaian</label>
-                                        <select class="form-select shadow-sm border-0 bg-light fw-bold" wire:model.defer="status">
-                                            <option value="bekerja">🟢 Aktif Bekerja</option>
-                                            <option value="libur">🔴 Sedang Libur</option>
-                                        </select>
-                                        @error('status') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold text-uppercase text-muted">Nomor Identitas (NIK)</label>
-                                        <div class="input-group shadow-sm rounded overflow-hidden">
-                                            <span class="input-group-text bg-white border-0"><i class="mdi mdi-card-account-details-outline text-muted"></i></span>
-                                            <input type="text" class="form-control border-0 bg-light" wire:model.defer="nik" placeholder="KTP / ID Card Number">
-                                        </div>
-                                        @error('nik') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label small fw-bold text-uppercase text-muted">Nomor WhatsApp Aktif</label>
-                                        <div class="input-group shadow-sm rounded overflow-hidden">
-                                            <span class="input-group-text bg-white border-0"><i class="mdi mdi-whatsapp text-success"></i></span>
-                                            <input type="text" class="form-control border-0 bg-light" wire:model.defer="no_wa" placeholder="08xxxxxxxxxxx">
-                                        </div>
-                                        @error('no_wa') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                    </div>
-                                    <div class="col-12 mt-3">
-                                        <label class="form-label small fw-bold text-uppercase text-muted">Alamat Domisili Lengkap</label>
-                                        <textarea class="form-control shadow-sm border-0 bg-light" wire:model.defer="alamat" rows="4" placeholder="Tuliskan alamat lengkap tempat tinggal saat ini..."></textarea>
-                                        @error('alamat') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                    </div>
-                                </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0 font-premium">{{ $kapsterIdEdit ? 'Edit Profil Tim' : 'Registrasi Tim Profesional' }}</h5>
+                                <p class="text-muted small mb-0">Lengkapi data untuk kredibilitas layanan</p>
                             </div>
                         </div>
+                        <button type="button" class="btn-close shadow-none" wire:click.prevent="batal"></button>
                     </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click.prevent="batal">Batal</button>
-                        <button type="button" class="btn btn-premium-add text-dark px-4 rounded-pill fw-bold shadow-sm animate__animated animate__headShake" wire:click.prevent="simpan"
-                            wire:loading.attr="disabled" wire:target="simpan">
-                            <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"></span>
-                            <i class="mdi mdi-account-check me-1"></i> Simpan Registrasi
-                        </button>
+
+                    <div class="modal-body p-4 pt-4">
+                        <form wire:submit.prevent="simpan">
+                            <div class="row g-4">
+                                <!-- Bagian Kiri: Profile & Media -->
+                                <div class="col-md-4 border-end-md">
+                                    <div class="profile-upload-zone text-center p-4 rounded-4" style="background: #f8fafc; border: 2px dashed #e2e8f0;">
+                                        <label class="small fw-bold d-block mb-3 text-uppercase tracking-wider text-muted">Foto Profile</label>
+                                        <div class="position-relative d-inline-block p-1 border border-2 rounded-circle bg-white shadow-sm mb-4">
+                                            @if ($foto)
+                                                <img src="{{ $foto->temporaryUrl() }}" class="rounded-circle shadow-sm" style="width: 140px; height: 140px; object-fit: cover;">
+                                            @elseif ($foto_lama)
+                                                <img src="{{ asset('storage/' . $foto_lama) }}" class="rounded-circle shadow-sm" style="width: 140px; height: 140px; object-fit: cover;">
+                                            @else
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center bg-light" style="width: 140px; height: 140px;">
+                                                    <i class="mdi mdi-account mdi-48px text-muted opacity-50"></i>
+                                                </div>
+                                            @endif
+                                            <label for="upload-foto" class="position-absolute bottom-0 end-0 bg-dark text-white rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 36px; height: 36px; cursor: pointer; border: 3px solid #fff;">
+                                                <i class="mdi mdi-camera small"></i>
+                                                <input type="file" id="upload-foto" class="d-none" wire:model="foto" accept="image/*">
+                                            </label>
+                                        </div>
+                                        <p class="small text-muted mb-0">Gunakan foto formal terbaik</p>
+                                        @error('foto') <span class="text-danger small mt-2 d-block fw-bold">{{ $message }}</span> @enderror
+                                        
+                                        <div class="mt-4 pt-3 border-top w-100 text-start">
+                                            <label class="small fw-bold d-block mb-2 text-muted text-uppercase tracking-wider">Dokumen Sertifikasi</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="file" class="form-control rounded-3" wire:model="sertifikat">
+                                            </div>
+                                            @if ($sertifikat_lama) <p class="small text-success mt-1 mb-0"><i class="mdi mdi-check-circle me-1"></i>Sertifikat Terverifikasi</p> @endif
+                                            @error('sertifikat') <div class="text-danger small mt-1 fw-bold">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bagian Kanan: Data Identitas -->
+                                <div class="col-md-8">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label small fw-bold text-dark text-uppercase tracking-wider mb-1">Nama Lengkap Tim Profesional</label>
+                                            <div class="input-group border rounded-3 overflow-hidden shadow-sm">
+                                                <span class="input-group-text bg-light border-0"><i class="mdi mdi-account-outline text-muted"></i></span>
+                                                <input type="text" class="form-control border-0 py-2 fw-bold text-dark" style="background: #fff;" wire:model.defer="nama" placeholder="Masukkan nama kapster / barber...">
+                                            </div>
+                                            @error('nama') <div class="text-danger small mt-1 fw-bold">{{ $message }}</div> @enderror
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-bold text-dark text-uppercase tracking-wider mb-1">Status Kepegawaian</label>
+                                            <select class="form-select border shadow-sm rounded-3 py-2 fw-semibold" wire:model.defer="status">
+                                                <option value="bekerja">Aktif Bekerja</option>
+                                                <option value="libur">Izin / Libur</option>
+                                            </select>
+                                            @error('status') <div class="text-danger small mt-1 fw-bold">{{ $message }}</div> @enderror
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-bold text-dark text-uppercase tracking-wider mb-1">Nomor Identitas (NIK)</label>
+                                            <div class="input-group border rounded-3 overflow-hidden shadow-sm">
+                                                <span class="input-group-text bg-light border-0"><i class="mdi mdi-card-account-details-outline text-muted"></i></span>
+                                                <input type="text" class="form-control border-0 py-2 fw-medium" wire:model.defer="nik" placeholder="KTP / Kartu Identitas">
+                                            </div>
+                                            @error('nik') <div class="text-danger small mt-1 fw-bold">{{ $message }}</div> @enderror
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label small fw-bold text-dark text-uppercase tracking-wider mb-1">WhatsApp / No. Telepon Aktif</label>
+                                            <div class="input-group border rounded-3 overflow-hidden shadow-sm">
+                                                <span class="input-group-text bg-light border-0"><i class="mdi mdi-whatsapp text-success"></i></span>
+                                                <input type="text" class="form-control border-0 py-2 fw-bold" wire:model.defer="no_wa" placeholder="Contoh: 08123456789">
+                                            </div>
+                                            @error('no_wa') <div class="text-danger small mt-1 fw-bold">{{ $message }}</div> @enderror
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label small fw-bold text-dark text-uppercase tracking-wider mb-1">Alamat Lengkap Saat Ini</label>
+                                            <textarea class="form-control border shadow-sm rounded-3 py-2" rows="3" wire:model.defer="alamat" placeholder="Tuliskan alamat domisili lengkap..."></textarea>
+                                            @error('alamat') <div class="text-danger small mt-1 fw-bold">{{ $message }}</div> @enderror
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Action Buttons - Integrated in Column 2 -->
+                                    <div class="d-flex gap-2 mt-4 pt-2">
+                                        <button type="submit" class="btn btn-dark px-4 py-2 rounded-3 fw-bold flex-grow-1 shadow d-flex align-items-center justify-content-center gap-2" wire:loading.attr="disabled">
+                                            <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm"></span>
+                                            <i class="mdi mdi-content-save-check-outline fs-5" wire:loading.remove></i>
+                                            {{ $kapsterIdEdit ? 'Simpan Perubahan' : 'Terbitkan Profil Tim' }}
+                                        </button>
+                                        <button type="button" class="btn btn-light px-4 py-2 rounded-3 border fw-bold text-dark" wire:click.prevent="batal">
+                                            Batal
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -243,25 +268,30 @@
 
     <!-- Modal Konfirmasi Hapus -->
     @if ($showDeleteModal ?? false)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-body p-5 text-center">
-                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
-                            <i class="mdi mdi-account-remove-outline text-danger mdi-48px"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="text-center mb-4 pt-2">
+                        <div class="mb-3">
+                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 56px; height: 56px; background-color: #f1f5f9;">
+                                <i class="mdi mdi-account-remove-outline" style="font-size: 28px; color: #0f172a;"></i>
+                            </div>
                         </div>
-                        <h4 class="font-weight-bold text-dark mb-2">Non-Aktifkan Keanggotaan?</h4>
-                        <p class="text-muted mb-4">Profil Barber "<strong>{{ $deleteNama }}</strong>" akan dihapus permanen dari tim Anda.</p>
-                        
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
-                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="hapus({{ $deleteId }})"
-                                wire:loading.attr="disabled" wire:target="hapus">
-                                <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-1"></span>
-                                Ya, Lepaskan Keanggotaan
-                            </button>
-                        </div>
+                        <h6 class="fw-bold mb-2" style="color: #0f172a;">Non-Aktifkan Keanggotaan?</h6>
+                        <p class="small mb-0 lh-base px-2 fw-medium" style="color: #475569;">
+                            Profil Barber <strong>"{{ $deleteNama }}"</strong> akan dihapus permanen. Aksi ini tidak dapat dibatalkan.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="cancelDelete">
+                            Batalkan
+                        </button>
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="hapus({{ $deleteId }})" wire:loading.attr="disabled" wire:target="hapus">
+                            <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-2"></span>
+                            Ya, Hapus Keanggotaan
+                        </button>
                     </div>
                 </div>
             </div>

@@ -11,5 +11,18 @@ class Member extends Model
         'nama',
         'nomor_wa',
         'alamat',
+        'poin',
+        'total_kunjungan',
+        'level',
     ];
+
+    public function pointHistories()
+    {
+        return $this->hasMany(PointHistory::class);
+    }
+
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
 }

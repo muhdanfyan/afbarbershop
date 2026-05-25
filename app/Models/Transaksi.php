@@ -35,6 +35,16 @@ class Transaksi extends Model
         return $this->belongsTo(Kursi::class, 'kursi_id');
     }
 
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+
+    public function voucher()
+    {
+        return $this->belongsTo(Voucher::class, 'voucher_id');
+    }
+
     /**
      * Status values: menunggu, proses, selesai
      */

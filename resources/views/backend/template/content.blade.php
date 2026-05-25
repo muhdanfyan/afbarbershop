@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('/') }}css/modern-dashboard.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('logo-icon.png') }}" />
+    @livewireStyles
     <style>
         html, body {
             margin: 0;
@@ -389,6 +390,7 @@
     <!-- Custom js for this page-->
     <script src="{{ asset('/') }}tem_admin/template/js/dashboard.js"></script>
     <!-- End custom js for this page-->
+    @livewireScripts
 </body>
 
 </html>

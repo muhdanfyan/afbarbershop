@@ -57,6 +57,20 @@
         </a>
     </li>
 
+    <li class="nav-category">Loyalty & Promo</li>
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/vouchers">
+            <i class="mdi mdi-ticket-percent menu-icon text-warning"></i>
+            <span class="menu-title">Voucher & Promo</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/member">
+            <i class="mdi mdi-account-card-details menu-icon"></i>
+            <span class="menu-title">Member Loyalty</span>
+        </a>
+    </li>
+
     <li class="nav-category">Reports & Users</li>
     <li class="nav-item">
         <a class="nav-link" href="/admin/laporan">
@@ -68,12 +82,6 @@
         <a class="nav-link" href="/admin/user">
             <i class="mdi mdi-account-multiple menu-icon"></i>
             <span class="menu-title">User</span>
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/admin/member">
-            <i class="mdi mdi-account-card-details menu-icon"></i>
-            <span class="menu-title">Member</span>
         </a>
     </li>
 

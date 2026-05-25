@@ -121,69 +121,76 @@
     </div>
 
     <!-- Modal Form (Tambah/Edit) -->
+    <!-- Modal Form (Tambah/Edit) -->
     @if ($showForm)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-briefcase-edit-outline text-warning fs-3"></i>
-                        </div>
-                        <h5 class="modal-title font-weight-bold text-dark">{{ $jasaIdEdit ? 'Sempurnakan Layanan' : 'Formulasi Layanan Baru' }}</h5>
-                        <button type="button" class="btn-close" wire:click.prevent="batal"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="row mb-4">
-                            <div class="col-md-7">
-                                <div class="mb-3">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Nama Layanan</label>
-                                    <input type="text" class="form-control" wire:model.defer="nama" placeholder="Cth: Signature Fade Cut">
-                                    @error('nama') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Investasi Layanan (Rp)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-light fw-bold border-end-0">Rp</span>
-                                        <input type="number" class="form-control border-start-0" wire:model.defer="harga" placeholder="0">
-                                    </div>
-                                    @error('harga') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="mb-0">
-                                    <label class="form-label small fw-bold text-uppercase text-muted">Deskripsi Detail</label>
-                                    <textarea class="form-control" wire:model.defer="deskripsi" rows="4" placeholder="Detail treatment, durasi, dll..."></textarea>
-                                    @error('deskripsi') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 440px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                                <i class="mdi mdi-briefcase-edit-outline fs-5" style="color: #d97706;"></i>
                             </div>
-                            <div class="col-md-5">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Visual Profile</label>
-                                <div class="p-3 border border-dashed rounded bg-light text-center">
-                                    <input type="file" class="form-control mb-3" wire:model="foto" accept="image/*">
-                                    @if ($foto)
-                                        <img src="{{ $foto->temporaryUrl() }}" class="img-thumbnail shadow-sm mb-2" style="max-height: 150px; width: 100%; object-fit: cover; border-radius: 12px;">
-                                        <p class="text-success small mb-0"><i class="mdi mdi-check-circle me-1"></i>Siap unggah</p>
-                                    @elseif ($foto_lama)
-                                        <img src="{{ asset('storage/' . $foto_lama) }}" class="img-thumbnail shadow-sm mb-2" style="max-height: 150px; width: 100%; object-fit: cover; border-radius: 12px;">
-                                        <p class="text-muted small mb-0">Visual tersimpan</p>
-                                    @else
-                                        <div class="py-4 opacity-50">
-                                            <i class="mdi mdi-camera-plus mdi-48px text-muted"></i>
-                                            <p class="small mb-0">Upload foto layanan</p>
-                                        </div>
-                                    @endif
-                                    @error('foto') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                </div>
-                            </div>
+                            <h6 class="fw-bold text-dark mb-0">{{ $jasaIdEdit ? 'Sempurnakan Layanan' : 'Formulasi Layanan Baru' }}</h6>
                         </div>
-                    </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click.prevent="batal">Batal</button>
-                        <button type="button" class="btn btn-premium-add text-dark px-4 rounded-pill fw-bold shadow-sm" wire:click.prevent="simpan"
-                            wire:loading.attr="disabled" wire:target="simpan">
-                            <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"></span>
-                            <i class="mdi mdi-content-save-check me-1"></i> Simpan Katalog
+                        <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" wire:click.prevent="batal">
+                            <i class="mdi mdi-close fs-4"></i>
                         </button>
                     </div>
+
+                    <form wire:submit.prevent="simpan">
+                        <div class="mb-4 text-center">
+                            <label class="small fw-bold d-block mb-3 text-start" style="color: #475569;">Visual Profile</label>
+                            <div class="p-3 border border-dashed rounded-3" style="background-color: #f8fafc;">
+                                <input type="file" class="form-control form-control-sm mb-3 shadow-none border" wire:model="foto" accept="image/*">
+                                @if ($foto)
+                                    <img src="{{ $foto->temporaryUrl() }}" class="img-thumbnail shadow-sm mb-2" style="max-height: 120px; width: 100%; object-fit: cover; border-radius: 12px;">
+                                    <p class="text-success small fw-medium mb-0"><i class="mdi mdi-check-circle me-1"></i>Siap unggah</p>
+                                @elseif ($foto_lama)
+                                    <img src="{{ asset('storage/' . $foto_lama) }}" class="img-thumbnail shadow-sm mb-2 border" style="max-height: 120px; width: 100%; object-fit: cover; border-radius: 12px;">
+                                    <p class="small fw-medium mb-0" style="color: #64748b;">Visual tersimpan</p>
+                                @else
+                                    <div class="py-3 opacity-50">
+                                        <i class="mdi mdi-camera-plus mdi-36px" style="color: #64748b;"></i>
+                                        <p class="small fw-medium mb-0" style="color: #475569;">Upload foto layanan</p>
+                                    </div>
+                                @endif
+                                @error('foto') <span class="text-danger small mt-1 d-block fw-medium">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Nama Layanan</label>
+                            <input type="text" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="nama" placeholder="Cth: Signature Fade Cut">
+                            @error('nama') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Investasi Layanan (Rp)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-bold border-end-0 shadow-none text-dark">Rp</span>
+                                <input type="number" class="form-control rounded-end-3 py-2 border-start-0 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="harga" placeholder="0">
+                            </div>
+                            @error('harga') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Deskripsi Detail</label>
+                            <textarea class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="deskripsi" rows="3" placeholder="Detail treatment, durasi..."></textarea>
+                            @error('deskripsi') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 mt-4 pt-2">
+                            <button type="submit" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="font-size: 0.95rem; background-color: #0f172a; color: #f8fafc;" wire:loading.attr="disabled">
+                                <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-2"></span>
+                                Simpan Layanan
+                            </button>
+                            <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a; font-size: 0.95rem;" wire:click.prevent="batal">
+                                Batalkan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -191,25 +198,30 @@
 
     <!-- Modal Konfirmasi Hapus -->
     @if ($showDeleteModal ?? false)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-body p-5 text-center">
-                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
-                            <i class="mdi mdi-delete-off text-danger mdi-48px"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="text-center mb-4 pt-2">
+                        <div class="mb-3">
+                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 56px; height: 56px; background-color: #f1f5f9;">
+                                <i class="mdi mdi-delete-outline" style="font-size: 28px; color: #0f172a;"></i>
+                            </div>
                         </div>
-                        <h4 class="font-weight-bold text-dark mb-2">Lepas Layanan dari Menu?</h4>
-                        <p class="text-muted mb-4">Layanan "<strong>{{ $deleteNama }}</strong>" akan dihapus secara permanen dari katalog studio.</p>
-                        
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
-                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="hapus({{ $deleteId }})"
-                                wire:loading.attr="disabled" wire:target="hapus">
-                                <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-1"></span>
-                                Ya, Lepaskan Sekarang
-                            </button>
-                        </div>
+                        <h6 class="fw-bold mb-2" style="color: #0f172a;">Lepas Layanan?</h6>
+                        <p class="small mb-0 lh-base px-2 fw-medium" style="color: #475569;">
+                            Layanan <strong>"{{ $deleteNama }}"</strong> akan dihapus permanen. Aksi tidak dapat dibatalkan.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="cancelDelete">
+                            Batalkan
+                        </button>
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="hapus({{ $deleteId }})" wire:loading.attr="disabled" wire:target="hapus">
+                            <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-2"></span>
+                            Ya, Hapus Sekarang
+                        </button>
                     </div>
                 </div>
             </div>

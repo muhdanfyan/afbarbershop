@@ -21,6 +21,7 @@
                 </button>
                 <a href="/admin/dashboard" class="mr-4 hover:underline">Dashboard</a>
                 <a href="/admin/transaksi" class="mr-4 hover:underline">Transaksi</a>
+                <a href="/admin/vouchers" class="mr-4 hover:underline">Voucher</a>
                 <a href="/admin/logout" class="hover:underline">Logout</a>
             </div>
         </div>

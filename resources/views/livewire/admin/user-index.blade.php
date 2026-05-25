@@ -132,69 +132,78 @@
 
     <!-- Modal Form (Tambah/Edit) -->
     @if ($showForm)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-account-key text-primary fs-3"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 460px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                                <i class="mdi mdi-account-key-outline fs-5" style="color: #d97706;"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-0">{{ $userIdEdit ? 'Sempurnakan Kredensial' : 'Buat Akses Baru' }}</h6>
                         </div>
-                        <h5 class="modal-title font-weight-bold text-dark">{{ $userIdEdit ? 'Sempurnakan Kredensial User' : 'Buat Akses User Baru' }}</h5>
-                        <button type="button" class="btn-close" wire:click.prevent="batal"></button>
+                        <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" wire:click.prevent="batal">
+                            <i class="mdi mdi-close fs-4"></i>
+                        </button>
                     </div>
-                    <div class="modal-body p-4">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Username Login</label>
-                                <div class="input-group shadow-sm rounded overflow-hidden">
-                                    <span class="input-group-text bg-white border-0"><i class="mdi mdi-at text-muted"></i></span>
-                                    <input type="text" class="form-control border-0 bg-light" wire:model.defer="username" placeholder="cth: kasir_afbarber">
-                                </div>
-                                @error('username') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+
+                    <form wire:submit.prevent="simpan">
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Nama Lengkap</label>
+                            <input type="text" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="name" placeholder="cth: Ahmad Suhendar">
+                            @error('name') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Alamat Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-bold border-end-0 shadow-none"><i class="mdi mdi-email-outline text-muted"></i></span>
+                                <input type="email" class="form-control rounded-end-3 py-2 border-start-0 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="email" placeholder="tim@afbarber.id">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Nama Lengkap</label>
-                                <input type="text" class="form-control shadow-sm border-0 bg-light" wire:model.defer="name" placeholder="cth: Ahmad Suhendar">
-                                @error('name') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                            @error('email') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Username Login</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-bold border-end-0 shadow-none"><i class="mdi mdi-at text-muted"></i></span>
+                                <input type="text" class="form-control rounded-end-3 py-2 border-start-0 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="username" placeholder="kasir_afbarber">
                             </div>
-                            <div class="col-12">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Alamat Email</label>
-                                <div class="input-group shadow-sm rounded overflow-hidden">
-                                    <span class="input-group-text bg-white border-0"><i class="mdi mdi-email-outline text-muted"></i></span>
-                                    <input type="email" class="form-control border-0 bg-light" wire:model.defer="email" placeholder="tim@afbarber.id">
-                                </div>
-                                @error('email') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Kata Sandi</label>
-                                <div class="input-group shadow-sm rounded overflow-hidden">
-                                    <span class="input-group-text bg-white border-0"><i class="mdi mdi-lock-outline text-muted"></i></span>
-                                    <input type="password" class="form-control border-0 bg-light" wire:model.defer="password" placeholder="{{ $userIdEdit ? 'Opsional' : 'Min. 6 Karakter' }}">
-                                </div>
-                                @error('password') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                @if($userIdEdit) <p class="text-muted italic small mt-1">Kosongkan jika tidak diubah</p> @endif
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase text-muted">Level Hak Akses</label>
-                                <select class="form-select shadow-sm border-0 bg-light fw-bold" wire:model.defer="level">
-                                    <option value="">Pilih Member...</option>
+                            @error('username') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <label class="small fw-bold d-block mb-1" style="color: #475569;">Hak Akses</label>
+                                <select class="form-select rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="level">
+                                    <option value="">Pilih Level...</option>
                                     <option value="admin">Administrator</option>
                                     <option value="kasir">Kasir Toko</option>
                                     <option value="kapster">Tim Kapster</option>
                                 </select>
-                                @error('level') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                                @error('level') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                            </div>
+                            <div class="col-6">
+                                <label class="small fw-bold d-block mb-1" style="color: #475569;">Kata Sandi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 shadow-none"><i class="mdi mdi-lock-outline text-muted"></i></span>
+                                    <input type="password" class="form-control rounded-end-3 py-2 border-start-0 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="password" placeholder="{{ $userIdEdit ? 'Opsional' : 'Min. 6 Karakter' }}">
+                                </div>
+                                @error('password') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click.prevent="batal">Batal</button>
-                        <button type="button" class="btn btn-primary px-5 rounded-pill fw-bold shadow-sm" wire:click.prevent="simpan"
-                            wire:loading.attr="disabled" wire:target="simpan" style="background: linear-gradient(135deg, #6a11cb, #2575fc); border: none;">
-                            <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-1"></span>
-                            <i class="mdi mdi-content-save-check me-1"></i> Simpan Akses
-                        </button>
-                    </div>
+
+                        <div class="d-flex flex-column gap-2 mt-4 pt-2">
+                            <button type="submit" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="font-size: 0.95rem; background-color: #0f172a; color: #f8fafc;" wire:loading.attr="disabled">
+                                <span wire:loading wire:target="simpan" class="spinner-border spinner-border-sm me-2"></span>
+                                Simpan Akses
+                            </button>
+                            <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a; font-size: 0.95rem;" wire:click.prevent="batal">
+                                Batalkan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -202,25 +211,30 @@
 
     <!-- Modal Konfirmasi Hapus -->
     @if ($showDeleteModal ?? false)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-body p-5 text-center">
-                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
-                            <i class="mdi mdi-account-remove-outline text-danger mdi-48px"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="text-center mb-4 pt-2">
+                        <div class="mb-3">
+                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 56px; height: 56px; background-color: #f1f5f9;">
+                                <i class="mdi mdi-account-remove-outline" style="font-size: 28px; color: #0f172a;"></i>
+                            </div>
                         </div>
-                        <h4 class="font-weight-bold text-dark mb-2">Hapus Akses Pengguna?</h4>
-                        <p class="text-muted mb-4">Akun milik "<strong>{{ $deleteNama }}</strong>" akan dihapus secara permanen. Pengguna tidak akan dapat login kembali.</p>
-                        
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
-                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="hapus({{ $deleteId }})"
-                                wire:loading.attr="disabled" wire:target="hapus">
-                                <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-1"></span>
-                                Ya, Hapus Sekarang
-                            </button>
-                        </div>
+                        <h6 class="fw-bold mb-2" style="color: #0f172a;">Hapus Akses Pengguna?</h6>
+                        <p class="small mb-0 lh-base px-2 fw-medium" style="color: #475569;">
+                            Akun milik <strong>"{{ $deleteNama }}"</strong> akan dihapus permanen. Pengguna tidak akan dapat login kembali.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="cancelDelete">
+                            Batalkan
+                        </button>
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="hapus({{ $deleteId }})" wire:loading.attr="disabled" wire:target="hapus">
+                            <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-2"></span>
+                            Ya, Hapus Sekarang
+                        </button>
                     </div>
                 </div>
             </div>

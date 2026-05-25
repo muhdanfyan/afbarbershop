@@ -450,6 +450,13 @@
                     <div class="col-4">
                         <label class="ultra-small fw-bold text-secondary text-uppercase mb-1">WA</label>
                         <input type="text" wire:model.live="no_hp" class="form-control" placeholder="08..." {{ $status === 'selesai' ? 'disabled' : '' }}>
+                        @if($member_id)
+                            <div class="animate__animated animate__fadeIn">
+                                <span class="badge bg-warning-subtle text-warning border border-warning rounded-pill px-2 mt-1" style="font-size: 0.65rem;">
+                                    <i class="mdi mdi-star"></i> Poin: {{ $poinPunya }}
+                                </span>
+                            </div>
+                        @endif
                     </div>
                     <div class="col-6">
                         <label class="ultra-small fw-bold text-secondary text-uppercase mb-1">Tanggal</label>
@@ -556,8 +563,27 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    <div class="receipt-breakdown pt-3 mt-auto" style="border-top: 1px dashed var(--border-color); font-size: 0.75rem;">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary">Subtotal</span>
+                            <span class="fw-bold">Rp{{ number_format($subtotal, 0, ',', '.') }}</span>
+                        </div>
+                        @if($diskonVoucher > 0)
+                            <div class="d-flex justify-content-between mb-1 text-primary">
+                                <span><i class="mdi mdi-tag-outline"></i> Voucher</span>
+                                <span>-Rp{{ number_format($diskonVoucher, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+                        @if($diskonPoin > 0)
+                            <div class="d-flex justify-content-between mb-1 text-success">
+                                <span><i class="mdi mdi-gift-outline"></i> Tukar Poin</span>
+                                <span>-Rp{{ number_format($diskonPoin, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+                    </div>
 
-                    <div class="receipt-total d-flex justify-content-between align-items-center mt-3 pt-3" style="border-top: 2px dashed var(--border-color);">
+                    <div class="receipt-total d-flex justify-content-between align-items-center mt-2 pt-2" style="border-top: 2px dashed var(--border-color);">
                         <span class="text-secondary fw-bold text-uppercase" style="letter-spacing: 2px;">Total Bayar</span>
                         <span class="text-accent h3 mb-0 fw-bold" style="font-family: var(--font-display);">Rp{{ number_format($total, 0, ',', '.') }}</span>
                     </div>
@@ -577,6 +603,28 @@
                                         <i class="fas fa-qrcode d-block mb-1 fs-6"></i> Transfer QRIS
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="mb-3 p-3 rounded-4" style="background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+                                <label class="ultra-small text-secondary fw-bold text-uppercase mb-2 d-block"><i class="mdi mdi-ticket-percent me-1"></i> Promo & Loyalty</label>
+                                
+                                <!-- Voucher Input -->
+                                <div class="input-group input-group-sm mb-2 shadow-sm rounded-3 overflow-hidden border">
+                                    <input type="text" wire:model="voucherCode" class="form-control border-0 bg-white" placeholder="Kode Voucher..." style="text-transform: uppercase;">
+                                    <button class="btn btn-dark border-0 px-3" wire:click="applyVoucher" type="button">Pakai</button>
+                                </div>
+
+                                <!-- Point Input -->
+                                @if($member_id && $poinPunya > 0)
+                                <div class="d-flex align-items-center justify-content-between mb-0">
+                                    <span class="ultra-small text-secondary">Tukar Poin (Max: {{ $poinPunya }})</span>
+                                    <div class="input-group input-group-sm" style="width: 100px;">
+                                        <input type="number" wire:model.live="poinGunakan" class="form-control border-0 bg-white shadow-sm text-end fw-bold" placeholder="0">
+                                        <span class="input-group-text border-0 bg-white ultra-small"><i class="mdi mdi-star text-warning"></i></span>
+                                    </div>
+                                </div>
+                                <div class="text-end" style="font-size: 0.6rem; color: var(--text-secondary);">1 Poin = Rp 1.000 diskon</div>
+                                @endif
                             </div>
                             
                             <div class="payment-controls animate__animated animate__fadeInUp">

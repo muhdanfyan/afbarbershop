@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\AdminLaporanTransaksi;
 use App\Http\Controllers\Admin\AdminMemberController;
 use App\Http\Controllers\Admin\AdminProfilController;
 use App\Http\Controllers\Admin\AdminSettingController;
+use App\Http\Controllers\Admin\AdminVoucherController;
 
 use App\Http\Controllers\Frontend\FrontLoginController;
 use App\Http\Controllers\Admin\AdminBarbermanController;
@@ -63,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/member', [AdminMemberController::class, 'index'])->name('admin.member');
     Route::get('/admin/setting', [AdminSettingController::class, 'index'])->name('admin.setting');
     Route::get('/admin/kasir', \App\Livewire\Admin\KasirTransaksi::class)->name('admin.kasir.transaksi');
+    Route::get('/admin/vouchers', [AdminVoucherController::class, 'index'])->name('admin.vouchers');
     Route::view('/admin/gallery', 'backend.admin.gallery')->name('admin.gallery');
     Route::view('/admin/playlist', 'backend.admin.playlist')->name('admin.playlist');
     Route::view('/admin/kursi', 'backend.admin.kursi')->name('admin.kursi');

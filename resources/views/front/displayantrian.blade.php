@@ -105,14 +105,30 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Logo Inversion for Light Mode */
+        .theme-logo {
+            transition: filter 0.5s ease-in-out;
+            max-height: 80px; /* Constrain desktop height */
+            width: auto;
+        }
+        
+        html:not(.dark) .theme-logo {
+            filter: brightness(0);
+        }
+
+        .logo-animation {
+            /* Animation pulse removed as requested */
         }
 
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 5px; /* Reduced for desktop */
             position: relative;
-            padding: 10px 0;
+            padding: 5px 0; /* Reduced for desktop */
         }
 
         .header h1 {
@@ -245,13 +261,12 @@
             background: linear-gradient(135deg, var(--primary-gold), var(--light-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: pulse 2s ease-in-out infinite;
             margin: 5px 0;
             line-height: 1.1;
         }
 
         @keyframes pulse {
-
+            /* Pulse animation preserved for reference but removed from selector */
             0%,
             100% {
                 transform: scale(1);
@@ -739,6 +754,29 @@
                 font-size: 1.8rem;
             }
 
+            .header .theme-logo {
+                height: 3rem !important; /* Made smaller as requested */
+            }
+
+            .main-container {
+                height: auto;
+                min-height: 100vh;
+                padding: 10px;
+                overflow-y: auto; /* Allow scrolling if content overflows */
+            }
+
+            .current-serving {
+                padding: 15px 10px !important;
+                min-height: 160px; /* Reduced min-height */
+                overflow: visible !important; /* Ensure number doesn't get cut */
+            }
+
+            .serving-number {
+                font-size: 2.5rem !important; /* Reduced further to prevent cut-off */
+                margin: 2px 0 !important;
+                line-height: 1 !important;
+            }
+
             .datetime {
                 position: static;
                 text-align: center;
@@ -747,6 +785,22 @@
 
             .stats-bar {
                 flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .stat-item {
+                flex: 1 1 40%;
+                border-right: none;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+                padding: 10px 5px;
+            }
+
+            .stat-item:nth-child(even) {
+                border-left: 1px solid rgba(212, 175, 55, 0.1);
+            }
+
+            .stat-item:nth-last-child(-n+2) {
+                border-bottom: none;
             }
         }
         /* YouTube Panel & Overlay */
@@ -851,11 +905,13 @@
     <div class="main-container">
         <!-- Header -->
         <header class="header">
-            <a href="{{ url('/admin/dashboard') }}" class="btn btn-outline-secondary" style="position: absolute; left: 0px; top: 10px; border-color: var(--primary-gold); color: inherit; font-size: 0.9rem;" title="Kembali ke Dashboard">
-                <i class="fas fa-arrow-left"></i> <span class="d-none d-md-inline ms-1">Dashboard</span>
+            <a href="{{ url('/') }}" class="btn btn-outline-secondary" style="position: absolute; left: 0px; top: 10px; border-color: var(--primary-gold); color: inherit; font-size: 0.9rem;" title="Kembali ke Beranda">
+                <i class="fas fa-home"></i> <span class="d-none d-md-inline ms-1">Home</span>
             </a>
-            <h1>{{ $settings['nama_usaha'] }}</h1>
-            <p class="subtitle">{{ $settings['slogan'] }}</p>
+            <div class="mb-1">
+                <img src="{{ asset('/') }}logoposeidonputih.png" alt="{{ $settings['nama_usaha'] ?? 'AFBARBERSHOP' }} Logo" class="theme-logo">
+            </div>
+            <p class="subtitle" style="margin-top: -5px;">{{ $settings['slogan'] }}</p>
             <div class="datetime">
                 <div class="time" id="time">00:00:00</div>
                 <div class="date" id="date">Senin, 1 Januari 2024</div>

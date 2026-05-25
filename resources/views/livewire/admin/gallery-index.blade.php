@@ -136,87 +136,87 @@
 
     <!-- Modal Form (Tambah/Edit) -->
     @if($isFormOpen)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-image-move text-warning fs-3"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 440px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                                <i class="mdi mdi-image-multiple fs-5" style="color: #d97706;"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-0">{{ $editMode ? 'Penyuntingan Konten Visual' : 'Unggah Karya Visual Baru' }}</h6>
                         </div>
-                        <h5 class="modal-title font-weight-bold text-dark">{{ $editMode ? 'Penyuntingan Konten Visual' : 'Unggah Karya Visual Baru' }}</h5>
-                        <button type="button" class="btn-close" wire:click="batal"></button>
+                        <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" wire:click="batal">
+                            <i class="mdi mdi-close fs-4"></i>
+                        </button>
                     </div>
+
                     <form wire:submit.prevent="save">
-                        <div class="modal-body p-4">
-                            <div class="row g-4">
-                                <div class="col-md-7">
-                                    <div class="row g-3">
-                                        <div class="col-12">
-                                            <label class="form-label small fw-bold text-uppercase text-muted">Judul Media</label>
-                                            <input type="text" class="form-control shadow-sm border-0 bg-light" wire:model="title" placeholder="cth: Interior Studio AF Barber">
-                                            @error('title') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small fw-bold text-uppercase text-muted">Format Konten</label>
-                                            <select class="form-select shadow-sm border-0 bg-light fw-bold" wire:model="type">
-                                                <option value="image">🎞️ Galleri Photo</option>
-                                                <option value="video">🎥 Koleksi Video</option>
-                                            </select>
-                                            @error('type') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small fw-bold text-uppercase text-muted">Pilih Berkas</label>
-                                            <div class="input-group shadow-sm rounded overflow-hidden">
-                                                <input type="file" class="form-control border-0 bg-light small px-3" wire:model="file">
-                                            </div>
-                                            <div wire:loading wire:target="file" class="text-info italic small mt-1 animate__animated animate__flash animate__infinite">
-                                                <i class="mdi mdi-cloud-upload animate__pulse"></i> Memproses berkas...
-                                            </div>
-                                            @error('file') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                        </div>
-                                        <div class="col-12">
-                                            <label class="form-label small fw-bold text-uppercase text-muted">Catatan / Deskripsi Media</label>
-                                            <textarea class="form-control shadow-sm border-0 bg-light" wire:model="description" rows="5" placeholder="Tuliskan cerita singkat atau keterangan di balik konten ini..."></textarea>
-                                            @error('description') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <label class="form-label small fw-bold text-uppercase text-muted d-block ms-1">Pratinjau Publikasi</label>
-                                    <div class="p-3 bg-white border border-2 border-dashed rounded-lg shadow-inner d-flex align-items-center justify-content-center overflow-hidden position-relative" 
-                                        style="height: 320px; border-radius: 15px;">
-                                        @if ($file)
-                                            @if ($type == 'image')
-                                                <img src="{{ $file->temporaryUrl() }}" class="w-100 h-100 shadow rounded-lg animate__animated animate__zoomIn" style="object-fit: contain;">
-                                            @else
-                                                <div class="text-center animate__animated animate__bounceIn">
-                                                    <i class="mdi mdi-video-input-video mdi-48px text-warning mb-2"></i>
-                                                    <p class="small fw-bold text-dark mt-1">Video Berhasil Dimuat</p>
-                                                    <span class="badge bg-success shadow-sm">Ready to Upload</span>
-                                                </div>
-                                            @endif
-                                        @elseif($file_lama)
-                                            @if ($type == 'image')
-                                                <img src="{{ asset('storage/' . $file_lama) }}" class="w-100 h-100 shadow rounded-lg" style="object-fit: contain;">
-                                            @else
-                                                <video src="{{ asset('storage/' . $file_lama) }}" class="w-100 shadow rounded-lg" height="280" controls muted></video>
-                                            @endif
+                        <div class="mb-4 text-center">
+                            <label class="small fw-bold d-block mb-2 text-start" style="color: #475569;">Karya Visual / Media</label>
+                            <div class="p-3 border border-dashed rounded-3" style="background-color: #f8fafc;">
+                                <div class="bg-white border rounded-3 shadow-sm d-flex justify-content-center align-items-center overflow-hidden mb-3 mx-auto" style="height: 140px; width: 100%;">
+                                    @if ($file)
+                                        @if ($type == 'image')
+                                            <img src="{{ $file->temporaryUrl() }}" class="w-100 h-100 object-fit-cover shadow-sm">
                                         @else
-                                            <div class="text-center opacity-40">
-                                                <i class="mdi mdi-image-filter mdi-64px text-muted"></i>
-                                                <p class="small fw-medium mb-0">Belum ada media dipilih</p>
+                                            <div class="text-center">
+                                                <i class="mdi mdi-video-check mdi-36px text-success mb-1"></i>
+                                                <p class="small fw-bold text-dark mb-0">Video Siap Unggah</p>
                                             </div>
                                         @endif
+                                    @elseif($file_lama)
+                                        @if ($type == 'image')
+                                            <img src="{{ asset('storage/' . $file_lama) }}" class="w-100 h-100 object-fit-cover shadow-sm">
+                                        @else
+                                            <video src="{{ asset('storage/' . $file_lama) }}" class="w-100 h-100 object-fit-cover" muted></video>
+                                        @endif
+                                    @else
+                                        <div class="text-center opacity-50">
+                                            <i class="mdi mdi-cloud-upload mdi-36px" style="color: #64748b;"></i>
+                                            <p class="small fw-medium mb-0" style="color: #475569;">Pilih file media</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="d-flex flex-column mb-1">
+                                    <input type="file" class="form-control form-control-sm shadow-none border" wire:model="file">
+                                    <div wire:loading wire:target="file" class="text-muted small mt-2 fw-medium">
+                                        <i class="mdi mdi-loading mdi-spin me-1"></i>Memproses berkas...
                                     </div>
+                                    @error('file') <span class="text-danger small mt-1 text-center fw-medium">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer border-0 p-4 pt-0">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="batal">Batal</button>
-                            <button type="submit" class="btn btn-warning text-dark px-5 rounded-pill fw-bold shadow-sm" wire:loading.attr="disabled" wire:target="save" style="background: linear-gradient(135deg, #FF9966, #FF5E62); border: none; color: white !important;">
-                                <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-1"></span>
-                                <i class="mdi mdi-cloud-upload-outline me-1"></i> {{ $editMode ? 'Perbarui Media' : 'Publikasikan Sekarang' }}
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Judul Media</label>
+                            <input type="text" class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="title" placeholder="cth: Interior Studio AF Barber">
+                            @error('title') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Format Konten</label>
+                            <select class="form-select rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model="type">
+                                <option value="image">Galleri Photo Image</option>
+                                <option value="video">Koleksi Video Cinematic</option>
+                            </select>
+                            @error('type') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Catatan Media</label>
+                            <textarea class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="description" rows="2" placeholder="Cerita singkat atau keterangan di balik konten ini..."></textarea>
+                            @error('description') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 mt-4 pt-2">
+                            <button type="submit" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="font-size: 0.95rem; background-color: #0f172a; color: #f8fafc;" wire:loading.attr="disabled">
+                                <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-2"></span>
+                                {{ $editMode ? 'Perbarui Media' : 'Publikasikan Sekarang' }}
+                            </button>
+                            <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a; font-size: 0.95rem;" wire:click="batal">
+                                Batalkan
                             </button>
                         </div>
                     </form>
@@ -227,25 +227,30 @@
 
     <!-- Modal Konfirmasi Hapus -->
     @if($showDeleteModal)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-body p-5 text-center">
-                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
-                            <i class="mdi mdi-image-remove text-danger mdi-48px"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="text-center mb-4 pt-2">
+                        <div class="mb-3">
+                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 56px; height: 56px; background-color: #f1f5f9;">
+                                <i class="mdi mdi-image-remove" style="font-size: 28px; color: #0f172a;"></i>
+                            </div>
                         </div>
-                        <h4 class="font-weight-bold text-dark mb-2">Hapus Item Gallery?</h4>
-                        <p class="text-muted mb-4">Berkas fisik media milik "<strong>{{ $deleteNama }}</strong>" akan dihapus secara permanen dari server.</p>
-                        
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
-                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="hapus"
-                                wire:loading.attr="disabled" wire:target="hapus">
-                                <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-1"></span>
-                                Ya, Hapus Berkas
-                            </button>
-                        </div>
+                        <h6 class="fw-bold mb-2" style="color: #0f172a;">Hapus Item Gallery?</h6>
+                        <p class="small mb-0 lh-base px-2 fw-medium" style="color: #475569;">
+                            Berkas media <strong>"{{ $deleteNama }}"</strong> akan dihapus permanen dari server.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="cancelDelete">
+                            Batalkan
+                        </button>
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="hapus" wire:loading.attr="disabled" wire:target="hapus">
+                            <span wire:loading wire:target="hapus" class="spinner-border spinner-border-sm me-2"></span>
+                            Ya, Hapus Berkas
+                        </button>
                     </div>
                 </div>
             </div>

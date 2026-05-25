@@ -50,6 +50,8 @@
                                     <th class="ps-4 py-3 text-uppercase small fw-bold text-muted" style="width: 80px;">ID</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Profil Member</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Kontak</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted">Loyalty Info</th>
+                                    <th class="py-3 text-uppercase small fw-bold text-muted text-center">Level</th>
                                     <th class="py-3 text-uppercase small fw-bold text-muted">Domisili</th>
                                     <th class="pe-4 py-3 text-uppercase small fw-bold text-muted text-end">Aksi</th>
                                 </tr>
@@ -77,6 +79,24 @@
                                                 </div>
                                                 <span class="small fw-medium">{{ $m->nomor_wa }}</span>
                                             </a>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-bold text-warning small"><i class="mdi mdi-star me-1"></i>{{ number_format($m->poin, 0, ',', '.') }} Poin</span>
+                                                <span class="text-secondary" style="font-size: 0.7rem;">{{ $m->total_kunjungan }} Kunjungan</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            @php
+                                                $levelClass = match(strtolower($m->level)) {
+                                                    'platinum' => 'bg-dark text-warning border-warning',
+                                                    'gold' => 'bg-warning-subtle text-warning border-warning',
+                                                    default => 'bg-light text-secondary border'
+                                                };
+                                            @endphp
+                                            <span class="badge rounded-pill px-3 py-2 border {{ $levelClass }} fw-bold" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;">
+                                                {{ $m->level ?: 'Silver' }}
+                                            </span>
                                         </td>
                                         <td class="text-muted small">
                                             {{ $m->alamat ?? 'Alamat tidak terdata' }}
@@ -125,50 +145,57 @@
 
     <!-- Modal Form (Tambah/Edit) -->
     @if ($showForm)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__fadeIn" tabindex="-1" role="dialog" style="z-index: 1050;">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-header border-0 p-4 pb-0">
-                        <div class="bg-light p-2 rounded-circle me-3">
-                            <i class="mdi mdi-account-star text-primary fs-3"></i>
-                        </div>
-                        <h5 class="modal-title font-weight-bold text-dark">{{ $memberIdEdit ? 'Ubah Data Membership' : 'Pendaftaran Member Premium' }}</h5>
-                        <button type="button" class="btn-close" wire:click.prevent="resetForm" wire:click="$set('showForm', false)"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-uppercase text-muted">Nama Lengkap Pelanggan</label>
-                            <div class="input-group shadow-sm rounded overflow-hidden">
-                                <span class="input-group-text bg-white border-0"><i class="mdi mdi-account-outline text-muted"></i></span>
-                                <input type="text" class="form-control border-0 bg-light" wire:model.defer="nama" placeholder="Masukkan nama (mis: Ahmad Dani)">
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1050;">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 440px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background-color: #fef3c7;">
+                                <i class="mdi mdi-account-star fs-5" style="color: #d97706;"></i>
                             </div>
-                            @error('nama') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
+                            <h6 class="fw-bold text-dark mb-0">{{ $memberIdEdit ? 'Ubah Data Membership' : 'Pendaftaran Member Premium' }}</h6>
                         </div>
-                        
-                        <div class="mb-4">
-                            <label class="form-label small fw-bold text-uppercase text-muted">Nomor WhatsApp Aktif</label>
-                            <div class="input-group shadow-sm rounded overflow-hidden">
-                                <span class="input-group-text bg-white border-0"><i class="mdi mdi-whatsapp text-success"></i></span>
-                                <input type="text" class="form-control border-0 bg-light" wire:model.defer="nomor_wa" placeholder="08xxxxxxxxxxx">
-                            </div>
-                            @error('nomor_wa') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                        </div>
-                        
-                        <div class="mb-0">
-                            <label class="form-label small fw-bold text-uppercase text-muted">Alamat Domisili (Opsional)</label>
-                            <textarea class="form-control shadow-sm border-0 bg-light" wire:model.defer="alamat" rows="3" placeholder="Tuliskan alamat singkat pelanggan..."></textarea>
-                            @error('alamat') <span class="text-danger small mt-1 d-block">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0 p-4 pt-0">
-                        <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click.prevent="resetForm" wire:click="$set('showForm', false)">Batal</button>
-                        <button type="button" class="btn btn-primary px-5 rounded-pill fw-bold shadow-sm" wire:click="save"
-                            wire:loading.attr="disabled" wire:target="save" style="background: linear-gradient(135deg, #FF512F, #DD2476); border: none;">
-                            <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-1"></span>
-                            <i class="mdi mdi-check-decagram me-1"></i> Simpan Membership
+                        <button type="button" class="btn btn-sm bg-transparent border-0 text-muted shadow-none" wire:click.prevent="resetForm" wire:click="$set('showForm', false)">
+                            <i class="mdi mdi-close fs-4"></i>
                         </button>
                     </div>
+
+                    <form wire:submit.prevent="save">
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Nama Lengkap Pelanggan</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-bold border-end-0 shadow-none"><i class="mdi mdi-account-outline text-muted"></i></span>
+                                <input type="text" class="form-control rounded-end-3 py-2 border-start-0 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="nama" placeholder="Masukkan nama (mis: Ahmad Dani)">
+                            </div>
+                            @error('nama') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Nomor WhatsApp Aktif</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-bold border-end-0 shadow-none"><i class="mdi mdi-whatsapp text-muted"></i></span>
+                                <input type="text" class="form-control rounded-end-3 py-2 border-start-0 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="nomor_wa" placeholder="08xxxxxxxxxxx">
+                            </div>
+                            @error('nomor_wa') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="small fw-bold d-block mb-1" style="color: #475569;">Alamat Domisili (Opsional)</label>
+                            <textarea class="form-control rounded-3 py-2 shadow-none text-dark fw-medium" style="background-color: #f8fafc;" wire:model.defer="alamat" rows="2" placeholder="Tuliskan alamat singkat pelanggan..."></textarea>
+                            @error('alamat') <div class="text-danger small mt-1 fw-medium">{{ $message }}</div> @enderror
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 mt-4 pt-2">
+                            <button type="submit" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="font-size: 0.95rem; background-color: #0f172a; color: #f8fafc;" wire:loading.attr="disabled">
+                                <span wire:loading wire:target="save" class="spinner-border spinner-border-sm me-2"></span>
+                                Simpan Membership
+                            </button>
+                            <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a; font-size: 0.95rem;" wire:click.prevent="resetForm" wire:click="$set('showForm', false)">
+                                Batalkan
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -176,25 +203,30 @@
 
     <!-- Modal Konfirmasi Hapus -->
     @if ($showDeleteModal ?? false)
-        <div class="modal-backdrop fade show"></div>
-        <div class="modal d-block animate__animated animate__zoomIn" tabindex="-1" role="dialog" style="z-index: 1060;">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content shadow-lg border-0" style="border-radius: 25px;">
-                    <div class="modal-body p-5 text-center">
-                        <div class="bg-danger-subtle d-inline-flex p-4 rounded-circle mb-4" style="background: #ffebee;">
-                            <i class="mdi mdi-account-off-outline text-danger mdi-48px"></i>
+        <div class="modal-backdrop fade show" style="backdrop-filter: blur(4px); background-color: rgba(15, 23, 42, 0.3);"></div>
+        <div class="modal d-block animate__animated animate__fadeIn animate__faster" tabindex="-1" role="dialog" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+                <div class="modal-content border-0 p-4" style="border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+                    <div class="text-center mb-4 pt-2">
+                        <div class="mb-3">
+                            <div class="rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 56px; height: 56px; background-color: #f1f5f9;">
+                                <i class="mdi mdi-account-off-outline" style="font-size: 28px; color: #0f172a;"></i>
+                            </div>
                         </div>
-                        <h4 class="font-weight-bold text-dark mb-2">Hentikan Membership?</h4>
-                        <p class="text-muted mb-4">Member "<strong>{{ $deleteNama }}</strong>" akan dihapus secara permanen dari sistem loyalitas Anda.</p>
-                        
-                        <div class="d-flex justify-content-center gap-3">
-                            <button type="button" class="btn btn-light px-4 rounded-pill fw-bold" wire:click="cancelDelete">Batalkan</button>
-                            <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" wire:click="delete({{ $deleteId }})"
-                                wire:loading.attr="disabled" wire:target="delete">
-                                <span wire:loading wire:target="delete" class="spinner-border spinner-border-sm me-1"></span>
-                                Ya, Hapus Permanen
-                            </button>
-                        </div>
+                        <h6 class="fw-bold mb-2" style="color: #0f172a;">Hentikan Membership?</h6>
+                        <p class="small mb-0 lh-base px-2 fw-medium" style="color: #475569;">
+                            Member <strong>"{{ $deleteNama }}"</strong> akan dihapus permanen dari sistem loyalitas Anda.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <button type="button" class="btn bg-white border w-100 rounded-3 py-2 fw-bold shadow-none" style="color: #0f172a;" wire:click="cancelDelete">
+                            Batalkan
+                        </button>
+                        <button type="button" class="btn w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #0f172a; color: #f8fafc;" wire:click="delete({{ $deleteId }})" wire:loading.attr="disabled" wire:target="delete">
+                            <span wire:loading wire:target="delete" class="spinner-border spinner-border-sm me-2"></span>
+                            Ya, Hapus Permanen
+                        </button>
                     </div>
                 </div>
             </div>

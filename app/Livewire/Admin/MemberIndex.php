@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Member;
+use App\Services\WAService;
 
 class MemberIndex extends Component
 {
@@ -50,11 +51,14 @@ class MemberIndex extends Component
                 'alamat' => $this->alamat,
             ]);
         } else {
-            Member::create([
+            $member = Member::create([
                 'nama' => $this->nama,
                 'nomor_wa' => $this->nomor_wa,
                 'alamat' => $this->alamat,
             ]);
+
+            // Kirim Welcome Message WA
+            app(WAService::class)->sendWelcomeMember($member);
         }
         $this->resetForm();
         $this->showForm = false;

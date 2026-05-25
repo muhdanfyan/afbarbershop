@@ -9,9 +9,11 @@ use App\Models\Jasa;
 use App\Models\Kapster;
 use Carbon\Carbon;
 
+use App\Services\WAService;
+
 class BookingController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, WAService $waService)
     {
         $request->validate([
             'nama' => 'required|string',
@@ -55,6 +57,9 @@ class BookingController extends Controller
         if ($jasa) {
             $transaksi->jasa()->attach($jasa->id);
         }
+
+        // Kirim konfirmasi WA
+        $waService->sendBookingConfirmation($transaksi);
 
         return response()->json(['success' => true, 'message' => 'Booking berhasil!']);
     }

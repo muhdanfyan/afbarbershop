@@ -10,6 +10,9 @@ use App\Models\Barang;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Services\LoyaltyService;
+use App\Services\PromoService;
+use App\Services\WAService;
 
 class KasirTransaksi extends Component
 {
@@ -46,8 +49,8 @@ class KasirTransaksi extends Component
             }
 
             $member = Member::firstOrCreate(
-                ['nama' => $this->nama, 'nomor_wa' => $this->no_hp],
-                ['alamat' => null]
+                ['nomor_wa' => $this->no_hp],
+                ['nama' => $this->nama, 'alamat' => null]
             );
 
             $data = [
@@ -64,6 +67,7 @@ class KasirTransaksi extends Component
                 'waktu' => $this->waktu ?: now()->format('H:i'),
                 'kursi_id' => $this->kursi_id,
                 'status' => $newStatus,
+                'member_id' => $member->id,
             ];
 
             // Validation: Kursi availability
@@ -149,6 +153,17 @@ class KasirTransaksi extends Component
     public $tanggal;
     public $waktu;
 
+    // Loyalty & Promo
+    public $member_id;
+    public $poinPunya = 0;
+    public $poinGunakan = 0;
+    public $voucherCode = '';
+    public $diskonTotal = 0;
+    public $diskonPoin = 0;
+    public $diskonVoucher = 0;
+    public $voucher_id = null;
+    public $subtotal = 0;
+
     public function mount()
     {
         $this->tanggal = now()->toDateString();
@@ -158,6 +173,57 @@ class KasirTransaksi extends Component
     public function generateInvoice()
     {
         $this->invoice = 'NOTA-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(4));
+    }
+
+    public function updatedNoHp()
+    {
+        $member = Member::where('nomor_wa', $this->no_hp)->first();
+        if ($member) {
+            $this->member_id = $member->id;
+            $this->nama = $member->nama;
+            $this->poinPunya = $member->poin;
+        } else {
+            $this->member_id = null;
+            $this->poinPunya = 0;
+        }
+    }
+
+    public function applyVoucher(PromoService $promoService)
+    {
+        try {
+            $voucher = $promoService->validateVoucher($this->voucherCode, $this->subtotal);
+            $this->voucher_id = $voucher->id;
+            $this->diskonVoucher = $promoService->calculateDiscount($voucher, $this->subtotal);
+            $this->dispatch('swal-success', ['message' => 'Voucher berhasil digunakan! Potongan: Rp ' . number_format($this->diskonVoucher, 0, ',', '.')]);
+            $this->hitungTotal();
+        } catch (\Exception $e) {
+            $this->voucher_id = null;
+            $this->diskonVoucher = 0;
+            $this->dispatch('swal-error', ['message' => $e->getMessage()]);
+            $this->hitungTotal();
+        }
+    }
+
+    public function updatedPoinGunakan()
+    {
+        if ($this->poinGunakan > $this->poinPunya) {
+            $this->poinGunakan = $this->poinPunya;
+        }
+        if ($this->poinGunakan < 0) {
+            $this->poinGunakan = 0;
+        }
+        
+        // 1 poin = Rp 1.000
+        $this->diskonPoin = $this->poinGunakan * 1000;
+        
+        // Cek agar diskon tidak melebihi subtotal
+        if ($this->diskonPoin > ($this->subtotal - $this->diskonVoucher)) {
+             $this->diskonPoin = max(0, $this->subtotal - $this->diskonVoucher);
+             $this->poinGunakan = floor($this->diskonPoin / 1000);
+             $this->diskonPoin = $this->poinGunakan * 1000;
+        }
+
+        $this->hitungTotal();
     }
 
     public function updatedJasa()
@@ -174,24 +240,28 @@ class KasirTransaksi extends Component
 
     public function hitungTotal()
     {
-        $this->total = 0;
+        $this->subtotal = 0;
         foreach ($this->jasa as $jasaId) {
             $jasa = Jasa::find($jasaId);
             if ($jasa) {
-                $this->total += $jasa->harga;
+                $this->subtotal += $jasa->harga;
             }
         }
         foreach ($this->barangSelected as $barangId) {
             $barang = Barang::find($barangId);
             if ($barang) {
                 $jumlah = $this->jumlahBarang[$barangId] ?? 1;
-                $this->total += ($barang->harga_jual * $jumlah);
+                $this->subtotal += ($barang->harga_jual * $jumlah);
             }
         }
+        
+        $this->diskonTotal = $this->diskonPoin + $this->diskonVoucher;
+        $this->total = max(0, $this->subtotal - $this->diskonTotal);
+        
         $this->updatedBayar();
     }
 
-    public function simpanTransaksi()
+    public function simpanTransaksi(LoyaltyService $loyaltyService)
     {
         if ($this->status === 'selesai') {
             $this->dispatch('swal-error', ['message' => 'Transaksi sudah selesai tidak bisa diubah!']);
@@ -214,30 +284,32 @@ class KasirTransaksi extends Component
 
             // Tambahkan ke tabel members jika belum ada
             $member = Member::firstOrCreate(
-                [
-                    'nama' => $this->nama,
-                    'nomor_wa' => $this->no_hp
-                ],
-                [
-                    'alamat' => null
-                ]
+                ['nomor_wa' => $this->no_hp],
+                ['nama' => $this->nama, 'alamat' => null]
             );
+
+            $txData = [
+                'invoice' => $this->invoice,
+                'nama' => $this->nama,
+                'no_hp' => $this->no_hp,
+                'kapster_id' => $this->kapster_id,
+                'total_harga' => $this->total,
+                'uang_bayar' => $this->bayar,
+                'uang_kembali' => $this->kembali,
+                'metode_pembayaran' => $this->metode_pembayaran,
+                'kasir_id' => Auth::id(),
+                'tanggal' => now()->toDateString(),
+                'status' => 'selesai',
+                'member_id' => $member->id,
+                'voucher_id' => $this->voucher_id,
+                'poin_used' => $this->poinGunakan,
+                'diskon_total' => $this->diskonTotal,
+            ];
+
             if ($this->trxId) {
                 // Update transaksi jika sudah ada
                 $transaksi = Transaksi::findOrFail($this->trxId);
-                $transaksi->update([
-                    'invoice' => $this->invoice,
-                    'nama' => $this->nama,
-                    'no_hp' => $this->no_hp,
-                    'kapster_id' => $this->kapster_id,
-                    'total_harga' => $this->total,
-                    'uang_bayar' => $this->bayar,
-                    'uang_kembali' => $this->kembali,
-                    'metode_pembayaran' => $this->metode_pembayaran,
-                    'kasir_id' => Auth::id(),
-                    'tanggal' => now()->toDateString(),
-                    'status' => 'selesai',
-                ]);
+                $transaksi->update($txData);
                 $transaksi->jasa()->sync($this->jasa);
                 
                 // Sync barangs and reduce stock
@@ -249,27 +321,39 @@ class KasirTransaksi extends Component
                 $transaksi->barangs()->sync($barangSyncData);
             } else {
                 // Buat transaksi baru
-                $transaksi = Transaksi::create([
-                    'invoice' => $this->invoice,
-                    'nama' => $this->nama,
-                    'no_hp' => $this->no_hp,
-                    'jasa_id' => is_array($this->jasa) && count($this->jasa) === 1 ? $this->jasa[0] : null,
-                    'kapster_id' => $this->kapster_id,
-                    'total_harga' => $this->total,
-                    'uang_bayar' => $this->bayar,
-                    'uang_kembali' => $this->kembali,
-                    'metode_pembayaran' => $this->metode_pembayaran,
-                    'kasir_id' => Auth::id(),
-                    'tanggal' => now()->toDateString(),
-                    'jumlah' => 1,
-                    'status' => 'selesai',
-                ]);
+                $txData['jumlah'] = 1;
+                $txData['jasa_id'] = is_array($this->jasa) && count($this->jasa) === 1 ? $this->jasa[0] : null;
+                $transaksi = Transaksi::create($txData);
                 $transaksi->jasa()->attach($this->jasa);
                 
                 foreach ($this->barangSelected as $bId) {
                     $jml = $this->jumlahBarang[$bId] ?? 1;
                     $transaksi->barangs()->attach($bId, ['jumlah' => $jml]);
                 }
+            }
+
+            // LOYALTY LOGIC
+            // 1. Redeem Points
+            if ($this->poinGunakan > 0) {
+                $loyaltyService->redeemPoints($member, $this->poinGunakan, $transaksi->id);
+            }
+
+            // 2. Earn Points (1 poin per 10k subtotal sebelum diskon?)
+            // Sesuaikan: Point dihitung dari total yang dibayar (subtotal - voucher)
+            $potentialTotalForPoints = max(0, $this->subtotal - $this->diskonVoucher); 
+            $earned = $loyaltyService->calculateEarnedPoints($potentialTotalForPoints);
+            if ($earned > 0) {
+                $loyaltyService->addPoints($member, $earned, 'earn', $transaksi->id, "Poin transaksi " . $transaksi->invoice);
+                $transaksi->update(['poin_earned' => $earned]);
+            }
+
+            // 3. Increment Visit
+            $member->increment('total_kunjungan');
+            $loyaltyService->updateMemberLevel($member);
+
+            // 4. Update Voucher usage
+            if ($this->voucher_id) {
+                \App\Models\Voucher::find($this->voucher_id)->increment('used_count');
             }
 
             // REDUCE STOCK logic
@@ -313,6 +397,18 @@ class KasirTransaksi extends Component
         $this->jumlahBarang = [];
         $this->showRandomInvoice = false;
         $this->randomInvoiceDisplay = null;
+        
+        // Reset Loyalty & Promo
+        $this->member_id = null;
+        $this->poinPunya = 0;
+        $this->poinGunakan = 0;
+        $this->voucherCode = '';
+        $this->diskonTotal = 0;
+        $this->diskonPoin = 0;
+        $this->diskonVoucher = 0;
+        $this->voucher_id = null;
+        $this->subtotal = 0;
+        
         $this->dispatch('close-modal');
     }
 
@@ -339,55 +435,15 @@ class KasirTransaksi extends Component
     public function kirimStrukWa($transaksi)
     {
         try {
-            $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
-            $alamat = \App\Models\Setting::where('key', 'alamat')->value('value') ?? '';
-            $telepon = \App\Models\Setting::where('key', 'telepon')->value('value') ?? '';
-
-            $pesan = "*FAKTUR ELEKTRONIK TRANSAKSI*\n";
-            $pesan .= "*" . strtoupper($namaUsaha) . "*\n";
-            if ($alamat) $pesan .= $alamat . "\n";
-            if ($telepon) $pesan .= $telepon . "\n\n";
-
-            $pesan .= "Nomor Nota :\n";
-            $pesan .= $transaksi->invoice . "\n\n";
-            $pesan .= "Pelanggan Yth :\n";
-            $pesan .= strtoupper($transaksi->nama) . "\n\n";
-            $pesan .= "Tanggal : " . $transaksi->created_at->format('d/m/Y H:i') . "\n";
-            $pesan .= "Kapster : " . ($transaksi->kapster->nama ?? '-') . "\n";
-            $pesan .= "======================\n";
-            $pesan .= "Detail pesanan:\n";
-            $pesan .= "Layanan:\n";
-
-            foreach ($transaksi->jasa as $j) {
-                $pesan .= "✅ " . $j->nama . "\n";
-                $pesan .= "@ Rp" . number_format($j->harga, 0, ',', '.') . ", Total Rp" . number_format($j->harga, 0, ',', '.') . "\n";
+            $waService = app(WAService::class);
+            if ($waService->sendReceipt($transaksi)) {
+                $this->dispatch('swal-success', ['message' => 'Struk WA berhasil dikirim!']);
+            } else {
+                throw new \Exception('Gagal mengirim pesan melalui gateway.');
             }
-
-            if ($transaksi->barangs->count() > 0) {
-                $pesan .= "\nProduk:\n";
-                foreach ($transaksi->barangs as $b) {
-                    $jml = $b->pivot->jumlah ?? 1;
-                    $pesan .= "🛒 " . $b->nama . " (x" . $jml . ")\n";
-                    $pesan .= "@ Rp" . number_format($b->harga_jual, 0, ',', '.') . ", Total Rp" . number_format($b->harga_jual * $jml, 0, ',', '.') . "\n";
-                }
-            }
-
-            $pesan .= "\n==============\n";
-            $pesan .= "Detail biaya :\n";
-            $pesan .= "Total tagihan : Rp" . number_format($transaksi->total_harga, 0, ',', '.') . "\n";
-            $pesan .= "Grand total : Rp" . number_format($transaksi->total_harga, 0, ',', '.') . "\n\n";
-            $pesan .= "Pembayaran:\n";
-            $pesan .= "Uang Bayar : Rp" . number_format($transaksi->uang_bayar, 0, ',', '.') . "\n";
-            $pesan .= "Kembali : Rp" . number_format($transaksi->uang_kembali, 0, ',', '.') . "\n\n";
-            $pesan .= "Status: " . ($transaksi->uang_bayar >= $transaksi->total_harga ? "Lunas" : "Belum lunas") . "\n";
-            $pesan .= "\n=================\n";
-            $pesan .= "Kritik, saran dan layanan hubungi: \n" . $telepon . "\n\n";
-            $pesan .= " https://poseidonbarbershop.my.id \n";
-            $pesan .= "Terima kasih\n";
-
-            $this->sendWaMessage($transaksi->no_hp, $pesan);
         } catch (\Exception $e) {
             \Log::error('Gagal kirim struk WA: ' . $e->getMessage());
+            $this->dispatch('swal-error', ['message' => 'Gagal kirim struk: ' . $e->getMessage()]);
         }
     }
 
@@ -395,47 +451,17 @@ class KasirTransaksi extends Component
     {
         try {
             $transaksi = Transaksi::findOrFail($id);
-            $namaUsaha = \App\Models\Setting::where('key', 'nama_usaha')->value('value') ?? 'AF Barbershop';
+            $waService = app(WAService::class);
             
-            $pesan = "*PENGINGAT BOOKING - " . strtoupper($namaUsaha) . "*\n\n";
-            $pesan .= "Halo Kak *" . $transaksi->nama . "*,\n";
-            $pesan .= "Kami ingin mengingatkan jadwal booking Kakak pada:\n\n";
-            $pesan .= "📅 Tanggal: *" . \Carbon\Carbon::parse($transaksi->tanggal)->format('d/m/Y') . "*\n";
-            $pesan .= "⏰ Jam: *" . $transaksi->waktu . "*\n";
-            $pesan .= "✂️ Layanan: *" . ($transaksi->jasa->pluck('nama')->implode(', ') ?: '-') . "*\n";
-            $pesan .= "💇‍♂️ Barber: *" . ($transaksi->kapster->nama ?? 'Bebas') . "*\n\n";
-            $pesan .= "Mohon datang 10 menit sebelum jadwal ya Kak. Terima kasih! 🙏\n";
-            $pesan .= " https://poseidonbarbershop.my.id ";
-
-            $this->sendWaMessage($transaksi->no_hp, $pesan);
-            $transaksi->update(['reminded_at' => now()]);
-            $this->dispatch('swal-success', ['message' => 'Pengingat WA berhasil dikirim!']);
-        } catch (\Exception $e) {
-            $this->dispatch('swal-error', ['message' => 'Gagal kirim pengingat: ' . $e->getMessage()]);
-        }
-    }
-
-    private function sendWaMessage($no_hp, $pesan)
-    {
-        try {
-            $baseUrl = env('WA_GATEWAY_URL', 'http://127.0.0.1:3001');
-            $apiKey = env('WA_GATEWAY_API_KEY', 'AFBARBERSHOP_SECRET_KEY_123');
-
-            // Format nomor hp
-            if (str_starts_with($no_hp, '0')) {
-                $no_hp = '62' . substr($no_hp, 1);
-            } elseif (str_starts_with($no_hp, '+')) {
-                $no_hp = substr($no_hp, 1);
+            if ($waService->sendBookingReminder($transaksi, "Manual")) {
+                $transaksi->update(['reminded_at' => now()]);
+                $this->dispatch('swal-success', ['message' => 'Pengingat WA berhasil dikirim!']);
+            } else {
+                throw new \Exception('Gagal mengirim pesan melalui gateway.');
             }
-
-            Http::withHeaders([
-                'x-api-key' => $apiKey
-            ])->post($baseUrl . '/api/send-message', [
-                'number' => $no_hp,
-                'message' => $pesan,
-            ]);
         } catch (\Exception $e) {
-            \Log::error('WA API Error: ' . $e->getMessage());
+            \Log::error('Gagal kirim pengingat WA: ' . $e->getMessage());
+            $this->dispatch('swal-error', ['message' => 'Gagal kirim pengingat: ' . $e->getMessage()]);
         }
     }
 

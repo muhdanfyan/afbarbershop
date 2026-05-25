@@ -17,7 +17,8 @@
 - [x] Laporan Transaksi
 - [x] Gallery
 - [x] Playlist Studio (YouTube + Spotify)
-- [x] WhatsApp Gateway (auto-reply, pengingat)
+- [x] WhatsApp Gateway (auto-reply, pengingat, **Centralized WAService**)
+- [x] WhatsApp Dynamic Template Management (CRUD di Setting)
 - [x] Dark/Light Mode (time-based default)
 - [x] Setting Umum (profil usaha, jam operasional)
 
@@ -41,7 +42,7 @@
 
 ### 2.3 Rating & Review Kapster
 - [ ] Form rating (1-5 bintang) setelah transaksi selesai
-- [ ] Kirim link rating via WhatsApp otomatis
+- [x] Kirim link rating via WhatsApp otomatis (30m setelah Selesai)
 - [ ] Tampilkan rata-rata rating di halaman booking
 - [ ] Dashboard rating per kapster di admin
 - [ ] Filter kapster berdasarkan rating
@@ -92,11 +93,11 @@
 - [ ] Customer bisa pilih gaya saat booking
 
 ### 4.4 Notifikasi WA Lanjutan
-- [ ] Reminder otomatis H-1 booking
+- [x] Reminder otomatis (Multi-stage: 15m, 10m, 5m)
 - [ ] Ucapan ulang tahun member
 - [ ] Broadcast promo bulanan
 - [ ] Notifikasi poin mendekati reward
-- [ ] Follow-up "Sudah lama tidak berkunjung"
+- [x] Follow-up "Sudah lama tidak berkunjung" (Re-aktivasi 30 hari)
 
 ---
 
